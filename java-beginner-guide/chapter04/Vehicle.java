@@ -7,4 +7,9 @@ class Vehicle {
   int range() {
     return mpg * fuelcap;
   }
+
+  // Compute fuel needed for a given distance
+  double fuelneed(int miles) {
+    return (double) miles / mpg;
+  }
 }
