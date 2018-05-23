@@ -37,5 +37,17 @@ class StrOps {
     String substr = orgstr.substring(5,18);
     System.out.println("org: " + orgstr);
     System.out.println("sub: " + substr);
+
+    // String switch
+    String command = "cancel";
+
+    switch(command) {
+      case "connect":
+        System.out.println("Connection");
+        break;
+      case "cancel":
+        System.out.println("Cancel");
+        break;
+    }
   }
 }
