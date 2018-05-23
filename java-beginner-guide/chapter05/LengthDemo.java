@@ -7,10 +7,10 @@ class LengthDemo {
       {6, 7, 8, 9}
     };
 
-    System.out.println(talbe.length);
+    System.out.println(table.length);
 
-    System.out.println(talbe[0].length);
-    System.out.println(talbe[1].length);
-    System.out.println(talbe[2].length);
+    System.out.println(table[0].length);
+    System.out.println(table[1].length);
+    System.out.println(table[2].length);
   }
 }
