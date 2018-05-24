@@ -1,4 +1,4 @@
-// Initialize a two dimensional array
+/** Initialize a two dimensional array */
 class Squares {
   public static void main(String args[]) {
     int riders[][] = new int[7][];

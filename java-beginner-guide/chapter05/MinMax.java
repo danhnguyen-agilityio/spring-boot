@@ -1,4 +1,4 @@
-// Find the minumun and maximum values in an array
+/** Find the minumun and maximum values in an array */
 class MinMax {
   public static void main(String args[]) {
     int nums[] = new int[10];

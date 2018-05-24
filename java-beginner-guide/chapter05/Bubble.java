@@ -1,4 +1,4 @@
-// Demonstate the Bubble sort
+/** Demonstate the Bubble sort */
 class Bubble {
   public static void main(String args[]) {
     int nums[] = { 99, -10, 100123, 18, -978, 5634, 463, -9, 287, 49 };

@@ -1,4 +1,4 @@
-// Use the length array member
+/** Use the length array member */
 class LengthDemo {
   public static void main(String args[]) {
     int table[][] = {

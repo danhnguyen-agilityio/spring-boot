@@ -1,4 +1,4 @@
-// Prevent division by zero
+/** Prevent division by zero */
 class NoZeroDiv {
   public static void main(String args[]) {
     for (int i = -5; i < 6; i++) {

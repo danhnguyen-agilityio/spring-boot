@@ -1,4 +1,4 @@
-// A queue class for characters
+/** A queue class for characters */
 class Queue {
   char q[];
   int putloc, getloc;
@@ -8,7 +8,7 @@ class Queue {
     putloc = getloc = 0;
   }
 
-  // Put a character into the queue
+  /** Put a character into the queue */
   void put(char ch) {
     if (putloc == q.length) {
       System.out.println(" - Queue is full");
@@ -17,7 +17,7 @@ class Queue {
     q[putloc++] = ch;
   }
 
-  // Get a character from the queue
+  /** Get a character from the queue */
   char get() {
     if (getloc == putloc) {
       System.out.println(" - Queue is empty");

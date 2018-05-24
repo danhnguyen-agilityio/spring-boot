@@ -1,4 +1,4 @@
-// Use a for-each style for loop
+/** Use a for-each style for loop */
 class ForEach {
   public static void main(String args[]) {
     int sum = 0;

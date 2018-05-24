@@ -1,10 +1,10 @@
-// Power integer
+/** Power integer */
 class Power {
   double b;
   int e;
   double val;
 
-  // Constructor of class
+  /** Constructor of class */
   Power(double base, int exp) {
     this.b = base;
     this.e = exp;
@@ -14,7 +14,7 @@ class Power {
     for ( ; exp > 0; exp--) this.val = this.val * base;
   }
 
-  // Get rerult
+  /** Get rerult */
   double getPower() {
     return this.val;
   }
