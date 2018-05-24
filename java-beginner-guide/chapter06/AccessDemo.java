@@ -1,22 +1,21 @@
-// 270 292 
-// Public and private access
+/** Public and private access demo */
 class MyClass {
   private int alpha;
   public int beta;
   int gamma;
 
-  // Set alpha
+  /** Set alpha */
   void setAlpha(int a) {
     alpha = a;
   }
 
-  // Get alpha
+  /** Get alpha */
   int getAlpha() {
     return alpha;
   }
 }
 
-// Access modifier
+/** Access modifier demo */
 class AccessDemo {
   public static void main(String args[]) {
     MyClass ob = new MyClass();
