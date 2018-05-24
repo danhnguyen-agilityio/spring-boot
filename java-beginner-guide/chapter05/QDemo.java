@@ -8,7 +8,7 @@ class Queue {
     putloc = getloc = 0;
   }
 
-  // put a character into the queue
+  // Put a character into the queue
   void put(char ch) {
     if (putloc == q.length) {
       System.out.println(" - Queue is full");
@@ -17,7 +17,7 @@ class Queue {
     q[putloc++] = ch;
   }
 
-  // get a character from the queue
+  // Get a character from the queue
   char get() {
     if (getloc == putloc) {
       System.out.println(" - Queue is empty");
@@ -36,7 +36,7 @@ class QDemo {
     int i;
 
     System.out.println("Using bigQ to store the alphabet");
-    for (i=0; i < 26; i++) {
+    for (i = 0; i < 26; i++) {
       bigQ.put((char) ('A' + i));
     }
 
