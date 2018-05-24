@@ -6,6 +6,19 @@ class SumNumber {
   static int y;
   static int val = 1024; // a static var
 
+  static double root2;
+  static double root3;
+
+  static {
+    System.out.println("Inside static block");
+    root2 = Math.sqrt(2.0);
+    root3 = Math.sqrt(3.0);
+  }
+
+  SumNumber(String msg) {
+    System.out.println(msg);
+  }
+
   /** Get sum numbers */
   int sum() {
     return x + y;
@@ -25,11 +38,13 @@ class SumNumber {
 /** Static demo */
 class StaticDemo {
   public static void main(String args[]) {
-    SumNumber ob1 = new SumNumber();
+    SumNumber ob1 = new SumNumber("Inside constructor");
     ob1.x = 10;
     SumNumber.y = 10;
 
     System.out.println("Sum: " + ob1.sum());
     System.out.println("1024 / 2 : " + SumNumber.valDiv2());
+    System.out.println("Root 2: " + SumNumber.root2);
+    System.out.println("Root 3: " + SumNumber.root3);
   }
 }
