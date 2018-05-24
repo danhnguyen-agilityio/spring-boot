@@ -1,4 +1,5 @@
-class Break6 {
+// Break position demo
+class BreakPosition {
   public static void main(String args[]) {
     int x = 0, y = 0;
 

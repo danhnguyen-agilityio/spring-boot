@@ -1,4 +1,4 @@
-// page 158
+// Class system show syntax control statement
 class Help3 {
   public static void main(String args[]) throws java.io.IOException {
     char choice, ignore;
