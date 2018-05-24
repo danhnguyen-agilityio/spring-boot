@@ -10,6 +10,7 @@ class Vehicle {
     mpg = m;
   }
 
+  // Get range with current fuel capicity
   int range() {
     return mpg * fuelcap;
   }

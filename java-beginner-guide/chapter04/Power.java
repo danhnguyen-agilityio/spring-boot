@@ -1,9 +1,11 @@
-class Pwr {
+// Power integer
+class Power {
   double b;
   int e;
   double val;
 
-  Pwr(double base, int exp) {
+  // Constructor of class
+  Power(double base, int exp) {
     this.b = base;
     this.e = exp;
 
@@ -12,7 +14,8 @@ class Pwr {
     for ( ; exp > 0; exp--) this.val = this.val * base;
   }
 
-  double get_pwr() {
+  // Get rerult
+  double getPower() {
     return this.val;
   }
 }
