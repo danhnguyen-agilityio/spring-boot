@@ -1,3 +1,4 @@
+// Casting demo
 class UseCast {
   public static void main(String args[]) {
     int i;

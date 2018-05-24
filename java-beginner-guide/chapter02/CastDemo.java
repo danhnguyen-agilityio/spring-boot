@@ -1,3 +1,4 @@
+// Casting type demo
 class CastDemo {
   public static void main(String args[]) {
     double x, y;
@@ -8,7 +9,7 @@ class CastDemo {
     x = 10.0;
     y = 3.0;
 
-    i = (int) (x/y);
+    i = (int) (x / y);
     System.out.println("integer outcome of x/y: " + i);
     
     i = 100;

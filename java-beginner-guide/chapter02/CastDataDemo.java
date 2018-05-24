@@ -1,4 +1,5 @@
-class ProDemo {
+// Casting from int to byte
+class CastDataDemo {
   public static void main(String args[]) {
     byte b;
     int i;
