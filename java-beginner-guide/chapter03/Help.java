@@ -1,4 +1,4 @@
-// Class system show syntax control statement
+/** Class system show syntax control statement */
 class Help {
   public static void main(String args[]) throws java.io.IOException {
     char choice;

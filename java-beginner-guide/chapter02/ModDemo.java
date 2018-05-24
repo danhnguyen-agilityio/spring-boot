@@ -1,4 +1,4 @@
-// Operator mod demo
+/** Operator mod demo */
 class ModDemo {
   public static void main(String args[]) {
     int iresult, irem;

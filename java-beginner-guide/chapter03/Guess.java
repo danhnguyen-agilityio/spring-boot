@@ -1,4 +1,4 @@
-// Thinking letter between A and Z
+/** Thinking letter between A and Z */
 class Guess {
   public static void main(String args[]) throws java.io.IOException {
     char ch, answer = 'K';

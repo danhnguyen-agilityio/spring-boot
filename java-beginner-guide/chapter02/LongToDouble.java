@@ -1,4 +1,4 @@
-// Type conversion from long to double
+/** Type conversion from long to double */
 class LongToDouble {
   public static void main(String args[]) {
     long L;

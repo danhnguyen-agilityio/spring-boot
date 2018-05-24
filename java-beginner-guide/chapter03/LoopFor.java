@@ -1,4 +1,4 @@
-// Loop for demo
+/** Loop for demo */
 class LoopFor {
   public static void main(String args[]) {
     int i;

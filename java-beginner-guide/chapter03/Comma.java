@@ -1,4 +1,5 @@
-// Loop for demo
+// 
+/** Loop for demo */
 class Comma {
   public static void main(String args[]) {
     int i, j;

@@ -1,4 +1,4 @@
-// If else ladder demo
+/** If else ladder demo */
 class Ladder {
   public static void main(String args[]) {
     int x;

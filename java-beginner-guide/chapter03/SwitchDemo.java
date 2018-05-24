@@ -1,4 +1,4 @@
-// Switch demo example
+/** Switch demo example */
 class SwitchDemo {
   public static void main(String args[]) {
     int i;

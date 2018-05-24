@@ -1,4 +1,4 @@
-// Read character from keyoard
+/** Read character from keyoard */
 class KeyboardDemo {
   public static void main(String args[]) throws java.io.IOException {
     char ch;

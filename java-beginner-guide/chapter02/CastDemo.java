@@ -1,4 +1,4 @@
-// Casting type demo
+/** Casting type demo */
 class CastDemo {
   public static void main(String args[]) {
     double x, y;

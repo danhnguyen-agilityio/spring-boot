@@ -1,4 +1,4 @@
-// Empty loop syntax demo
+/** Empty loop syntax demo */
 class Empty {
   public static void main(String args[]) {
     int i;

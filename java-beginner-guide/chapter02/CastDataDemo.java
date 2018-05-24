@@ -1,4 +1,4 @@
-// Casting from int to byte
+/** Casting from int to byte */
 class CastDataDemo {
   public static void main(String args[]) {
     byte b;

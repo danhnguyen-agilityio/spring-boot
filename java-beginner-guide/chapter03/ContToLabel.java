@@ -1,4 +1,4 @@
-// Example use continue label
+/** Example use continue label */
 class ContToLabel {
   public static void main(String args[]) {
     outerloop: 

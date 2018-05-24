@@ -1,4 +1,4 @@
-// Class calculate sqr of number
+/** Class calculate sqr of number */
 class SqrRoot {
   public static void main(String args[]) {
     double num, sroot, rerr;

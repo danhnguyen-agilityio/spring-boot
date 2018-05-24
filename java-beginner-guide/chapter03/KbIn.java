@@ -1,4 +1,5 @@
-// Class get charactor from keyboad
+// 
+/** Class get charactor from keyboad */
 class KbIn {
   public static void main(String args[]) throws java.io.IOException {
     char ch;

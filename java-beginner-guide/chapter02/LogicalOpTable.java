@@ -1,4 +1,5 @@
-// Logical operations table
+// 
+/** Logical operations table */
 class LogicalOpTable {
   public static void main(String args[]) {
     boolean p, q;
