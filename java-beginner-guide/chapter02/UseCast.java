@@ -1,3 +1,4 @@
+/** Casting demo */
 class UseCast {
   public static void main(String args[]) {
     int i;
@@ -7,5 +8,5 @@ class UseCast {
       System.out.println(i + " / 3 with fractions: " + (double) i / 3);
       System.out.println();
     }
-  }
+  }å
 }
