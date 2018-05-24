@@ -1,8 +1,14 @@
-// 336 342 346 356 364 376
+// 346 356 364 376
 /** Class for two-dimensinal objects */
 class TwoDShape {
   private double width;
   private double height;
+
+  /** Constructor params */
+  TwoDShape(double w, double h) {
+    width = w;
+    height = h;
+  }
 
   /** Accessor methods for width and height */
   double getWidth() {
@@ -26,7 +32,12 @@ class TwoDShape {
 
 /** A subclass of TwoDShape for triangles */
 class Triangle extends TwoDShape {
-  String style;
+  private String style;
+
+  Triangle(String s, double w, double h) {
+    super(w, h);
+    style = s;
+  }
 
   /** Get area */
   double area() {
@@ -40,12 +51,8 @@ class Triangle extends TwoDShape {
 
 class Shape {
   public static void main(String args[]) {
-    Triangle t1 = new Triangle();
-    Triangle t2 = new Triangle();
-
-    t1.setWidth(4.0);
-    t1.setHeight(4.0);
-    t1.style = "filled";
+    Triangle t1 = new Triangle("filled", 4.0, 4.0);
+    // Triangle t2 = new Triangle();
 
     System.out.println("Info for t1: ");
     t1.showStyle();
