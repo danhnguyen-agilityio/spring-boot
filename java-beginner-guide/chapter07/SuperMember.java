@@ -1,4 +1,3 @@
-// 348
 /** Use super to overcome name hiding */
 class A {
   int i;

@@ -25,6 +25,12 @@ class TwoDShape {
     height = x;
   }
 
+  /** Contructor an objec from an object */
+  TwoDShape(TwoDShape ob) {
+    width = ob.width;
+    height = ob.height;
+  }
+
   /** Accessor methods for width and height */
   double getWidth() {
     return width;
@@ -69,6 +75,12 @@ class Triangle extends TwoDShape {
     style = "filled";
   }
 
+  /** Contructor an object from an object */
+  Triangle(Triangle ob) {
+    super(ob);
+    style = ob.style;
+  }
+
   /** Get area */
   double area() {
     return getWidth() * getHeight() / 2;
@@ -104,6 +116,7 @@ class Shape {
     Triangle t2 = new Triangle("outlined", 8.0, 12.0);
     Triangle t3 = new Triangle(4.0);
     ColorTriangle t4 = new ColorTriangle("Blue", "outlined", 8.0, 12.0);
+    Triangle t5 = new Triangle(t2);
 
     t1 = t2;
 
@@ -127,5 +140,10 @@ class Shape {
     t4.showDim();
     t4.showColor();
     System.out.println("Area is " + t4.area());
+
+    System.out.println("Info for t5: ");
+    t5.showStyle();
+    t5.showDim();
+    System.out.println("Area is " + t5.area());
   }
 }
