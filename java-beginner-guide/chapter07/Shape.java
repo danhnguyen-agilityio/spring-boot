@@ -1,4 +1,4 @@
-// 346 356 364 376
+// 364 376
 /** Class for two-dimensinal objects */
 class TwoDShape {
   private double width;
@@ -73,11 +73,30 @@ class Triangle extends TwoDShape {
   }
 }
 
+/** Extend Triangle */
+class ColorTriangle extends Triangle {
+  private String color;
+
+  ColorTriangle(String c, String s, double w, double h) {
+    super(s, w, h);
+    color = c;
+  }
+
+  String getColor() {
+    return color;
+  }
+
+  void showColor() {
+    System.out.println("color is: " + color);
+  }
+}
+
 class Shape {
   public static void main(String args[]) {
     Triangle t1 = new Triangle();
     Triangle t2 = new Triangle("outlined", 8.0, 12.0);
     Triangle t3 = new Triangle(4.0);
+    ColorTriangle t4 = new ColorTriangle("Blue", "outlined", 8.0, 12.0);
 
     t1 = t2;
 
@@ -95,5 +114,11 @@ class Shape {
     t3.showStyle();
     t3.showDim();
     System.out.println("Area is " + t3.area());
+
+    System.out.println("Info for t4: ");
+    t4.showStyle();
+    t4.showDim();
+    t4.showColor();
+    System.out.println("Area is " + t4.area());
   }
 }
