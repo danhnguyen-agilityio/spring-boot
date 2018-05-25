@@ -6,18 +6,21 @@ class TwoDShape {
 
   /** A default constructor */
   TwoDShape() {
+    System.out.println("Construct TwoDShape");
     width = 0;
     height = 0;
   }
 
   /** Constructor params */
   TwoDShape(double w, double h) {
+    System.out.println("Construct TwoDShape");
     width = w;
     height = h;
   }
 
   /** Constructor object with equal width and height */
   TwoDShape(double x) {
+    System.out.println("Construct TwoDShape");
     width = x;
     height = x;
   }
@@ -49,17 +52,20 @@ class Triangle extends TwoDShape {
   /** A default constructor */
   Triangle() {
     super();
+    System.out.println("Construct Triangle");
     style = "none";
   }
 
   Triangle(String s, double w, double h) {
     super(w, h);
+    System.out.println("Construct Triangle");
     style = s;
   }
 
   /** One arg constructor */
   Triangle(double x) {
     super(x);
+    System.out.println("Construct Triangle");
     style = "filled";
   }
 
@@ -79,6 +85,7 @@ class ColorTriangle extends Triangle {
 
   ColorTriangle(String c, String s, double w, double h) {
     super(s, w, h);
+    System.out.println("Construct ColorTriangle");
     color = c;
   }
 
