@@ -1,6 +1,5 @@
-// 364 376
 /** Class for two-dimensinal objects */
-class TwoDShape {
+abstract class TwoDShape {
   private double width;
   private double height;
 
@@ -49,6 +48,9 @@ class TwoDShape {
   void showDim() {
     System.out.println("Wid and height: " + width + " and " + height);
   }
+
+  /** Abstract method */
+  abstract double area();
 }
 
 /** A subclass of TwoDShape for triangles */
