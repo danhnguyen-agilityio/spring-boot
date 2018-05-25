@@ -1,4 +1,4 @@
-// Demonstate the shift << and >> operators
+/** Demonstate the shift << and >> operators */
 class ShiftDemo {
   public static void main(String args[]) {
     int val = 1;

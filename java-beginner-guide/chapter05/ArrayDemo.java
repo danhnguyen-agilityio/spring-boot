@@ -1,4 +1,4 @@
-// Demonstate a one-dimensional array
+/** Demonstate a one-dimensional array */
 class ArrayDemo {
   public static void main(String args[]) {
     int sample[] = new int[10];

@@ -1,4 +1,4 @@
-// Initialize a two dimensional array
+/** Initialize a two dimensional array */
 class Squares {
   public static void main(String args[]) {
     int riders[][] = new int[7][];
@@ -29,7 +29,7 @@ class Squares {
     for (i = 0; i < 10; i++) nums2[i] = -i;
     nums2 = nums1;
     nums2[3] = 99;
-    for (i=0; i<10; i++) {
+    for (i = 0; i < 10; i++) {
       System.out.println(nums1[i] + "  ");
     }
   }

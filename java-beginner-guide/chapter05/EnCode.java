@@ -1,4 +1,4 @@
-// Use XOR to encode and decode a message
+/** Use XOR to encode and decode a message */
 class EnCode {
   public static void main(String args[]) {
     String msg = "This is a test";
@@ -15,7 +15,7 @@ class EnCode {
 
     System.out.println("Encode msg: " + encmsg);
 
-    // decode message
+    // Decode message
     for (int i = 0; i < msg.length; i++) {
       decmsg = decmsg + (char) (encmsg.charAt(i) ^ key);
     }

@@ -1,3 +1,4 @@
+/** While demo exmaple */
 class WhileDemo {
   public static void main(String args[]) {
     char ch;

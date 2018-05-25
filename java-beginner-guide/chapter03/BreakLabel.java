@@ -1,8 +1,9 @@
-class Break3 {
+/** Break label demo */
+class BreakLabel {
   public static void main(String args[]) {
-    for (int i=0; i<3; i++) {
+    for (int i = 0; i < 3; i++) {
       System.out.println("Outer loop count: " + i);
-      System.out.println("Inner loop count:"  );
+      System.out.println("Inner loop count:");
 
       int t = 0;
       while (t < 100) {

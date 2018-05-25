@@ -1,4 +1,5 @@
-class Break4 {
+// Break label nested
+class BreakLabelNested {
   public static void main(String args[]) {
     int i;
 
