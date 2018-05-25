@@ -1,7 +1,9 @@
 package bookpackext;
 
+import bookpack.Book;
+
 /** Class BookInfo is subclass of Book */
-class BookInfo extends bookpack.Book {
+class BookInfo extends Book {
   private String publisher;
 
   public BookInfo(String t, String a, int d, String p) {
