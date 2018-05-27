@@ -1,4 +1,5 @@
-class LtoD {
+/** Type conversion from long to double */
+class LongToDouble {
   public static void main(String args[]) {
     long L;
     double D;
@@ -10,7 +11,7 @@ class LtoD {
     long L1;
     double D1;
     D1 = 100123285.0;
-    L = D;
+    // L = D; Not convert double to long
     System.out.println("L and D: " + L + " " + D); 
   } 
 }

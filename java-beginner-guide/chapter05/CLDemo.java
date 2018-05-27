@@ -1,4 +1,4 @@
-// Display all command-line info
+/** Display all command-line info */
 class CLDemo {
   public static void main(String args[]) {
     System.out.println(args.length);

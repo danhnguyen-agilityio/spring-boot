@@ -1,4 +1,4 @@
-// Upppercase letters
+/** Upppercase letters */
 class UpCase {
   public static void main(String args[]) {
     char ch;
@@ -7,7 +7,7 @@ class UpCase {
       ch = (char) ('a' + i);
       System.out.println(ch);
 
-      ch = (char) ((int) (ch & 65503)); // turns off the 6th bit
+      ch = (char) ((int) (ch & 65503)); // Turns off the 6th bit
       System.out.println(ch + "  ");
     }
   }

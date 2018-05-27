@@ -1,4 +1,4 @@
-// This is a constructor for Vehicle
+/** This is a constructor for Vehicle */
 class Vehicle {
   int passengers;
   int fuelcap;
@@ -10,11 +10,12 @@ class Vehicle {
     mpg = m;
   }
 
+  /** Get range with current fuel capicity */
   int range() {
     return mpg * fuelcap;
   }
 
-  // Compute fuel needed for a given distance
+  /** Compute fuel needed for a given distance */
   double fuelneed(int miles) {
     return (double) miles / mpg;
   }

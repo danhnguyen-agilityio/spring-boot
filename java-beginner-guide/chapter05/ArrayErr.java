@@ -1,4 +1,4 @@
-// Demonstrate an array overrun
+/** Demonstrate an array overrun */
 class ArrayErr {
   public static void main(String args[]) {
     int sample[] = new int[10];
