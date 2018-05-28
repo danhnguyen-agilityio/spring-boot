@@ -1,3 +1,4 @@
+/** Multi catch feature supported by JDK 9 */
 class MultiCatch {
   public static void main(String args[]) {
     int a = 88, b = 0;

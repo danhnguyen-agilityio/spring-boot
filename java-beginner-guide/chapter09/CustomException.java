@@ -8,11 +8,13 @@ class NonIntResultException extends Exception {
     d = j;
   }
 
+  /** Get info class exception */
   public String toString() {
     return "Result of " + n + " / " + d + " is non-integer";
   }
 }
 
+/** Clas for custom exception demo */
 class CustomException {
   public static void main(String args[]) {
     try {

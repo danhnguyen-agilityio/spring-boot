@@ -1,3 +1,4 @@
+/** Throws clause demo */
 class ThrowsDemo {
   public static char prompt(String str) throws java.io.IOException {
     System.out.println(str + ": ");
