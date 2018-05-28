@@ -7,17 +7,19 @@ import java.io.FileOutputStream;
 class CopyFile {
   public static void main(String args[]) {
     int i;
-    FileInputStream fin = null;
-    FileOutputStream fout = null;
+    // FileInputStream fin = null;
+    // FileOutputStream fout = null;
 
     if (args.length != 2) {
       System.out.println("Show file file name");
       return;
     }
 
-    try {
-      fin = new FileInputStream(args[0]);
-      fout = new FileOutputStream(args[1], true);
+    // Open and manage two files via the try statement
+    try (FileInputStream fin = new FileInputStream(args[0]);
+         FileOutputStream fout = new FileOutputStream(args[1])) {
+      // fin = new FileInputStream(args[0]);
+      // fout = new FileOutputStream(args[1], true);
 
       do {
         i = fin.read();
@@ -29,22 +31,23 @@ class CopyFile {
       System.out.println("File not found");
     } catch (IOException exc) {
       System.out.println("An I/O error");
-    } finally {
-      try {
-        if (fin != null) {
-          fin.close();
-        }
-      } catch (IOException exc) {
-        System.out.println("error closing input file");
-      }
-
-      try {
-        if (fout != null) {
-          fout.close();
-        }
-      } catch (IOException exc) {
-        System.out.println("error closing output file");
-      }
     }
+    // finally {
+    //   try {
+    //     if (fin != null) {
+    //       fin.close();
+    //     }
+    //   } catch (IOException exc) {
+    //     System.out.println("error closing input file");
+    //   }
+
+    //   try {
+    //     if (fout != null) {
+    //       fout.close();
+    //     }
+    //   } catch (IOException exc) {
+    //     System.out.println("error closing output file");
+    //   }
+    // }
   }
 }
