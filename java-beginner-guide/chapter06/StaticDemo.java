@@ -1,4 +1,3 @@
-// 303 305
 /** Class used to calculate sum two number */
 class SumNumber {
   int x;
@@ -24,9 +23,9 @@ class SumNumber {
     return x + y;
   }
 
-  // Get value after div 2
-  static int valDiv2() {
-    return val / 2;
+  /** Divide value with any number */
+  static int divide(int num) {
+    return val / num;
   }
 
   /** Can not acces a non static var */
@@ -43,7 +42,7 @@ class StaticDemo {
     SumNumber.y = 10;
 
     System.out.println("Sum: " + ob1.sum());
-    System.out.println("1024 / 2 : " + SumNumber.valDiv2());
+    System.out.println("1024 / 2 : " + SumNumber.divide(2));
     System.out.println("Root 2: " + SumNumber.root2);
     System.out.println("Root 3: " + SumNumber.root3);
   }

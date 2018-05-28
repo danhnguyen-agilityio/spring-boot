@@ -30,16 +30,22 @@ abstract class TwoDShape {
     height = ob.height;
   }
 
-  /** Accessor methods for width and height */
+  /** Accessor methods get width */
   double getWidth() {
     return width;
   }
+
+  /** Accessor methods get height */
   double getHeight() {
     return height;
   }
+
+  /** Accessor methods set width */
   void setWidth(double w) {
     width = w;
   }
+
+  /** Accessor methods set height */
   void setHeight(double h) {
     height = h;
   }
@@ -97,6 +103,7 @@ class Triangle extends TwoDShape {
 class ColorTriangle extends Triangle {
   private String color;
 
+  /** Constructor method with 4 params */
   ColorTriangle(String c, String s, double w, double h) {
     super(s, w, h);
     System.out.println("Construct ColorTriangle");
@@ -112,6 +119,7 @@ class ColorTriangle extends Triangle {
   }
 }
 
+/** Class Shape demo */
 class Shape {
   public static void main(String args[]) {
     Triangle t1 = new Triangle();

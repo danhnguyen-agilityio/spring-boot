@@ -1,3 +1,4 @@
+/** Class X */
 class X {
   int a;
 
@@ -6,6 +7,7 @@ class X {
   }
 }
 
+/** Class Y */
 class Y {
   int a;
   
@@ -14,6 +16,7 @@ class Y {
   }
 }
 
+/** IncompatibleRef class demo */
 class InCompatibleRef {
   public static void main(String args[]) {
     X x = new X(10);
