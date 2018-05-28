@@ -1,3 +1,4 @@
+/** Write byte to console */
 class WriteDemo {
   public static void main(String args[]) {
     byte b = 97;
