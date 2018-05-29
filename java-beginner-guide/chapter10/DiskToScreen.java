@@ -1,5 +1,6 @@
 import java.io.*;
 
+/** Read file use FileReader */
 class DiskToScreen {
   public static void main(String args[]) {
     String s;
