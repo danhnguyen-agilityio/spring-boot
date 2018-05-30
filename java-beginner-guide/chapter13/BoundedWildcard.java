@@ -34,6 +34,12 @@ class BoundedWildcard {
   static void test(Gen<? extends A> o) {
     System.out.println("use bounded wildcard");
   }
+
+  /** Determine if the length of two arrays are the same */
+  static <T extends Comparable<T>, V extends T> boolean arraysEqualLength(T[] x, V[] y) {
+    return x.length == y.length;
+  }
+
   public static void main(String args[]) {
     A a = new A();
     B b = new B();
@@ -51,5 +57,20 @@ class BoundedWildcard {
 
     // Illegal because w4 is not a subclass of A
     // test(w4); 
+
+    System.out.println("--------------------------");
+    System.out.println("Demo Generic method");
+    Integer nums[] = { 1, 2, 3 };
+    Integer nums2[] = { 3, 4, 3 };
+
+    if (arraysEqualLength(nums, nums2)) {
+      System.out.println("Length array equal");
+    }
+
+    Double dVals = { 1.2, 2.3, 3.5 };
+    // This not compile because nums and dVals are not of the same type
+    // if (arraysEqualLength(nums, dVals)) {
+    //   System.out.println("Length array equal");
+    // }
   } 
 }
