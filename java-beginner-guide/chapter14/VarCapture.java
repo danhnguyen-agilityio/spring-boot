@@ -5,7 +5,7 @@ interface MyFunc {
   int func(int n);
 }
 
-class VarCapter{
+class VarCapture {
   static int instanceVariable = 100;
 
   public static void main(String args[]) {
