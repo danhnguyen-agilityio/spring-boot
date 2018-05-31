@@ -3,6 +3,7 @@ interface StringFunc {
   String func(String str);
 }
 
+/** Lambda expression argument */
 class LambdaArgumentDemo {
   static String changeStr(StringFunc sf, String s) {
     return sf.func(s);

@@ -23,6 +23,7 @@ class MyClass {
   }
 }
 
+/** Constructor reference demo */
 class ConstructorRef {
   public static void main(String args[]) {
     // Create a reference to the MyClass constructor

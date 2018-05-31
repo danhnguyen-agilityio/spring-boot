@@ -3,6 +3,7 @@ interface SomeTest<T> {
   boolean test(T n, T m);
 }
 
+/** Generic functional interface */
 class GenericFunctoinalInterfaceDemo {
   public static void main(String args[]) {
     // Determines if one integer is a factor of another

@@ -5,6 +5,7 @@ interface MyFunc {
   int func(int n);
 }
 
+/** Variable capture in lambda expression */
 class VarCapture {
   static int instanceVariable = 100;
 

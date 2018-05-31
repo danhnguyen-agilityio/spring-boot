@@ -29,6 +29,7 @@ class MyIntNum {
   }
 }
 
+/** Method reference any instance method */
 class MethodRefAnyMethod {
   public static void main(String args[]) {
     boolean result;
