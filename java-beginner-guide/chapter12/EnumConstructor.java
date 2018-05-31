@@ -15,6 +15,7 @@ enum Transport {
   }
 }
 
+/** Enum constructor demo */
 class EnumConstructor {
   public static void main(String args[]) {
     Transport tp;

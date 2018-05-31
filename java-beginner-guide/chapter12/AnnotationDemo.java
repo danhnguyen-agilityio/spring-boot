@@ -10,6 +10,7 @@ class MyClass {
   }
 }
 
+/** Annotation demo */
 class AnnotationDemo {
   public static void main(String args[]) {
     MyClass myObj = new MyClass();
