@@ -22,6 +22,7 @@ class MyClass<T> implements Containment<T> {
   }
 }
 
+/** GenericInterface demo */
 class GenericInterface {
   public static void main(String args[]) {
     Integer x[] = { 1, 2, 3 };

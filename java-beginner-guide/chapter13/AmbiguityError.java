@@ -1,3 +1,4 @@
+/** Class AmbiguityError to demonstrate ambiguity in generics  */
 class AmbiguityError<T, V> {
   T ob1; 
   V ob2;
