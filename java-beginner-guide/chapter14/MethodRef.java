@@ -5,6 +5,12 @@ interface IntPredicate {
 
 /** This class define two static methods */
 class MyIntPredicates {
+  private int v;
+
+  /** Constructor */
+  MyIntPredicates(int x) {
+    v = x;
+  }
 
   /** A static method that returns true if a number is even */
   static boolean isEven(int n) {
@@ -14,6 +20,16 @@ class MyIntPredicates {
   /** A static method that returns true if a number is positive */
   static boolean isPositive(int n) {
     return n > 0;
+  }
+
+  /** Return true if n is a factor of v */
+  boolean isFactor(int n) {
+    return (v % n) == 0;
+  }
+
+  /** Get number */
+  int getNum() {
+    return v;
   }
 }
 
@@ -39,5 +55,25 @@ class MethodRef {
     if (result) {
       System.out.println("11 is positive");
     }
+
+    System.out.println("-------------------------------");
+    System.out.println("Method references to Instance methods");
+    MyIntPredicates myIntPredicates = new MyIntPredicates(12);
+    MyIntPredicates myIntPredicates2 = new MyIntPredicates(16);
+
+    // A method reference to isFactor on myIntPredicates is created
+    IntPredicate ip = myIntPredicates::isFactor;
+    result = ip.test(3);
+    if (result) {
+      System.out.println("3 is factor of " + myIntPredicates.getNum());
+    }
+
+    // A method reference to isFactor on myIntPredicates2 is created
+    ip = myIntPredicates2::isFactor;
+    result = ip.test(3);
+    if (result) {
+      System.out.println("3 is factor of " + myIntPredicates2.getNum());
+    }
+
   }
 }
