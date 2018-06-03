@@ -6,19 +6,41 @@ import java.util.Scanner;
  * @version 1.0
  */
 public class Main {
+  static Scanner in;
+
   /** 
    * Get intput integer from keyboard
    * @return The value input as int
    */
-  static int getNumber() {
-    Scanner in = new Scanner(System.in);
-    if (in.hasNextInt()) {
-      return in.nextInt();
+  static int getNumberInt() {
+    int value;
+
+    while (true) {
+      in = new Scanner(System.in);
+      if (in.hasNextInt()) {
+        return in.nextInt();
+      }
+      System.out.println("Please enter only integer number: ");
     }
-    return -1;
   }
 
-  /** Get info date in month, input value month from keyload */
+  /** 
+   * Get input double from keyboard 
+   * @return The value input as double
+   */
+  static double getNumberDouble() {
+    double value;
+
+    while (true) {
+      in = new Scanner(System.in);
+      if (in.hasNextDouble()) {
+        return in.nextDouble();
+      }
+      System.out.println("Please enter only double number: ");
+    }
+  }
+
+  /** Get info date in month, input value month from keyboard */
   static void getInforDateInMonth() {
     int month;
     int year;
@@ -26,7 +48,7 @@ public class Main {
 
     while (true) {
       System.out.print("Please enter valid month: ");
-      month = getNumber();
+      month = getNumberInt();
       if (month >=1 && month <= 12) {
         break;
       }
@@ -34,7 +56,7 @@ public class Main {
 
     while (true) {
       System.out.print("Please enter valid year: ");
-      year = getNumber();
+      year = getNumberInt();
       if (year >= 1) {
         break;
       }
@@ -44,7 +66,56 @@ public class Main {
     System.out.println("Month " + month + " year " + year + " have " + numberDays + " days");
   }
 
+  /** Quadratic equation */
+  static void quadraticEquation() {
+    double a;
+    double b;
+    double c;
+
+    System.out.print("Please enter a: ");
+    a = getNumberDouble();
+
+    System.out.print("Please enter b: ");
+    b = getNumberDouble();
+
+    System.out.print("Please enter c: ");
+    c = getNumberDouble();
+
+    QuadraticEquation.calculate(a, b, c);
+  }
+
+  /** Choose practice that you want to demo */
+  static void choosePractice() {
+    int practice;
+
+    while (true) {
+      System.out.print("Please choose practice that you want to demo (1 -> 5): ");
+      practice = getNumberInt();
+      if (practice >= 1 && practice <= 5) {
+        break;
+      }
+    }
+
+    switch (practice) {
+      case 1:
+        System.out.println("Check month have how many days: ");
+        getInforDateInMonth();
+        break;  
+      case 2:
+        System.out.println("Quadratic equation: ");
+        quadraticEquation();
+        break;
+      case 3:
+        System.out.println("Return next day: ");
+        nextDay();
+        break;
+      case 3:
+      case 4:
+      case 5:
+    }
+  }
+
   public static void main(String args[]) {
-    getInforDateInMonth();
+    choosePractice();
   }
 }
