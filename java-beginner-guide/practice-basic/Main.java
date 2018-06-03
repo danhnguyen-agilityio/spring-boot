@@ -40,6 +40,15 @@ public class Main {
     }
   }
 
+  /** 
+   * Get input string from keyboard 
+   * @return The value input as string
+   */
+  static String getString() {
+    in = new Scanner(System.in);
+    return in.nextLine();
+  }
+
   /** Get info date in month, input value month from keyboard */
   static void getInforDateInMonth() {
     int month;
@@ -84,6 +93,22 @@ public class Main {
     QuadraticEquation.calculate(a, b, c);
   }
 
+  /** Implement getting next day */
+  static void nextDay() {
+    String day;
+
+    while (true) {
+      try {
+        System.out.print("Please enter valid day: ");
+        day = getString().toUpperCase();
+        System.out.println(DayInWeek.getNextDay(DayInWeek.valueOf(day)));
+        return;
+      } catch (IllegalArgumentException e) {
+        System.out.println("Day entered invalid.");
+      }
+    }
+  }
+
   /** Choose practice that you want to demo */
   static void choosePractice() {
     int practice;
@@ -109,7 +134,6 @@ public class Main {
         System.out.println("Return next day: ");
         nextDay();
         break;
-      case 3:
       case 4:
       case 5:
     }
