@@ -135,6 +135,8 @@ public class Main {
         nextDay();
         break;
       case 4:
+        System.out.println("String Function Demo");
+        StringFunction.test();
       case 5:
     }
   }
