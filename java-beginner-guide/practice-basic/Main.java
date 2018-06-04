@@ -114,30 +114,39 @@ public class Main {
     int practice;
 
     while (true) {
-      System.out.print("Please choose practice that you want to demo (1 -> 5): ");
+      System.out.print("Please choose practice (1 -> 5) that you want to demo, -1 to quit: ");
       practice = getNumberInt();
-      if (practice >= 1 && practice <= 5) {
-        break;
-      }
-    }
 
-    switch (practice) {
-      case 1:
-        System.out.println("Check month have how many days: ");
-        getInforDateInMonth();
-        break;  
-      case 2:
-        System.out.println("Quadratic equation: ");
-        quadraticEquation();
-        break;
-      case 3:
-        System.out.println("Return next day: ");
-        nextDay();
-        break;
-      case 4:
-        System.out.println("String Function Demo");
-        StringFunction.test();
-      case 5:
+      if (practice == -1) {
+        return;
+      }
+
+      if (practice < 1 || practice > 5) {
+        continue;
+      }
+
+      switch (practice) {
+        case 1:
+          System.out.println("CHECK MONTH HAVE HOW MANY DAYS");
+          getInforDateInMonth();
+          break;  
+        case 2:
+          System.out.println("QUADRATIC EQUATION");
+          quadraticEquation();
+          break;
+        case 3:
+          System.out.println("CHECK NEXT DAY");
+          nextDay(); 
+          break;
+        case 4:
+          System.out.println("STRING FUNCTION DEMO");
+          StringFunction.test();
+          break;
+        case 5:
+          System.out.println("PRACTICE LOOPING DEMO");
+          LoopingDemo.printShape();
+          break;
+      }
     }
   }
 
