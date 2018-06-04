@@ -1,4 +1,8 @@
-/** Day in week */
+/** 
+ * Enum DayInWeek used to get next day
+ * @author Danh Nguyen
+ * @version 1.0
+ */
 enum DayInWeek {
   MONDAY,
   TUESDAY,
