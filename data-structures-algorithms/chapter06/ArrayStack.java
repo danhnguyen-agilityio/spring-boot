@@ -1,4 +1,4 @@
-// 248 252 254
+// 252 254
 public class ArrayStack<E> implements Stack<E> {
   public static final int CAPACITY = 100; // default array capacity
   private E[] data; // generic array used for storage
