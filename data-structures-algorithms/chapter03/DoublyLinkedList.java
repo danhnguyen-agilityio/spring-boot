@@ -88,6 +88,7 @@ public class DoublyLinkedList<E> {
     addBetween(e, trailer.getPrev(), trailer); // place just before the trailer
   }
 
+  /** Removes the given node from the list and returns its element */
   private E remove(Node<E> node) {
     Node<E> predecessor = node.getPrev();
     Node<E> successor = node.getNext();

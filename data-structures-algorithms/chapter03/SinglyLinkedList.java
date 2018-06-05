@@ -90,6 +90,7 @@ public class SinglyLinkedList<E>  implements Cloneable {
     return answer;
   }
 
+  /** Clone object */
   public SinglyLinkedList<E> clone() throws CloneNotSupportedException {
     // always use inherited Object.clone() to create the inital copy
     SinglyLinkedList<E> other = (SinglyLinkedList<E>) super.clone(); // safe cast

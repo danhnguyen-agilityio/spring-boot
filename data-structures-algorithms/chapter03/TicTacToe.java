@@ -55,6 +55,7 @@ public class TicTacToe {
     }
   }
 
+  /** Print board result */
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < 3; i++) {
