@@ -1,5 +1,59 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /** Implementation of a positional list stored as a doubly linked list */
 public class LinkedPositionalList<E> implements PositionalList<E> {
+
+  //------------nested PositionInterator class-----------------
+  /** 
+   * A inner class. Note well that each instance contains an implicit
+   * reference to the containing list, allowing it to access the list's member
+   */
+  private class PositionIterator implements Iterator<Position<E>> {
+    private Position<E> cursor = first(); // position of the next element to report
+    private Position<E> recent = null;  // position of last reported element
+
+    /** Tests whether the iterator has a next object */
+    public boolean hasNext() {
+      return cursor != null;
+    }
+
+    /** Returns the next position in the iterator */
+    public Position<E> next() throws NoSuchElementException {
+      if (cursor == null) throw new NoSuchElementException("Nothing left");
+      recent = cursor; // save position of last reported element
+      cursor = after(cursor); // cursor to next element to ready for future call to next
+      return recent; 
+    }
+
+    /** Removes the element returned by most recent call to next */
+    public void remove() throws IllegalStateException {
+      if (recent == null) throw new IllegalStateException("nothing to remove");
+      LinkedPositionalList.this.remove(recent); // remove from outer list
+      recent = null; // do not allow remove again until next is called
+    }
+  }
+  //-----------------------end of nested PositionIterator class-----------------------
+
+  private class ElementIterator implements Iterator<E> {
+    Iterator<Position<E>> posIterator = new PositionIterator();
+    
+    /** Tests whether the iterator has a next object */
+    public boolean hasNext() {
+      return posIterator.hasNext();
+    }
+
+    /** Returns the next element in the iterator */
+    public E next() {
+      return posIterator.next().getElement();
+    }
+
+    public E remove() {
+      posIterator.remove();
+    }
+  }
+
+
   /** Nested Node class */
   private static class Node<E> implements Position<E> {
     private E element; // reference to the element stored at this node
