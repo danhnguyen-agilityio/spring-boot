@@ -1,4 +1,4 @@
-// 251 255
+/** LinkStack class */
 public class LinkedStack<E> implements Stack<E> {
   private SinglyLinktedList<E> list = new SinglyLinktedList<>(); // an empty list
   
