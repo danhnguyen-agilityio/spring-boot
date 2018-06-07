@@ -35,6 +35,8 @@ public class LinkedPositionalList<E> implements PositionalList<E> {
   }
   //-----------------------end of nested PositionIterator class-----------------------
 
+  //------------------nested ElementIterator class------------------
+  /** This class adapts the iteration produced by position() to return elements */
   private class ElementIterator implements Iterator<E> {
     Iterator<Position<E>> posIterator = new PositionIterator();
     
@@ -52,7 +54,7 @@ public class LinkedPositionalList<E> implements PositionalList<E> {
       posIterator.remove();
     }
   }
-
+  //------------------end of nested ElementIterator class------------------
 
   /** Nested Node class */
   private static class Node<E> implements Position<E> {
