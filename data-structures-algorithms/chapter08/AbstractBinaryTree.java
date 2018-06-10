@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.ArrayList;
+
 /** An abstract base class providing some functionality of the BinaryTree interface */
 public abstract class AbstractBinaryTree<E> extends AbstractTree<E> implements BinaryTree<E> {
   /** Returns the Position of sibling of p */
@@ -13,7 +16,7 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E> implements B
     int count = 0;
     if (left(p) != null) count++;
     if (right(p) != null) count++;
-    count;
+    return count;
   }
 
   /** Returns an iterable collections of the Positions representing p' children */
@@ -41,7 +44,7 @@ public abstract class AbstractBinaryTree<E> extends AbstractTree<E> implements B
   }
 
   /** Overrides positions to make inorder the default order for binary trees */
-  public Iterable<Position<E> positions() {
+  public Iterable<Position<E>> positions() {
     return inorder();
   }
 }
