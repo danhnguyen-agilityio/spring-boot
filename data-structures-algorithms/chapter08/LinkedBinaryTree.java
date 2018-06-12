@@ -54,7 +54,7 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
 
     /** Set right child node at this node */
     public void setRight(Node<E> rightChild) {
-      left = rightChild;
+      right = rightChild;
     }
   }
   //-------------------end of nested Node class---------------
@@ -65,7 +65,7 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
   }
 
   protected Node<E> root = null; // root of the tree
-  private size = 0; // number of nodes in the tree
+  private int size = 0; // number of nodes in the tree
 
   /** Constructs an empty binary tree */
   public LinkedBinaryTree() { }
@@ -121,11 +121,21 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
     if (parent.getLeft() != null) throw new IllegalArgumentException("p already has a left child");
     Node<E> child = createNode(e, parent, null, null);
     parent.setLeft(child);
+    return child;
+  }
+
+  /** Create a new right child of Position p storing element e, returns its Position */
+  public Position<E> addRight(Position<E> p, E e) throws IllegalArgumentException {
+    Node<E> parent = validate(p); // safe cast
+    if (parent.getRight() != null) throw new IllegalArgumentException("p already has a right child");
+    Node<E> child = createNode(e, parent, null, null);
+    parent.setRight(child);
+    return child;
   }
 
   /** Replaces the element at Position p with e and returns the replaced element */
   public E set(Position<E> p, E e) throws IllegalArgumentException {
-    Node<E> node = valid(p);
+    Node<E> node = validate(p);
     E temp = node.getElement();
     node.setElement(e);
     return temp;
@@ -172,6 +182,6 @@ public class LinkedBinaryTree<E> extends AbstractBinaryTree<E> {
     node.setParent(node); // our convention for defunct node
     node.setLeft(null);
     node.setRight(null);
-
+    return temp;
   }
 }

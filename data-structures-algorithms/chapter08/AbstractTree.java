@@ -1,6 +1,8 @@
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Iterator;
+import java.util.Queue;
 
 /** An abstract base class providing some functionality of the Tree interface */
 public abstract class AbstractTree<E> implements Tree<E> {
@@ -48,14 +50,14 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
   /** Returns the number of levels separating Position p from the root */
   public int depth(Position<E> p) {
-    if (isRoot()) return 0;
+    if (isRoot(p)) return 0;
     else return 1 + depth(parent(p));
   }
 
   /** Returns the height of the tree */
   private int heightBad() {
     int h = 0;
-    for (Postion<E> p : positions()) {
+    for (Position<E> p : positions()) {
       if (isExternal(p)) { // only consider leaf positions
         h = Math.max(h, depth(p));
       }
@@ -67,7 +69,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
   public int height(Position<E> p) {
     int h = 0; // base case if p is external
     for (Position<E> c : children(p)) {
-      h = Math.max(h, 1 + height(c))
+      h = Math.max(h, 1 + height(c));
     }
     return h;
   }
@@ -87,7 +89,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
   /** Returns an iterable collection of positions of the tree, reported in preorder */
   public Iterable<Position<E>> preorder() {
-    List<Position<E> snapshot = new ArrayList<>();
+    List<Position<E>> snapshot = new ArrayList<>();
     if(!isEmpty()) {
       preorderSubtree(root(), snapshot);
     }
@@ -104,7 +106,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
   /** Returns an iterable collection of positions of the tree, reported in postorder */
   public Iterable<Position<E>> postorder() {
-    List<Position<E> snapshot = new ArrayList<>();
+    List<Position<E>> snapshot = new ArrayList<>();
     if(!isEmpty()) {
       postorderSubtree(root(), snapshot); // fill the snapshot recursively
     }
@@ -112,19 +114,19 @@ public abstract class AbstractTree<E> implements Tree<E> {
   }
 
   /** Returns an iterable collections of positions of the tree in breadth first order */
-  public Iterable<Position<E> breadthFirst() {
-    List<Position<E>> snapshot = new ArrayList<>();
-    if (!isEmpty()) {
-      Queue<Position<E>> fringe = new LinkedQueue<>();
-      fringe.enqueue(root()); // start with the root
-      while (!fringe.isEmpty()) {
-        Position<E> p = fringe.dequeue(); // remove from front of the queue
-        snapshot.add(p); // report this position
-        for (Position<E> c : children(p)) {
-          fringe.enqueue(c); // add children to back of queue
-        }
-      }
-    }
-    return snapshot;
-  }
+  // public Iterable<Position<E>> breadthFirst() {
+  //   List<Position<E>> snapshot = new ArrayList<>();
+  //   if (!isEmpty()) {
+  //     Queue<Position<E>> fringe = new LinkedQueue<>();
+  //     fringe.enqueue(root()); // start with the root
+  //     while (!fringe.isEmpty()) {
+  //       Position<E> p = fringe.dequeue(); // remove from front of the queue
+  //       snapshot.add(p); // report this position
+  //       for (Position<E> c : children(p)) {
+  //         fringe.enqueue(c); // add children to back of queue
+  //       }
+  //     }
+  //   }
+  //   return snapshot;
+  // }
 }
