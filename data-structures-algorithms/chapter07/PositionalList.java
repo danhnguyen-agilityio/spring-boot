@@ -1,8 +1,10 @@
+import java.util.Iterator;
+
 /**
  * This interface define behavior of list and get element by position, not use index 
  * Not use index, because index can change when user insert or remove element
  */
-public interface PositionalList<E> {
+public interface PositionalList<E> extends Iterable<E> {
   /**  Returns the number of elements in the list */
   int size();
 
