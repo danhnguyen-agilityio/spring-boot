@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /** An implementation of a priority queue using an array-based heap */
 public class HeapPriorityQueue<K,V> extends AbstractPriorityQueue<K,V> {
@@ -17,14 +18,14 @@ public class HeapPriorityQueue<K,V> extends AbstractPriorityQueue<K,V> {
   /** Creates a priority queue initialized with the given key-value pairs */
   public HeapPriorityQueue(K[] keys, V[] values) {
     super();
-    for (int j = 0; j < Math.min(keys.length, value.length); j++) {
+    for (int j = 0; j < Math.min(keys.length, values.length); j++) {
       heap.add(new PQEntry<>(keys[j], values[j]));
     }
     heapify();
   }
 
   /** Performs a bottom-up construction of the heap in linear time */
-  protected void heaify() {
+  protected void heapify() {
     int startIndex = parent(size() - 1); // start at Parent of last entry
     for (int j = startIndex; j >= 0; j--) { // loop until processing the root
       downheap(j);
@@ -106,7 +107,7 @@ public class HeapPriorityQueue<K,V> extends AbstractPriorityQueue<K,V> {
     checkKey(key);
     Entry<K,V> newest = new PQEntry<>(key, value);
     heap.add(newest); // add to the end of the list
-    unheap(heap.size() - 1); // unheap newly added entry
+    upheap(heap.size() - 1); // upheap newly added entry
     return newest;
   }
 

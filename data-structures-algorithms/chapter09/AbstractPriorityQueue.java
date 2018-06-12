@@ -1,5 +1,7 @@
+import java.util.Comparator;
+
 /** An abstract base class to assist implementations of the PriorityQueue interface */
-public abstract class AbstractPriorityQueue<K, V> implements PriorityQueue {
+public abstract class AbstractPriorityQueue<K, V> implements PriorityQueue<K,V> {
 
   //--------------- nested PQEntry class ---------------------
   protected static class PQEntry<K, V> implements Entry<K, V> {
@@ -18,7 +20,7 @@ public abstract class AbstractPriorityQueue<K, V> implements PriorityQueue {
     }
 
     /** Get value */
-    public K getValue() {
+    public V getValue() {
       return v;
     }
 
@@ -28,7 +30,7 @@ public abstract class AbstractPriorityQueue<K, V> implements PriorityQueue {
     }
 
     /** Set value */
-    protected void setKey(V value) {
+    protected void setValue(V value) {
       v = value;
     }
   }

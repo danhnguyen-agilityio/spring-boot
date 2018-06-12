@@ -1,4 +1,6 @@
-/** An implementation of an adaptable priority queue usung an array-based heap */
+import java.util.Comparator;
+
+/** An implementation of an adaptable priority queue using an array-based heap */
 public class HeapAdaptablePriorityQueue<K,V> extends HeapPriorityQueue<K,V> implements AdaptablePriorityQueue<K,V> {
   //---------------nested AdaptablePQEntry class-------------------
   /** Extention of the PQEntry to include location information */
@@ -6,7 +8,7 @@ public class HeapAdaptablePriorityQueue<K,V> extends HeapPriorityQueue<K,V> impl
     private int index; // entry's current index within the heap
 
     /** Constructs with given key, value, j */
-    public AdaptablePQEntry(K key, V, value, int j) {
+    public AdaptablePQEntry(K key, V value, int j) {
       super(key, value); // this sets the key and value
       index = j; // this sets the new field
     }
@@ -41,6 +43,7 @@ public class HeapAdaptablePriorityQueue<K,V> extends HeapPriorityQueue<K,V> impl
     if (j >= heap.size() || heap.get(j) != locator) {
       throw new IllegalArgumentException("Invalid entry");
     }
+    return locator;
   }
 
   /** Exchanges the entries at indices i and j of the array list */
@@ -63,9 +66,9 @@ public class HeapAdaptablePriorityQueue<K,V> extends HeapPriorityQueue<K,V> impl
   public Entry<K,V> insert(K key, V value) throws IllegalArgumentException {
     checkKey(key); // might throw an exception
     Entry<K,V> newest = new AdaptablePQEntry<>(key, value, heap.size());
-    heap.add(newest);
-    unheap(heap.size() - 1); // add to the end of the list
-    return newest; // upheap newly added entry
+    heap.add(newest); // add to the end of the list
+    upheap(heap.size() - 1); // upheap newly added entry
+    return newest;
   }
 
   /** Removes the given entry from the priority queue */
