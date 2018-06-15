@@ -37,6 +37,12 @@ public class RecursionDemo {
     return total; // return the grand total
   }
 
+  /** Summing an array of integers using linear recursion */
+  public static int linearSum(int[] data, int n) {
+    if (n == 0) return 0;
+    else return linearSum(data, n - 1) + data[n - 1];
+  }
+
   public static void main(String args[]) {
     System.out.println("Factorial of 4: " + factorial(4));
 
@@ -45,6 +51,9 @@ public class RecursionDemo {
 
     File root = new File("/Users/nguyendanh/training/java-training/data-structures-algorithms");
     System.out.println("Disk usage: " + diskUsage(root));
+
+    int[] data1 = { 1, 2, 3, 4, 5 };
+    System.out.println("Sum array: " + linearSum(data1, 5));
   }
 
 }
