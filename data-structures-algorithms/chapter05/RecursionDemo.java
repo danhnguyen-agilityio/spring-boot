@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 
 /** Recursion demo */
 public class RecursionDemo {
@@ -43,6 +44,16 @@ public class RecursionDemo {
     else return linearSum(data, n - 1) + data[n - 1];
   }
 
+  /** Reverses the contents of subarray data[low] through data[high] inclusive */
+  public static void reverseArray(int[] data, int low, int high) {
+    if (low < high) { // if at least two elements in subarray
+      int temp = data[low]; // swap data[low] and data[high]
+      data[low] = data[high];
+      data[high] = temp; 
+      reverseArray(data, low + 1, high - 1); // recur on the rest
+    }
+  }
+
   public static void main(String args[]) {
     System.out.println("Factorial of 4: " + factorial(4));
 
@@ -54,6 +65,9 @@ public class RecursionDemo {
 
     int[] data1 = { 1, 2, 3, 4, 5 };
     System.out.println("Sum array: " + linearSum(data1, 5));
+
+    reverseArray(data1, 0, 4);
+    System.out.println("Reverse array: " + Arrays.toString(data1));
   }
 
 }
