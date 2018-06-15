@@ -83,6 +83,24 @@ public class RecursionDemo {
     else return data[low] != data[high]; // do first and last differ???
   }
 
+  /** Returns the nth Fibonacci number (inefficiently) */
+  public static long fibonacciBad(int n) {
+    if (n <= 1) return n;
+    else return fibonacciBad(n -2) + fibonacciBad(n - 1);
+  }
+
+  /** Returns array containg the pair of Fibonacci numbers, F(n) and F(n-1) */
+  public static long[] fibonacciGood(int n) {
+    if (n <= 1) {
+      long[] answer = {n, 0};
+      return answer;
+    } else {
+      long[] temp = fibonacciGood(n - 1);  // returns [F(n-1), F(n-2)]
+      long[] answer = {temp[0] + temp[1], temp[0]};
+      return answer;
+    }
+  }
+
   public static void main(String args[]) {
     System.out.println("Factorial of 4: " + factorial(4));
 
@@ -103,6 +121,8 @@ public class RecursionDemo {
     System.out.println("Sum: " + binarySum(data1, 0, 4));
 
     System.out.println("Unique: " + unique(data1, 0, 4));
+
+    System.out.println("Recursive: " + fibonacciGood(5)[0]);
   }
 
 }
