@@ -101,6 +101,29 @@ public class RecursionDemo {
     }
   }
 
+  /** Returns true if the target value is found in the data array */
+  public static boolean binarySearchIterative(int[] data, int target) {
+    int low = 0;
+    int high = data.length - 1;
+    while (low <= high) {
+      int mid = (low + high) / 2;
+      if (target == data[mid]) return true; // found a match
+      else if (target < data[mid]) high = mid - 1; // only consider values left of mid
+      else low = mid + 1; // only consider values right of mid
+    }
+    return false; // loop ended without success
+  }
+
+  public static void reverseIterative(int[] data) {
+    int low = 0;
+    high = data.length;
+    while (low < high) { // swap data[low] and data[high]
+      int temp = data[low];
+      data[low++] = data[high]; // post increment of low
+      data[high--] = temp; // post decrement of high 
+    }
+  }
+
   public static void main(String args[]) {
     System.out.println("Factorial of 4: " + factorial(4));
 
