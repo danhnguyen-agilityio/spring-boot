@@ -57,7 +57,30 @@ public class RecursionDemo {
   /** Power fucntion */
   public static double power(double x, int n) {
     if (n == 0) return 1;
-    else rerurn x * power(x, n - 1);
+    else {
+      double partial = power(x, n/2);
+      double result = partial * partial;
+      if (n % 2 == 1) result *= x;
+      return result;
+    }
+  }
+
+  /** Returns the sum of subarray data[low] through data[high] inclusive */
+  public static int binarySum(int[] data, int low, int high) {
+    if (low > high) return 0; // zero elements in subarray
+    else if (low == high) return data[low]; // one element in subarray
+    else {
+      int mid = (low + high) / 2;
+      return binarySum(data, low, mid) + binarySum(data, mid + 1, high);
+    }
+  }
+
+  /** Returns true if there are no duplicate values from data[low] through data[high] */
+  public static boolean unique(int[] data, int low, int high) {
+    if (low >= high) return true; // at most one item
+    else if (!unique(data, low, high -1)) return false; // duplicate in first n - 1
+    else if (!unique(data, low + 1, high)) return false; // duplicate in last n - 1
+    else return data[low] != data[high]; // do first and last differ???
   }
 
   public static void main(String args[]) {
@@ -74,6 +97,12 @@ public class RecursionDemo {
 
     reverseArray(data1, 0, 4);
     System.out.println("Reverse array: " + Arrays.toString(data1));
+
+    System.out.println("Power(2,13): " + power(2, 13));
+
+    System.out.println("Sum: " + binarySum(data1, 0, 4));
+
+    System.out.println("Unique: " + unique(data1, 0, 4));
   }
 
 }
