@@ -52,42 +52,42 @@ public class TreeMap<K,V> extends AbstractSortedMap<K,V> {
   }
 
   /** Get right child of position p */
-  private Position<Entry<K,V>> right(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected Position<Entry<K,V>> right(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.right(p);
   }
   
   /** Get left child of position p */
-  private Position<Entry<K,V>> left(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected Position<Entry<K,V>> left(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.left(p);
   }
 
   /** Tests whether p is internal */
-  private boolean isInternal(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected boolean isInternal(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.isInternal(p);
   }
 
   /** Tests whether p is external */
-  private boolean isExternal(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected boolean isExternal(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.isExternal(p);
   }
 
   /** Get parent of position p */
-  private Position<Entry<K,V>> parent(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected Position<Entry<K,V>> parent(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.parent(p);
   }
 
   /** Tests whether p is root of tree */
-  private boolean isRoot(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected boolean isRoot(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return tree.isRoot(p);
   }
 
   /** Tests whether key is valid */
-  private boolean checkKey(K key) throws IllegalArgumentException {
+  protected boolean checkKey(K key) throws IllegalArgumentException {
     return checkKey(key);
   }
 
   /** Removes position p */
-  private Position<Entry<K,V>> remove(Position<Entry<K,V>> p) throws IllegalArgumentException {
+  protected Position<Entry<K,V>> remove(Position<Entry<K,V>> p) throws IllegalArgumentException {
     return remove(p);
   }
 
