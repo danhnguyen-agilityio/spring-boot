@@ -2,7 +2,7 @@ import java.util.Comparator;
 import java.util.Arrays;
 
 /** Sorting selection demo */
-public class SortingSelection {
+public class MergeSort {
   /** Merge contents of arrays S1 and S2 into properly sized array S */
   public static <K> void merge(K[] S1, K[] S2, K[] S, Comparator<K> comp) {
     int i = 0;
