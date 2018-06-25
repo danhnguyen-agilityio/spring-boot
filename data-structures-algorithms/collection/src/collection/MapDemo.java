@@ -8,6 +8,7 @@ public class MapDemo {
         Map<Integer,String> map = new HashMap<>();
         map.put(200, "BBB");
         map.put(300, "CCC");
+        map.put(200, "DDD");
         map.put(100, "AA");
 
         for (Map.Entry m : map.entrySet()) {
