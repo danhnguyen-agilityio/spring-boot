@@ -12,6 +12,7 @@ public class DequeDemo {
         stack.push("C");
         stack.push("A");
         stack.push("E");
+        stack.push("E");
 
         for (String s : stack) {
             System.out.println(s);
@@ -24,6 +25,7 @@ public class DequeDemo {
         queue.offer("D");
         queue.offer("C");
         queue.offer("A");
+        queue.offer("E");
         queue.offer("E");
 
         for (String s : queue) {
