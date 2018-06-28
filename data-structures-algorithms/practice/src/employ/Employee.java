@@ -116,8 +116,26 @@ public class Employee {
      * @return info employee
      */
     public String toString() {
-        String result = id + "  " + firstName + "  " + lastName + "  " + sex + "  " +
-                dayOfBirth + "  " + level + "  " + basicSalary;
+        String result = printSpace(Long.toString(id), 20)
+            + printSpace(firstName, 10)
+            + printSpace(lastName, 15)
+            + printSpace(sex, 7)
+            + printSpace(dayOfBirth, 15)
+            + printSpace(Integer.toString(level), 3)
+            + printSpace(Double.toString(basicSalary), 10);
+
         return result;
+    }
+
+    /**
+     * Print additional space after word to have specific length
+     * @param word
+     * @param length
+     */
+    public String printSpace(String word, int length) {
+        for (int i = word.length() + 1; i <= length; i++) {
+            word += " ";
+        }
+        return word;
     }
 }
