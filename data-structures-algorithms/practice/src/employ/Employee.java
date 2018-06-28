@@ -2,6 +2,8 @@ package employ;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 /*
@@ -106,7 +108,8 @@ public class Employee {
      * @return age of employee
      */
     public int getAge() throws ParseException {
-        int currentYear = new Date().getYear();
+        Calendar calender = Calendar.getInstance();
+        int currentYear = calender.get(Calendar.YEAR);
         int birthYear = new SimpleDateFormat("dd/MM/yyyy").parse(getDayOfBirth()).getYear();
         return currentYear - birthYear + 1;
     }
@@ -116,15 +119,13 @@ public class Employee {
      * @return info employee
      */
     public String toString() {
-        String result = printSpace(Long.toString(id), 20)
+        return printSpace(Long.toString(id), 20)
             + printSpace(firstName, 10)
             + printSpace(lastName, 15)
             + printSpace(sex, 7)
             + printSpace(dayOfBirth, 15)
             + printSpace(Integer.toString(level), 3)
             + printSpace(Double.toString(basicSalary), 10);
-
-        return result;
     }
 
     /**
@@ -133,9 +134,11 @@ public class Employee {
      * @param length
      */
     public String printSpace(String word, int length) {
-        for (int i = word.length() + 1; i <= length; i++) {
-            word += " ";
+        StringBuilder wordBuilder = new StringBuilder(word);
+        for (int i = wordBuilder.length() + 1; i <= length; i++) {
+            wordBuilder.append(" ");
         }
+        word = wordBuilder.toString();
         return word;
     }
 }

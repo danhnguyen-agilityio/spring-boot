@@ -1,7 +1,6 @@
 package employ;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * @author Danh Nguyen
  */
 public class ListEmployee implements SalaryEmployee {
-    List<Employee> list = new ArrayList<>();
+    private List<Employee> list = new ArrayList<>();
 
     @Override
     public void initial() {
@@ -98,12 +97,12 @@ public class ListEmployee implements SalaryEmployee {
 
     @Override
     public void sortByFirstNameAndLastName() {
-        Collections.sort(list, new FirstLastNameComparator());
+        list.sort(new FirstLastNameComparator());
     }
 
     @Override
     public void sortBySalary() {
-        Collections.sort(list, new SalaryComparator());
+        list.sort(new SalaryComparator());
     }
 
     public static void main(String[] args) {

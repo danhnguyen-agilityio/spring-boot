@@ -1,7 +1,6 @@
 package employ;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
@@ -10,16 +9,18 @@ import java.util.Scanner;
  * Class ArrayEmployee manipulate employee by using array
  */
 public class ArrayEmployee implements SalaryEmployee {
-    int size = 0;
-    Employee[] employees = new Employee[100];
+    private int size = 0;
+    private Employee[] employees;
+
+    private ArrayEmployee() {
+        employees = new Employee[100];
+    }
 
     /*
      * Initial employee when run app
      */
     public void initial() {
-        Employee employee = null;
-
-        employee = new Employee("Danh", "Nguyen", "Male", "07/11/1993", 1, 1000000);
+        Employee employee = new Employee("Danh", "Nguyen", "Male", "07/11/1993", 1, 1000000);
         employees[size++] = employee;
 
         employee = new Employee("Tu", "Nguyen", "Male", "04/03/1980", 2, 2000000);
@@ -128,8 +129,6 @@ public class ArrayEmployee implements SalaryEmployee {
      */
     public ArrayEmployee greaterYearsOld(int yearsOld) throws ParseException {
         Employee employee;
-        int age;
-        Date date;
         ArrayEmployee result = new ArrayEmployee();
 
         for (int i = 0; i < size ; i++) {
@@ -145,7 +144,7 @@ public class ArrayEmployee implements SalaryEmployee {
      * Show info employees
      */
     public void show() {
-        Employee employee = null;
+        Employee employee;
         for (int i = 0; i < size; i++) {
             employee = employees[i];
             System.out.println(employee);
@@ -181,9 +180,7 @@ public class ArrayEmployee implements SalaryEmployee {
         Employee employee = employees[index];
 
         // shifting element after index to left
-        for (int i = index; i < size - 1; i++) {
-            employees[i] = employees[i + 1];
-        }
+        System.arraycopy(employees, index + 1, employees, index, size - 1 - index);
         size--;
         return employee;
     }
@@ -211,13 +208,9 @@ public class ArrayEmployee implements SalaryEmployee {
      */
     public void sortByFirstNameAndLastName() {
         Employee[] temp = new Employee[size];
-        for (int i = 0; i < size; i++) {
-            temp[i] = employees[i];
-        }
+        System.arraycopy(employees, 0, temp, 0, size);
         Arrays.sort(temp, new FirstLastNameComparator());
-        for (int i = 0; i < size; i++) {
-            employees[i] = temp[i];
-        }
+        System.arraycopy(temp, 0, employees, 0, size);
     }
 
     /**
@@ -239,7 +232,7 @@ public class ArrayEmployee implements SalaryEmployee {
         System.out.println("Info employees after add new: ");
         arrayEmployee.show();
 
-        employee = arrayEmployee.get(1000l);
+        employee = arrayEmployee.get(1000L);
         System.out.println("-------------------------------");
         System.out.println("Employee correspond with id 1000: ");
         System.out.println(employee);
