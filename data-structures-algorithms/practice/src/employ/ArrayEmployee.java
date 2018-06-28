@@ -2,6 +2,7 @@ package employ;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -29,11 +30,14 @@ public class ArrayEmployee {
 
         employee = new Employee("Thuong", "Le", "Female", "05/07/1994", 5, 7000000);
         employees[size++] = employee;
+
+        employee = new Employee("Banh", "Hung", "Female", "05/07/1994", 6, 7000000);
+        employees[size++] = employee;
     }
 
     /**
      * Create employee
-     * @param Employee Employee is added to array
+     * @param employee Employee is added to array
      */
     public void create(Employee employee) {
         employees[size++] = employee;
@@ -110,7 +114,7 @@ public class ArrayEmployee {
         Employee employee;
         for (int i = 0; i < size ; i++) {
             employee = employees[i];
-            if ((employee.getFirstName() + " " + employee.getLastName()).equalsIgnoreCase(fullName)) {
+            if ((employee.getFullName()).equalsIgnoreCase(fullName)) {
                 return employee;
             }
         }
@@ -127,13 +131,10 @@ public class ArrayEmployee {
         int age;
         Date date;
         ArrayEmployee result = new ArrayEmployee();
-        int currentYear = new Date().getYear();
-        int birthYear;
 
         for (int i = 0; i < size ; i++) {
             employee = employees[i];
-            birthYear = new SimpleDateFormat("dd/MM/yyyy").parse(employee.getDayOfBirth()).getYear();
-            if (currentYear - birthYear >= yearsOld) {
+            if (employee.getAge() >= yearsOld) {
                 result.create(employee);
             }
         }
@@ -206,12 +207,24 @@ public class ArrayEmployee {
     }
 
     /**
-     * Sort user by first name and last name
-     * @param firstName
-     * @param lastName
+     * Sort employee by first name and last name
      */
-    public void sort(String firstName, String lastName) {
+    public void sortByFirstNameAndLastName() {
+        Employee[] temp = new Employee[size];
+        for (int i = 0; i < size; i++) {
+            temp[i] = employees[i];
+        }
+        Arrays.sort(temp, new FirstLastNameComparator());
+        for (int i = 0; i < size; i++) {
+            employees[i] = temp[i];
+        }
+    }
 
+    /**
+     * Sort employee by salary
+     */
+    public void sortBySalary() {
+        Arrays.sort(employees, new SalaryComparator());
     }
 
     public static void main(String[] args) throws Exception {
@@ -265,5 +278,20 @@ public class ArrayEmployee {
         ArrayEmployee employeesGreaterYearOld = arrayEmployee.greaterYearsOld(30);
         System.out.println("Employee correspond with age >= 30: ");
         employeesGreaterYearOld.showEmployees();
+
+        System.out.println("---------------------------------");
+        arrayEmployee.sortByFirstNameAndLastName();
+        System.out.println("Employees after sort: ");
+        arrayEmployee.showEmployees();
+
+        System.out.println("---------------------------------");
+        arrayEmployee.sortByFirstNameAndLastName();
+        System.out.println("Employees after sort: ");
+        arrayEmployee.showEmployees();
+
+        System.out.println("---------------------------------");
+        arrayEmployee.sortBySalary();
+        System.out.println("Employees after sort by salary: ");
+        arrayEmployee.showEmployees();
     }
 }
