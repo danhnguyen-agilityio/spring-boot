@@ -9,14 +9,14 @@ import java.util.Scanner;
 /*
  * Class ArrayEmployee manipulate employee by using array
  */
-public class ArrayEmployee {
+public class ArrayEmployee implements SalaryEmployee {
     int size = 0;
     Employee[] employees = new Employee[100];
 
     /*
      * Initial employee when run app
      */
-    public void initialEmployee() {
+    public void initial() {
         Employee employee = null;
 
         employee = new Employee("Danh", "Nguyen", "Male", "07/11/1993", 1, 1000000);
@@ -85,7 +85,7 @@ public class ArrayEmployee {
      * @param index index of array
      * @return employee at specific index
      */
-    public Employee getEmployee(int index) {
+    public Employee get(int index) {
         return employees[index];
     }
 
@@ -94,7 +94,7 @@ public class ArrayEmployee {
      * @param id id of employee
      * @return employee have expect id or null if id not exist
      */
-    public Employee getEmployee(long id) {
+    public Employee get(long id) {
         Employee employee;
         for (int i = 0; i < size ; i++) {
             employee = employees[i];
@@ -110,7 +110,7 @@ public class ArrayEmployee {
      * @param fullName full name of employee
      * @return Employee with specific full name
      */
-    public Employee getEmployee(String fullName) {
+    public Employee get(String fullName) {
         Employee employee;
         for (int i = 0; i < size ; i++) {
             employee = employees[i];
@@ -144,7 +144,7 @@ public class ArrayEmployee {
     /**
      * Show info employees
      */
-    public void showEmployees() {
+    public void show() {
         Employee employee = null;
         for (int i = 0; i < size; i++) {
             employee = employees[i];
@@ -196,7 +196,7 @@ public class ArrayEmployee {
      */
     public String editFirstName(long id, String firstName) {
         String oldFirstName;
-        Employee employee = getEmployee(id);
+        Employee employee = get(id);
         if (employee == null) {
             oldFirstName = null;
         } else {
@@ -232,20 +232,20 @@ public class ArrayEmployee {
         long id;
 
         ArrayEmployee arrayEmployee = new ArrayEmployee();
-        arrayEmployee.initialEmployee();
+        arrayEmployee.initial();
 
 //        arrayEmployee.createEmployee();
         System.out.println("-------------------------------");
         System.out.println("Info employees after add new: ");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
 
-        employee = arrayEmployee.getEmployee(1000l);
+        employee = arrayEmployee.get(1000l);
         System.out.println("-------------------------------");
         System.out.println("Employee correspond with id 1000: ");
         System.out.println(employee);
 
-        id = arrayEmployee.getEmployee(0).getId();
-        employee = arrayEmployee.getEmployee(id);
+        id = arrayEmployee.get(0).getId();
+        employee = arrayEmployee.get(id);
         System.out.println("-------------------------------");
         System.out.println("Employee correspond with id " + id);
         System.out.println(employee);
@@ -257,41 +257,41 @@ public class ArrayEmployee {
 
         System.out.println("-------------------------------");
         System.out.println("Info employees");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
 
-        id = arrayEmployee.getEmployee(0).getId();
+        id = arrayEmployee.get(0).getId();
         System.out.println("-------------------------------");
         String oldFirstName = arrayEmployee.editFirstName(id, "NewName");
         System.out.println("Old first name: " + oldFirstName);
 
         System.out.println("-------------------------------");
         System.out.println("Info employees");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
 
         System.out.println("---------------------------------");
         String fullName = "tai vo van";
-        employee = arrayEmployee.getEmployee(fullName);
+        employee = arrayEmployee.get(fullName);
         System.out.println("Employee correspond with full name: " + fullName);
         System.out.println(employee);
 
         System.out.println("---------------------------------");
         ArrayEmployee employeesGreaterYearOld = arrayEmployee.greaterYearsOld(30);
         System.out.println("Employee correspond with age >= 30: ");
-        employeesGreaterYearOld.showEmployees();
+        employeesGreaterYearOld.show();
 
         System.out.println("---------------------------------");
         arrayEmployee.sortByFirstNameAndLastName();
         System.out.println("Employees after sort: ");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
 
         System.out.println("---------------------------------");
         arrayEmployee.sortByFirstNameAndLastName();
         System.out.println("Employees after sort: ");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
 
         System.out.println("---------------------------------");
         arrayEmployee.sortBySalary();
         System.out.println("Employees after sort by salary: ");
-        arrayEmployee.showEmployees();
+        arrayEmployee.show();
     }
 }

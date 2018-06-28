@@ -39,8 +39,10 @@ public class Employee {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public String setFirstName(String firstName) {
+        String temp = this.firstName;
         this.firstName = firstName;
+        return temp;
     }
 
     public String getLastName() {
