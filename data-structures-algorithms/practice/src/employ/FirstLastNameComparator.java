@@ -14,6 +14,9 @@ public class FirstLastNameComparator implements Comparator<Employee> {
      * @return 1 if a > b, 0 if a = b and -1 if a < b
      */
     public int compare(Employee a, Employee b) {
+        if (a == null || b == null) {
+            return 0;
+        }
         int result = a.getFirstName().compareToIgnoreCase(b.getFirstName());
         if (result == 0) {
             result = a.getLastName().compareToIgnoreCase(b.getLastName());
