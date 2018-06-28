@@ -1,5 +1,7 @@
 package employ;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /*
@@ -79,6 +81,32 @@ public class Employee {
 
     public void setBasicSalary(double basicSalary) {
         this.basicSalary = basicSalary;
+    }
+
+    /**
+     * Get salary
+     * @return salary of employee
+     */
+    public double getSalary() {
+        return level * basicSalary;
+    }
+
+    /**
+     * Get full name
+     * @return full name of employee
+     */
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    /**
+     * Get age of employee
+     * @return age of employee
+     */
+    public int getAge() throws ParseException {
+        int currentYear = new Date().getYear();
+        int birthYear = new SimpleDateFormat("dd/MM/yyyy").parse(getDayOfBirth()).getYear();
+        return currentYear - birthYear + 1;
     }
 
     /**
