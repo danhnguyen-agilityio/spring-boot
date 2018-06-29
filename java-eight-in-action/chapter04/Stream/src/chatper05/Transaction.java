@@ -23,6 +23,10 @@ public class Transaction {
     return value;
   }
 
+  public Transaction clone(Transaction source) {
+    return new Transaction(source.trader, 2019, 53453);
+  }
+
   @Override
   public String toString() {
     return "{" + this.trader + ", " +

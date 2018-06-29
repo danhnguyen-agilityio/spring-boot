@@ -18,6 +18,10 @@ public class Trader {
     return city;
   }
 
+  public void print(Object o) {
+    System.out.print(o);
+  }
+
   @Override
   public String toString() {
     return "Trader: " + this.name + " in " + this.city;

@@ -51,8 +51,8 @@ public class Statistic {
 
     transactions.stream()
         .filter(transaction -> "Cambridge".equals(transaction.getTrader().getCity()))
-        .map(Transaction::getValue)
-        .forEach(System.out::println);
+        .map(Transaction::getValue) // getValue
+        .forEach(System.out::println); //  d -> System.out::println(d)
 
     Optional<Integer> highestValue =
         transactions.stream()
