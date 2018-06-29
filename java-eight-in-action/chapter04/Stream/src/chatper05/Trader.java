@@ -1,4 +1,4 @@
-package chatper05.practice;
+package chatper05;
 
 public class Trader {
 

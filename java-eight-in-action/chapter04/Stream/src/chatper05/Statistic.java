@@ -1,7 +1,5 @@
-package chatper05.practice;
+package chatper05;
 
-import javax.swing.plaf.OptionPaneUI;
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
