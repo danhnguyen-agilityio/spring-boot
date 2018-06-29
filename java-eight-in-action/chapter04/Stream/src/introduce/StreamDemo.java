@@ -3,6 +3,7 @@ package introduce;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class StreamDemo {
@@ -26,6 +27,20 @@ public class StreamDemo {
         new Dish("pizza", true, 550, Dish.Type.OTHER),
         new Dish("salmon", false, 450, Dish.Type.FISH)
     );
+
+    int caloriesIntStream = menu.stream()
+        .mapToInt(Dish::getCalories)
+        .sum();
+    System.out.println("caloriesIntStream : " + caloriesIntStream);
+
+    OptionalInt max = menu.stream().mapToInt(Dish::getCalories).max();
+
+    IntStream intStream = menu.stream().mapToInt(Dish::getCalories);
+    Stream<Integer> stream = intStream.boxed();
+
+    int calories = menu.stream()
+        .map(Dish::getCalories)
+        .reduce(0, Integer::sum);
 
     if (menu.stream().anyMatch(Dish::isVegetarian)) {
       System.out.println("Vegetarian friendly");
