@@ -1,5 +1,8 @@
 package introduce;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+
 public class Dish {
 
     public enum Type {
