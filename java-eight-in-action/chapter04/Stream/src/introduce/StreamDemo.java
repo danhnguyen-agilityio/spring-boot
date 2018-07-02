@@ -2,9 +2,13 @@ package introduce;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Collectors.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.*;
 
 public class StreamDemo {
   public static void main(String[] args) {
@@ -27,6 +31,31 @@ public class StreamDemo {
         new Dish("pizza", true, 550, Dish.Type.OTHER),
         new Dish("salmon", false, 450, Dish.Type.FISH)
     );
+
+    int totalCalories4 = menu.stream().map(Dish::getCalories).reduce(Integer::sum).get();
+    int totalCalories5 = menu.stream().mapToInt(Dish::getCalories).sum();
+
+    int totalCalories2 = menu.stream().map(Dish::getCalories).collect(Collectors.reducing(0, (i,j) -> i + j));
+    int totalCalories3 = menu.stream().collect(Collectors.reducing(0, Dish::getCalories,(i,j) -> i + j));
+
+    Optional<Dish> mostCalorieDish2 = menu.stream().collect(reducing((d1, d2) -> d1.getCalories() > d2.getCalories() ? d1 : d2));
+
+    System.out.println("Shorting menu: " + menu.stream().map(Dish::getName).collect(Collectors.joining()));
+    System.out.println("Shorting menu delimiter: " + menu.stream().map(Dish::getName).collect(Collectors.joining(",")));
+
+    Comparator<Dish> dishCaloriesComparator = Comparator.comparingInt(Dish::getCalories);
+    Optional<Dish> mostCalorieDish = menu.stream().collect(Collectors.maxBy(dishCaloriesComparator));
+    System.out.println("Most calories dished");
+    mostCalorieDish.ifPresent(System.out::println);
+
+    System.out.println("Counting dish: " + menu.stream().collect(counting()));
+    System.out.println("Counting dish: " + menu.stream().count());
+
+    int totalCalories = menu.stream().collect(Collectors.summingInt(Dish::getCalories));
+    System.out.println("Total calories: " + totalCalories);
+
+    IntSummaryStatistics menuStatistic = menu.stream().collect(summarizingInt(Dish::getCalories));
+    System.out.println("Menu statistic: " + menuStatistic);
 
     int caloriesIntStream = menu.stream()
         .mapToInt(Dish::getCalories)
