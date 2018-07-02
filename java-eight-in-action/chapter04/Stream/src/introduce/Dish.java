@@ -9,6 +9,10 @@ public class Dish {
         MEAT, FISH, OTHER
     }
 
+    public enum CaloricLevel {
+        DIET, NORMAL, FAT
+    }
+
     private final String name;
     private final boolean vegetarian;
     private final int calories;
