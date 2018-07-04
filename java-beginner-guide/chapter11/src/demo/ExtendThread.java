@@ -32,16 +32,20 @@ class Main {
   public static void main(String[] args) {
     System.out.println("Main thread starting.");
 
-    ExtendThread mt = ExtendThread.createAndStart("Child #1");
+    ExtendThread mt1 = ExtendThread.createAndStart("Child #1");
+    ExtendThread mt2 = ExtendThread.createAndStart("Child #2");
+    ExtendThread mt3 = ExtendThread.createAndStart("Child #3");
 
-    for (int i = 0; i < 50; i++) {
+    do {
       System.out.println(".");
       try {
         Thread.sleep(100);
       } catch (InterruptedException exc) {
         System.out.println("Main thread interrupted");
       }
-    }
+    } while (mt1.isAlive() ||
+             mt2.isAlive() ||
+             mt3.isAlive());
 
     System.out.println("Main thread ending.");
   }
