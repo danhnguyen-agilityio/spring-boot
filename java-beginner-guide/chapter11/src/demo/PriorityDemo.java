@@ -28,6 +28,7 @@ class PriorityDemo implements Runnable {
     } while (stop == false && count < 10000000);
     stop = true;
     System.out.println(thread.getName() + " terminating");
+    // TODO need to impl it.
   }
 }
 
@@ -38,7 +39,7 @@ class Main {
     PriorityDemo mt3 = new PriorityDemo("Normal Priority #1");
     PriorityDemo mt4 = new PriorityDemo("Normal Priority #2");
     PriorityDemo mt5 = new PriorityDemo("Normal Priority #3");
-
+    // FIXME harding code here.
     // set the priorities
     mt1.thread.setPriority(Thread.NORM_PRIORITY + 4);
     mt2.thread.setPriority(Thread.NORM_PRIORITY - 4);
