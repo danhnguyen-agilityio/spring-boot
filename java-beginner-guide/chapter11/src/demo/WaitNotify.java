@@ -16,6 +16,7 @@ class TickTock {
 
     notify(); // let tock() run
     try {
+      Thread.sleep(1000);
       while (!state.equals("tocked")) {
         wait(); // wait for tock() to complete
       }
@@ -37,6 +38,7 @@ class TickTock {
 
     notify(); // let tick() run
     try {
+      Thread.sleep(1000);
       while (!state.equals("ticked")) {
         wait(); // wait for tick to complete
       }
