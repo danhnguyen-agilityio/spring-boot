@@ -6,7 +6,8 @@ package demo;
 class SumArray {
   private int sum;
 
-  synchronized int sumArray(int nums[]) {
+//  synchronized int sumArray(int nums[]) {
+  int sumArray(int nums[]) {
     sum = 0; // reset sum
 
     for (int i = 0; i < nums.length; i++) {
@@ -43,7 +44,9 @@ class MyThreadSync implements Runnable {
   public void run() {
     int sum;
     System.out.println(thread.getName() + " starting");
-    answer = sa.sumArray(a);
+    synchronized (sa) {
+      answer = sa.sumArray(a);
+    }
     System.out.println("Sim for " + thread.getName() + " is " + answer);
     System.out.println(thread.getName() + " terminating");
   }
