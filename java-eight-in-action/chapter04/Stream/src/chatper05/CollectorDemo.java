@@ -25,5 +25,8 @@ public class CollectorDemo {
 
     List<Dish> dishes1 = menu.stream().collect(ArrayList::new, List::add, List::addAll);
     System.out.println("dished: " + dishes1);
+
+    List<Integer> numbers = Arrays.asList(3,7,9,3,1,2,1,2,3,4,5);
+    numbers.stream().unordered().forEach(System.out::println);
   }
 }
