@@ -33,7 +33,7 @@ public class ThreadPool {
     }
 
     executorService.shutdown(); // close thread pool
-    while (!executorService.isTerminated()) {} 
+    while (!executorService.isTerminated()) {}
 
     System.out.println("Finished all thread");
   }

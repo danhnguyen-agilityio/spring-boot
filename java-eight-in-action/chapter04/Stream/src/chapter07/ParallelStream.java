@@ -69,12 +69,14 @@ public class ParallelStream {
 //    System.out.println(Runtime.getRuntime().availableProcessors());
 //    System.out.println("Parallel sum: " + measureSumPerf(ParallelStream::parallelSum, 10000000) + " msecs");
 //    System.out.println("Sequential sum: " + measureSumPerf(ParallelStream::sequentialSum, 10000000) + " msecs");
-    System.out.println("Iterative sum: " + measureSumPerf(ParallelStream::iterativeSum, 10000000) + " msecs");
-    System.out.println("Ranged sum: " + measureSumPerf(ParallelStream::rangedSum, 10000000) + " msecs");
-    System.out.println("Parallel Ranged sum: " + measureSumPerf(ParallelStream::parallelRangedSum, 10000000) + " msecs");
+//    System.out.println("Iterative sum: " + measureSumPerf(ParallelStream::iterativeSum, 10000000) + " msecs");
+//    System.out.println("Ranged sum: " + measureSumPerf(ParallelStream::rangedSum, 10000000) + " msecs");
+//    System.out.println("Parallel Ranged sum: " + measureSumPerf(ParallelStream::parallelRangedSum, 10000000) + " msecs");
 
-    System.out.println("sideEffectSum: " + measureSumPerf(ParallelStream::sideEffectSum, 10000000) + " msecs");
-    System.out.println("sideEffectSum: " + measureSumPerf(ParallelStream::sideEffectParallelSum, 10000000) + " msecs");
+//    System.out.println("sideEffectSum: " + measureSumPerf(ParallelStream::sideEffectSum, 10000000) + " msecs");
+//    System.out.println("sideEffectSum: " + measureSumPerf(ParallelStream::sideEffectParallelSum, 10000000) + " msecs");
+
+    System.out.println("ForkJoin sum: " + measureSumPerf(ForkJoinSumCalculator::forkJoinSum, 10000000) + " msecs");
   }
 }
 
