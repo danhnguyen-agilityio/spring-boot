@@ -28,4 +28,10 @@ public class MessageUtil {
     System.out.println(message);
 //    while (true);
   }
+
+  public int divideNumber() {
+    int a = 0;
+    int b = 1/a;
+    return b;
+  }
 }

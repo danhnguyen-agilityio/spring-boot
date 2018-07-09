@@ -20,4 +20,10 @@ public class TestJunit2 {
     System.out.println("Show message");
     messageUtil.showMessage();
   }
+
+  @Test(expected = ArithmeticException.class)
+  public void testDivideNumber() {
+    System.out.println("Divide number");
+    messageUtil.divideNumber();
+  }
 }
