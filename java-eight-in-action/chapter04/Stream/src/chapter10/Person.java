@@ -39,4 +39,10 @@ public class Person {
     }
     return insurance.getName();
   }*/
+
+  void example() {
+    Optional<Car> optionalCar = Optional.empty();
+    Optional<Car> optionalCar1 = Optional.of(new Car());
+    Optional<Car> optionalCar2 = Optional.ofNullable(new Car());
+  }
 }
