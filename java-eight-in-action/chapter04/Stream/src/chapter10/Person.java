@@ -102,5 +102,10 @@ public class Person {
     optionalInsurance.ifPresent(insurance1 -> {
       System.out.println(insurance1.getName() + "AAAA");
     });
+
+    optionalInsurance.filter(insurance1 ->  "Qualityy".equals(insurance1.getName()))
+        .ifPresent(insurance1 -> {
+          System.out.println(insurance1.getName() + "BBBB");
+        });
   }
 }
