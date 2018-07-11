@@ -4,6 +4,11 @@ import java.util.Optional;
 
 class Insurance {
   private String name;
+
+  public Insurance(String name) {
+    this.name = name;
+  }
+
   public String getName() {
     return name;
   }
@@ -44,5 +49,9 @@ public class Person {
     Optional<Car> optionalCar = Optional.empty();
     Optional<Car> optionalCar1 = Optional.of(new Car());
     Optional<Car> optionalCar2 = Optional.ofNullable(new Car());
+
+    Insurance insurance = new Insurance("Quality");
+    Optional<Insurance> optionalInsurance = Optional.ofNullable(insurance);
+    Optional<String> name = optionalInsurance.map(Insurance::getName);
   }
 }
