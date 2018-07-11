@@ -1,5 +1,6 @@
 package chapter10;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 class Insurance {
@@ -64,5 +65,27 @@ public class Person {
         .map(Insurance::getName)
         .orElse("Unknown");
 
+  }
+
+  public static void main(String[] args) {
+    Insurance insurance = new Insurance("Quality");
+    Optional<Insurance> optionalInsurance = Optional.ofNullable(insurance);
+    Optional<Insurance> optionalEmpty = Optional.ofNullable(null);
+
+    System.out.println(optionalInsurance.get().getName());
+//    System.out.println(optionalEmpty.get().getName());
+
+    System.out.println(optionalInsurance.orElse(new Insurance("Empty value")).getName());
+    System.out.println(optionalEmpty.orElse(new Insurance("Empty value")).getName());
+
+    System.out.println(optionalEmpty.orElseGet(() -> new Insurance("Empty value")).getName());
+
+    optionalInsurance.orElseThrow(() -> {
+      throw new NoSuchElementException("No have element");
+    }).getName();
+
+    optionalInsurance.ifPresent(insurance1 -> {
+      System.out.println(insurance1.getName() + "AAAA");
+    });
   }
 }
