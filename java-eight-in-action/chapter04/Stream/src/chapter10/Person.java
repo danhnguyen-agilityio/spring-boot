@@ -23,9 +23,10 @@ class Car {
 }
 
 public class Person {
-  private Optional<Car> car;
-  public Optional<Car> getCar() {
-    return car;
+  private Car car;
+
+  public Optional<Car> getCarAsOptional() {
+    return Optional.ofNullable(car);
   }
 
   /*public String getCarInsuranceName(Person person) {
@@ -53,5 +54,15 @@ public class Person {
     Insurance insurance = new Insurance("Quality");
     Optional<Insurance> optionalInsurance = Optional.ofNullable(insurance);
     Optional<String> name = optionalInsurance.map(Insurance::getName);
+
+    Optional<Person> optionalPerson = Optional.of(new Person());
+  }
+
+  public String getCarInsuranceName(Optional<Person> person) {
+    return person.flatMap(Person::getCarAsOptional)
+        .flatMap(Car::getInsurance)
+        .map(Insurance::getName)
+        .orElse("Unknown");
+
   }
 }
