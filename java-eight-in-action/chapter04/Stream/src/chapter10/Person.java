@@ -67,6 +67,21 @@ public class Person {
 
   }
 
+  public Insurance findCheapestInsurance(Person person, Car car) {
+    // queries services provided by the different insurance companies
+    // compare those data
+    return null;
+  }
+
+  public Optional<Insurance> nullSafeFindCheapestInsurance(Optional<Person> person, Optional<Car> car) {
+//    if (person.isPresent() && car.isPresent()) {
+//      return Optional.of(findCheapestInsurance(person.get(), car.get()));
+//    } else {
+//      return Optional.empty();
+//    }
+    return person.flatMap(p -> car.map(c -> findCheapestInsurance(p ,c)));
+  }
+
   public static void main(String[] args) {
     Insurance insurance = new Insurance("Quality");
     Optional<Insurance> optionalInsurance = Optional.ofNullable(insurance);
