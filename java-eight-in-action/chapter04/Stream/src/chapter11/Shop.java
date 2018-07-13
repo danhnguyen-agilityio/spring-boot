@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 public class Shop {
 
 
@@ -61,15 +63,28 @@ public class Shop {
 
   private double calculatePrice(String product) {
     delay();
-    System.out.println("Computation");
+//    System.out.println("Computation");
     return new Random().nextDouble() * product.charAt(0) + product.charAt(1);
   }
 
   public static void delay() {
+    int delay = 500 + new Random().nextInt(2000);
     try {
-      Thread.sleep(1000L);
+      Thread.sleep(delay);
     } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException();
+    }
+  }
+
+  /**
+   * Random delay between 0.5 and 2.5 seconds
+   */
+  public static void randomDelay() {
+    int delay = 500 + new Random().nextInt(2000);
+    try {
+      Thread.sleep(delay);
+    } catch (InterruptedException e) {
+      throw new RuntimeException();
     }
   }
 
@@ -87,7 +102,7 @@ public class Shop {
     // Use a parallel stream to retrieve the prices from the different shops in parallel
     return shops.parallelStream()
         .map(shop -> String.format("%s price is %.2f", shop.getName(), shop.getPrice(product)))
-        .collect(Collectors.toList());
+        .collect(toList());
   }
 
   public List<String> findPricesOther(String product) {
@@ -120,12 +135,12 @@ public class Shop {
         .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(
             () -> Discount.applyDiscount(quote), executor
         )))
-        .collect(Collectors.toList());
+        .collect(toList());
 
     return priceFutures.stream()
         // Wait for all the Futures in the stream to be completed and extract their respective results
         .map(CompletableFuture::join)
-        .collect(Collectors.toList());
+        .collect(toList());
 
   }
 
@@ -163,12 +178,12 @@ public class Shop {
         .map(shop -> CompletableFuture.supplyAsync(
             () -> String.format("%s price is %.2f",
                 shop.getName(), shop.getPrice(product)), executor))
-         .collect(Collectors.toList());
+         .collect(toList());
 
     return priceFutures.stream()
         // Waiting for the completion of all async operation
         .map(CompletableFuture::join)
-        .collect(Collectors.toList());
+        .collect(toList());
   }
 
   public void performanceAsyncMethod() {
@@ -226,6 +241,38 @@ public class Shop {
     return futurePriceInUSD.get();
   }
 
+  public Stream<CompletableFuture<String>> findPricesStream(String product) {
+    List<Shop> shops = Arrays.asList(new Shop("BestPrice"),
+        new Shop("Lets Save Big"),
+        new Shop("My Favorite Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Buy It All"));
+
+    // Create a thread pool with a number of threads equal to the minimum between 100 and the number of shops
+    Executor executor = Executors.newFixedThreadPool(Math.min(shops.size(), 100), new ThreadFactory() {
+      @Override
+      public Thread newThread(Runnable r) {
+        Thread t = new Thread(r);
+        // Use daemon threads - prevent the termination of the program
+        t.setDaemon(true);
+        return t;
+      }
+    });
+
+    return shops.stream()
+        .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPriceOther(product), executor))
+        .map(future -> future.thenApply(Quote::parse))
+        // Compose the resulting Future with another async task, applying the discount code
+        .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(
+            () -> Discount.applyDiscount(quote), executor
+        )));
+
+  }
+
   public void performanceFindPrices() {
     long start = System.nanoTime();
 //    System.out.println(findPrices("my phone"));
@@ -237,12 +284,23 @@ public class Shop {
 
   public static void main(String[] args) throws Exception {
     Shop shop = new Shop("Demo");
-    shop.performanceFindPrices();
+//    shop.performanceFindPrices();
     System.out.println(Runtime.getRuntime().availableProcessors());
 
-    System.out.println("Price in USD :" + shop.futurePrieceInUSD("Demo"));
-    System.out.println("Price in USD :" + shop.futurePrieceInUSDInJava7("Demo"));
+//    System.out.println("Price in USD :" + shop.futurePrieceInUSD("Demo"));
+//    System.out.println("Price in USD :" + shop.futurePrieceInUSDInJava7("Demo"));
 
+    long start = System.nanoTime();
+    CompletableFuture[] futures = shop.findPricesStream("myPhone")
+        .map(f -> f.thenApply(s -> {
+          long duration = (System.nanoTime() - start) / 1_000_000;
+          System.out.println(s + " (done in " + duration + " msecs");
+          return s;
+        }))
+        .toArray(size -> new CompletableFuture[size]);
+    CompletableFuture.allOf(futures).join(); // return CompletableFuture<void>
+    long duration = (System.nanoTime() - start) / 1_000_000;
+    System.out.println("All shops have now responded in " + duration + " msecs");
   }
 
 }
