@@ -95,15 +95,30 @@ public class Shop {
         new Shop("Lets Save Big"),
         new Shop("My Favorite Shop"),
         new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
+        new Shop("Flower Shop"),
         new Shop("Buy It All"));
+
+    // Create a thread pool with a number of threads equal to the minimum between 100 and the number of shops
+    Executor executor = Executors.newFixedThreadPool(Math.min(shops.size(), 100), new ThreadFactory() {
+      @Override
+      public Thread newThread(Runnable r) {
+        Thread t = new Thread(r);
+        // Use daemon threads - prevent the termination of the program
+        t.setDaemon(true);
+        return t;
+      }
+    });
 
     List<CompletableFuture<String>> priceFutures =
     shops.stream()
-        .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPriceOther(product)))
+        .map(shop -> CompletableFuture.supplyAsync(() -> shop.getPriceOther(product), executor))
         .map(future -> future.thenApply(Quote::parse))
         // Compose the resulting Future with another async task, applying the discount code
         .map(future -> future.thenCompose(quote -> CompletableFuture.supplyAsync(
-            () -> Discount.applyDiscount(quote)
+            () -> Discount.applyDiscount(quote), executor
         )))
         .collect(Collectors.toList());
 
@@ -177,6 +192,40 @@ public class Shop {
     System.out.println("Price returned after " + retrievalTime + " msecs");
   }
 
+  public Double futurePrieceInUSD(String product) throws Exception {
+    Future<Double> futurePriceInUSD = CompletableFuture.supplyAsync(() -> getPrice(product))
+        .thenCombine(CompletableFuture.supplyAsync(
+            () -> ExchangeService.getRate(ExchangeService.Money.EUR, ExchangeService.Money.USD)
+        ), (price, rate) -> price * rate);
+
+    return ((CompletableFuture<Double>) futurePriceInUSD).join();
+  }
+
+  /**
+   * Combining two Futures in Java 7
+   * @param product
+   * @return
+   */
+  public Double futurePrieceInUSDInJava7(String product) throws Exception {
+    ExecutorService executorService = Executors.newCachedThreadPool();
+    final Future<Double> futureRate = executorService.submit(new Callable<Double>() {
+      @Override
+      public Double call() throws Exception {
+        return ExchangeService.getRate(ExchangeService.Money.EUR, ExchangeService.Money.USD);
+      }
+    });
+
+    Future<Double> futurePriceInUSD = executorService.submit(new Callable<Double>() {
+      @Override
+      public Double call() throws Exception {
+        double price = getPrice(product);
+        return price * futureRate.get();
+      }
+    });
+
+    return futurePriceInUSD.get();
+  }
+
   public void performanceFindPrices() {
     long start = System.nanoTime();
 //    System.out.println(findPrices("my phone"));
@@ -186,10 +235,14 @@ public class Shop {
     System.out.println("Done in " + duration + " msecs");
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
     Shop shop = new Shop("Demo");
     shop.performanceFindPrices();
     System.out.println(Runtime.getRuntime().availableProcessors());
+
+    System.out.println("Price in USD :" + shop.futurePrieceInUSD("Demo"));
+    System.out.println("Price in USD :" + shop.futurePrieceInUSDInJava7("Demo"));
+
   }
 
 }
