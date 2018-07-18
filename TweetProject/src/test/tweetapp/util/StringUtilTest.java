@@ -6,6 +6,9 @@ import static org.junit.Assert.*;
 
 public class StringUtilTest {
 
+  /**
+   * Test substring between two strings
+   */
   @Test
   public void testSubstringBetween() {
     String expected = "5b4c63aa170bb8185792506c";
