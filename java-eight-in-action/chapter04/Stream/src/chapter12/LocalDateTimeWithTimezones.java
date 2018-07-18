@@ -1,9 +1,11 @@
 package chapter12;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.TimeZone;
 
 public class LocalDateTimeWithTimezones {
   public static void main(String[] args) {
@@ -24,5 +26,15 @@ public class LocalDateTimeWithTimezones {
 
     ZonedDateTime LADateTimeToGMTPlus2 = LAZone.withZoneSameLocal(ZoneId.of("GMT+01:00"));
     System.out.println("LADateTimeToGMTPlus1: " + LADateTimeToGMTPlus2);
+
+    ZonedDateTime zonedDateTime = ZonedDateTime.parse("2018-07-16T09:21:45.492Z");
+    System.out.println("Convert string to ZonedDatetime: " + zonedDateTime);
+
+    LocalDateTime localDateTime1 = LocalDateTime.ofInstant(zonedDateTime.toInstant(), TimeZone.getDefault().toZoneId());
+    System.out.println("Convert timezone to LocalDateTime: way 1 " + localDateTime1);
+
+    LocalDateTime localDateTime2 = zonedDateTime.withZoneSameInstant(TimeZone.getDefault().toZoneId()).toLocalDateTime();
+    System.out.println("Convert timezone to LocalDateTime: way 2 " + localDateTime2);
+
   }
 }
