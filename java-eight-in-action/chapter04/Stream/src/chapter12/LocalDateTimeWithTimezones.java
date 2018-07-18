@@ -1,10 +1,7 @@
 package chapter12;
 
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.util.TimeZone;
 
 public class LocalDateTimeWithTimezones {
@@ -35,6 +32,12 @@ public class LocalDateTimeWithTimezones {
 
     LocalDateTime localDateTime2 = zonedDateTime.withZoneSameInstant(TimeZone.getDefault().toZoneId()).toLocalDateTime();
     System.out.println("Convert timezone to LocalDateTime: way 2 " + localDateTime2);
+
+    LocalDateTime now = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    System.out.println("Today: " + now);
+
+    LocalDateTime endOfDay = now.with(LocalDateTime.MAX);
+    System.out.println("End of today: " + endOfDay);
 
   }
 }

@@ -61,5 +61,6 @@ public class LocalDateDemo {
 
     LocalDate date2 = dt1.toLocalDate();
     LocalTime time2 = dt1.toLocalTime();
+
   }
 }
