@@ -42,11 +42,17 @@ public class TweetApp {
    * Count all female users
    * @return total female users
    */
-  public long countFemaleUser() {
-    return users.stream().filter(UserService::isFemaleUser).count();
+  public long countFemaleUsers() {
+    return users.stream().filter(User::isFemale).count();
   }
 
-
+  /**
+   * Count all male users
+   * @return total male users
+   */
+  public long countMaleUsers() {
+    return users.stream().filter(User::isMale).count();
+  }
 
   public static void main(String[] args) throws IOException {
     TweetApp tweetApp = new TweetApp();
@@ -106,8 +112,14 @@ public class TweetApp {
           }
 
           case 2: { // count all female user
-            long totalFemaleUsers = tweetApp.countFemaleUser();
+            long totalFemaleUsers = tweetApp.countFemaleUsers();
             System.out.println("Count all female user: " + totalFemaleUsers);
+            break;
+          }
+
+          case 3: { // count all male user
+            long totalMaleUsers = tweetApp.countMaleUsers();
+            System.out.println("Count all male user: " + totalMaleUsers);
             break;
           }
         }

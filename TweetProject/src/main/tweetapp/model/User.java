@@ -158,6 +158,22 @@ public class User {
     this.version = version;
   }
 
+  /**
+   * Check whether user is female
+   * @return true if female user or false if reverse
+   */
+  public boolean isFemale() {
+    return "female".equalsIgnoreCase(gender);
+  }
+
+  /**
+   * Check whether user is female
+   * @return true if male user or false if reverse
+   */
+  public boolean isMale() {
+    return "male".equalsIgnoreCase(gender);
+  }
+
   @Override
   public String toString() {
     System.out.println("Info user with id: " + id);

@@ -68,13 +68,4 @@ public class UserService {
     String csvFile ="./src/main/resources/users.csv";
     return FileUtil.readFile(csvFile, UserService::processUserData);
   }
-
-  /**
-   * Check whether user is female
-   * @param user
-   * @return true if female user or false if reverse
-   */
-  public static boolean isFemaleUser(User user) {
-    return "female".equalsIgnoreCase(user.getGender());
-  }
 }
