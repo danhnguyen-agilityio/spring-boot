@@ -1,5 +1,7 @@
 package tweetapp.model;
 
+import java.time.LocalDateTime;
+
 /**
  * User class contain info about user
  */
@@ -14,13 +16,13 @@ public class User {
   private String phone;
   private String address;
   private String gender;
-  private String birthday;
+  private LocalDateTime birthday;
   private String description;
-  private String createdAt;
-  private String modifiedAt;
+  private LocalDateTime createdAt;
+  private LocalDateTime modifiedAt;
   private String version;
 
-  public User(String id, String username, String firstName, String lastName, String avatarUrl, String nickname, String email, String phone, String address, String gender, String birthday, String description, String createdAt, String modifiedAt, String version) {
+  public User(String id, String username, String firstName, String lastName, String avatarUrl, String nickname, String email, String phone, String address, String gender, LocalDateTime birthday, String description, LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;
@@ -118,11 +120,11 @@ public class User {
     this.gender = gender;
   }
 
-  public String getBirthday() {
+  public LocalDateTime getBirthday() {
     return birthday;
   }
 
-  public void setBirthday(String birthday) {
+  public void setBirthday(LocalDateTime birthday) {
     this.birthday = birthday;
   }
 
@@ -134,19 +136,19 @@ public class User {
     this.description = description;
   }
 
-  public String getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(String createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public String getModifiedAt() {
+  public LocalDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public void setModifiedAt(String modifiedAt) {
+  public void setModifiedAt(LocalDateTime modifiedAt) {
     this.modifiedAt = modifiedAt;
   }
 

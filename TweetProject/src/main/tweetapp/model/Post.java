@@ -2,6 +2,8 @@ package tweetapp.model;
 
 import javafx.geometry.Pos;
 
+import java.time.LocalDateTime;
+
 /**
  * Post class contain info about posts
  */
@@ -10,11 +12,11 @@ public class Post {
   private String authorId;
   private String message;
   private String commentsCount;
-  private String createdAt;
-  private String modifiedAt;
+  private LocalDateTime createdAt;
+  private LocalDateTime modifiedAt;
   private String version;
 
-  public Post(String id, String authorId, String message, String commentsCount, String createdAt, String modifiedAt, String version) {
+  public Post(String id, String authorId, String message, String commentsCount, LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {
     this.id = id;
     this.authorId = authorId;
     this.message = message;
@@ -56,19 +58,19 @@ public class Post {
     this.commentsCount = commentsCount;
   }
 
-  public String getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(String createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public String getModifiedAt() {
+  public LocalDateTime getModifiedAt() {
     return modifiedAt;
   }
 
-  public void setModifiedAt(String modifiedAt) {
+  public void setModifiedAt(LocalDateTime modifiedAt) {
     this.modifiedAt = modifiedAt;
   }
 

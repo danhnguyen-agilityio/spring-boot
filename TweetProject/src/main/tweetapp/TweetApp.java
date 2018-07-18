@@ -54,6 +54,10 @@ public class TweetApp {
     return users.stream().filter(User::isMale).count();
   }
 
+  public List<User> findUsers() {
+    return null;
+  }
+
   public static void main(String[] args) throws IOException {
     TweetApp tweetApp = new TweetApp();
     try {

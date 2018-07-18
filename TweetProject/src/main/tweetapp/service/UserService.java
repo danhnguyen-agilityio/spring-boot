@@ -2,10 +2,13 @@ package tweetapp.service;
 
 import tweetapp.TweetApp;
 import tweetapp.model.User;
+import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
+import tweetapp.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class UserService {
 
       // Split line to array data
       String[] data = line.split(csvSplitBy);
-      String id = data[0];
+      String id = StringUtil.substringBetween(data[0], "\"");
       String username = data[2];
       String firstName = data[3];
       String lastName = data[4];
@@ -44,10 +47,11 @@ public class UserService {
       String phone = data[9];
       String address = data[10];
       String gender = data[13];
-      String birthday = data[14];
-      String description = data[15];
-      String createdAt = data[16];
-      String modifiedAt = data[17];
+      LocalDateTime birthday = DateUtil.convertStringToLocalDateTime(data[14]);
+      String description =  data[15];
+      LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[16]);
+
+      LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[17]);
       String version = data[18];
 
       // Create instance User

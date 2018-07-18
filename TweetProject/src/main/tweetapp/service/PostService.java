@@ -3,10 +3,13 @@ package tweetapp.service;
 import javafx.geometry.Pos;
 import tweetapp.TweetApp;
 import tweetapp.model.Post;
+import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
+import tweetapp.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +37,12 @@ public class PostService {
 
       // Split line to array data
       String[] data = line.split(csvSplitBy);
-      String id = data[0];
+      String id = StringUtil.substringBetween(data[0], "\"");
       String authorId = data[2];
       String message = data[22];
       String commentsCount = data[23];
-      String createdAt = data[25];
-      String modifiedAt = data[26];
+      LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[25]);
+      LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[26]);
       String version = data[27];
 
       // Create instance Post
