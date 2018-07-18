@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * TweetApp implement all statistic
@@ -54,8 +55,15 @@ public class TweetApp {
     return users.stream().filter(User::isMale).count();
   }
 
-  public List<User> findUsers() {
-    return null;
+  /**
+   * Find user have created in number days ago
+   * @param days
+   * @return List user
+   */
+  public List<User> findUsersCreatedIn(int days) {
+    return users.stream()
+        .filter(user -> UserService.createdWithinNumberDaysAgo(user, days))
+        .collect(Collectors.toList());
   }
 
   public static void main(String[] args) throws IOException {
@@ -125,6 +133,21 @@ public class TweetApp {
             long totalMaleUsers = tweetApp.countMaleUsers();
             System.out.println("Count all male user: " + totalMaleUsers);
             break;
+          }
+
+          // Find all users who has been created
+            // a. Within today
+            // b. Within a week from today
+            // c. Within a month from today
+          case 4: {
+            List<User> usersCreatedWithinToday = tweetApp.findUsersCreatedIn(1);
+            System.out.println("Number users have created within today: " + usersCreatedWithinToday.size());
+
+            List<User> usersCreatedWithinAWeek = tweetApp.findUsersCreatedIn(7);
+            System.out.println("Number users have created within a week: " + usersCreatedWithinAWeek.size());
+
+            List<User> usersCreatedWithinAMonth = tweetApp.findUsersCreatedIn(30);
+            System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
           }
         }
       }

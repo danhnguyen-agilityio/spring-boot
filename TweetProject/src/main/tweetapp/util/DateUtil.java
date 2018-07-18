@@ -1,9 +1,6 @@
 package tweetapp.util;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 public class DateUtil {
 
@@ -18,4 +15,13 @@ public class DateUtil {
     ZoneId defaultTimeZone = ZoneId.systemDefault();
     return zonedDateTime.withZoneSameInstant(defaultTimeZone).toLocalDateTime();
   }
+
+  // FIXME:: change name method in here
+  public static boolean withinNumberDaysAgo(LocalDateTime dateTime, int days) {
+    LocalDateTime endOfToday = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    LocalDateTime beforeNumberDays = endOfToday.minusDays(days);
+    return dateTime.compareTo(beforeNumberDays) >= 0;
+  }
+
+
 }

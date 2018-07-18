@@ -1,6 +1,5 @@
 package tweetapp.service;
 
-import tweetapp.TweetApp;
 import tweetapp.model.User;
 import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
@@ -72,4 +71,15 @@ public class UserService {
     String csvFile ="./src/main/resources/users.csv";
     return FileUtil.readFile(csvFile, UserService::processUserData);
   }
+
+  /**
+   * Check whether user have created within a specific days ago
+   * @param user
+   * @param days
+   * @return true if user have created within a specific days ago and false if other
+   */
+  public static boolean createdWithinNumberDaysAgo(User user, int days) {
+    return DateUtil.withinNumberDaysAgo(user.getCreatedAt(), days);
+  }
+
 }
