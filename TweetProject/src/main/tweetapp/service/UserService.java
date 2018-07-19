@@ -273,4 +273,14 @@ public class UserService {
         .limit(maxSize)
         .collect(toList());
   }
+
+  /**
+   * Check whether user name of user contain given userName
+   * @param user
+   * @param userName
+   * @return
+   */
+  public static boolean containsUsername(User user, String userName) {
+    return user.getUsername().toLowerCase().contains(userName.toLowerCase());
+  }
 }

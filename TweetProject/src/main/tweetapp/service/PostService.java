@@ -111,4 +111,19 @@ public class PostService {
           System.out.println(posts.get(idx));
         });
   }
+
+  /**
+   *
+   * @param users
+   * @param posts
+   * @param userName
+   * @return
+   */
+  public static List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName) {
+    return users.stream()
+        .filter(user -> UserService.containsUsername(user, userName))
+        .map(User::getId)
+        .flatMap(userId -> posts.stream().filter(post -> post.getAuthorId().equals(userId)))
+        .collect(toList());
+  }
 }

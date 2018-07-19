@@ -236,7 +236,21 @@ public class TweetApp {
             break;
           }
 
+          case 17: { // Find all posts which have been created Within a month from today
+            int periodDays = 30;
+            List<Post> postsCreatedWithinMonth = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            System.out.println(postsCreatedWithinMonth.size() + " posts which have been created Within a month from today");
+            PostService.print(postsCreatedWithinMonth);
+            break;
+          }
 
+          case 18: { // Find all posts of a specific user
+            String userName = "Kendra";
+            List<Post> postsByUserName = PostService.findPostsByUserName(tweetApp.users, tweetApp.posts, userName);
+            System.out.println(postsByUserName.size() + " posts of a user with user name: " + userName );
+            PostService.print(postsByUserName);
+            break;
+          }
 
         }
       }
