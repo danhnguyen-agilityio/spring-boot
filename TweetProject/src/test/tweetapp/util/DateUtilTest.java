@@ -4,6 +4,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 
 import static org.junit.Assert.*;
@@ -28,9 +29,8 @@ public class DateUtilTest {
   @Ignore
   @Test
   public void textWithinNumberDaysAgo() {
-    int days = 7;
     LocalDateTime localDateTime = LocalDateTime.parse("2018-07-16T16:21:45");
-    boolean actual = DateUtil.withinNumberDaysAgo(localDateTime, days);
+    boolean actual = DateUtil.withinNumberDaysAgo(localDateTime, Period.ofWeeks(7));
     assertEquals(true, actual);
   }
 }

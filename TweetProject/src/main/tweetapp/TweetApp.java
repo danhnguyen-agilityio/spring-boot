@@ -12,6 +12,7 @@ import tweetapp.util.FileUtil;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -27,35 +28,40 @@ public class TweetApp {
 
   public static void main(String[] args) throws IOException {
     TweetApp tweetApp = new TweetApp();
-    try {
-      tweetApp.users = UserService.getUsers();
-      tweetApp.posts = PostService.getPosts();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    tweetApp.users = UserService.getUsers();
+    tweetApp.posts = PostService.getPosts();
+
+    String[] menu = {
+        "0. Exit",
+        "1. Count all users",
+        "2. Count all female users",
+        "3. Count all male users",
+        "4. Find all users who has been created Within today",
+        "5. Find all users who has been created Within a week from today",
+        "6. Find all users who has been created Within a month from today",
+        "7. Find all users who have his/her birthday within the current month",
+        "8. Find all users who has his first name is James",
+        "9. Find all users who has his avatar",
+        "10. Find all users who is under 16 years old",
+        "11. Find all users who is greater than 30 years old",
+        "12. Find top 100 female users Order by first name",
+        "13. Find top 100 female users Order by last name",
+        "14. Find top 100 female users Having posts within a week from today, order by post created date.",
+        "15. Find all posts which have been created Within today",
+        "16. Find all posts which have been created Within a week from today",
+        "17. Find all posts which have been created Within a month from today",
+        "18. Find all posts of a specific user"
+    };
 
     Scanner scanner;
     int question;
     char confirm;
     do {
-      System.out.println("1. Count all users");
-      System.out.println("2. Count all female users");
-      System.out.println("3. Count all male users");
-      System.out.println("4. Find all users who has been created Within today");
-      System.out.println("5. Find all users who has been created Within a week from today");
-      System.out.println("6. Find all users who has been created Within a month from today");
-      System.out.println("7. Find all users who have his/her birthday within the current month");
-      System.out.println("8. Find all users who has his first name is James");
-      System.out.println("9. Find all users who has his avatar");
-      System.out.println("10. Find all users who is under 16 years old");
-      System.out.println("11. Find all users who is greater than 30 years old");
-      System.out.println("12. Find top 100 female users Order by first name");
-      System.out.println("13. Find top 100 female users Order by last name");
-      System.out.println("14. Find top 100 female users Having posts within a week from today, order by post created date.");
-      System.out.println("15. Find all posts which have been created Within today");
-      System.out.println("16. Find all posts which have been created Within a week from today");
-      System.out.println("17. Find all posts which have been created Within a month from today");
-      System.out.println("18. Find all posts of a specific user");
+
+      for (String item : menu) {
+        System.out.println(item);
+      }
+
       System.out.print("Please choose question that you want to see (1 -> 18): ");
 
       scanner = new Scanner(System.in);
