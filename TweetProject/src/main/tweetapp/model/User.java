@@ -15,14 +15,16 @@ public class User {
   private String email;
   private String phone;
   private String address;
-  private String gender;
+  private Gender gender;
   private LocalDateTime birthday;
   private String description;
   private LocalDateTime createdAt;
   private LocalDateTime modifiedAt;
   private String version;
 
-  public User(String id, String username, String firstName, String lastName, String avatarUrl, String nickname, String email, String phone, String address, String gender, LocalDateTime birthday, String description, LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {
+  public User(String id, String username, String firstName, String lastName, String avatarUrl, String nickname,
+      String email, String phone, String address, Gender gender, LocalDateTime birthday, String description,
+      LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {
     this.id = id;
     this.username = username;
     this.firstName = firstName;
@@ -112,11 +114,11 @@ public class User {
     this.address = address;
   }
 
-  public String getGender() {
+  public Gender getGender() {
     return gender;
   }
 
-  public void setGender(String gender) {
+  public void setGender(Gender gender) {
     this.gender = gender;
   }
 
@@ -165,7 +167,7 @@ public class User {
    * @return true if female user or false if reverse
    */
   public boolean isFemale() {
-    return "female".equalsIgnoreCase(gender);
+    return Gender.FEMALE.equals(gender);
   }
 
   /**
@@ -173,7 +175,7 @@ public class User {
    * @return true if male user or false if reverse
    */
   public boolean isMale() {
-    return "male".equalsIgnoreCase(gender);
+    return Gender.MALE.equals(gender);
   }
 
   @Override

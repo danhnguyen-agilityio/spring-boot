@@ -1,6 +1,7 @@
 package tweetapp.service;
 
 import tweetapp.comparator.CreatedPostComparator;
+import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.*;
@@ -62,7 +63,7 @@ public class UserService {
       String email = data[8];
       String phone = data[9];
       String address = data[10];
-      String gender = data[13];
+      Gender gender = Gender.valueOf(data[13]);
       LocalDateTime birthday = DateUtil.convertStringToLocalDateTime(data[14]);
       String description =  data[15];
       LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[16]);
