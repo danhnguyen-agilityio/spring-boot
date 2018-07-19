@@ -62,7 +62,7 @@ public class TweetApp {
         System.out.println(item);
       }
 
-      System.out.print("Please choose question that you want to see (1 -> 18): ");
+      System.out.print("Please choose question (1 -> 18): ");
 
       scanner = new Scanner(System.in);
       try {
@@ -177,7 +177,8 @@ public class TweetApp {
             int limit = 100;
             List<User> topFemaleUserOrderByCreatedPost = UserService.findTopFemaleUsersOrderByCreatedPost(
                 tweetApp.users, tweetApp.posts, limit, Period.ofWeeks(1));
-            System.out.println("Top 100 female users order by first name Having posts within a week from today, order by post created date");
+            System.out.println("Top 100 female users order by first name Having posts within a week from today, " +
+                "order by post created date");
             UserService.print(topFemaleUserOrderByCreatedPost);
             break;
           }

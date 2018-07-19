@@ -1,62 +1,48 @@
 package tweetapp.service;
 
-import javafx.geometry.Pos;
-import tweetapp.TweetApp;
+import tweetapp.constant.App;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
 import tweetapp.util.StringUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class PostService {
   /**
    * Process post data and return list post
-   * @param br
+   * @param lines
    * @return Return list post
    * @throws IOException
    */
-  private static List<Post> processPostData(BufferedReader br) throws IOException {
-    String line = "";
-    String csvSplitBy = ",";
-    boolean headerRow = true;
+  private static List<Post> processPostData(Stream<String> lines) throws IOException {
+    return lines.skip(1)
+        .map(line -> {
+          // Split line to array data
+          String[] data = line.split(App.SPLIT_BY_CSV);
+          String id = StringUtil.substringBetween(data[0], "\"");
+          String authorId = data[2];
+          String message = data[22];
+          String commentsCount = data[23];
+          LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[25]);
+          LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[26]);
+          String version = data[27];
 
-    List<Post> posts = new ArrayList<>();
+          // Create instance Post
+          Post post = new Post(id, authorId, message, commentsCount, createdAt, modifiedAt, version);
 
-    while ((line = br.readLine()) != null) {
-
-      // Ignore first line because it is header row
-      if (headerRow) {
-        headerRow = false;
-        continue;
-      }
-
-      // Split line to array data
-      String[] data = line.split(csvSplitBy);
-      String id = StringUtil.substringBetween(data[0], "\"");
-      String authorId = data[2];
-      String message = data[22];
-      String commentsCount = data[23];
-      LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[25]);
-      LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[26]);
-      String version = data[27];
-
-      // Create instance Post
-      Post post = new Post(id, authorId, message, commentsCount, createdAt, modifiedAt, version);
-
-      // Add post to list
-      posts.add(post);
-    }
-    return posts;
+          return post;
+        })
+        .collect(toList());
   }
 
   /**

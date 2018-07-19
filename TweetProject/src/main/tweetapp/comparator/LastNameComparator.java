@@ -5,7 +5,7 @@ import tweetapp.model.User;
 import java.util.Comparator;
 
 /**
- * FirstNameComparator used to sort list user by first name
+ * LastNameComparator used to sort list user by last name
  */
 public class LastNameComparator implements Comparator<User> {
 

@@ -1,11 +1,9 @@
 package tweetapp.model;
 
-import javafx.geometry.Pos;
-
 import java.time.LocalDateTime;
 
 /**
- * Post class contain info about posts
+ * Post class
  */
 public class Post {
   private String id;

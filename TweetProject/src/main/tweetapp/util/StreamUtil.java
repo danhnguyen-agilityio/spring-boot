@@ -20,7 +20,8 @@ public class StreamUtil {
 //        (ArrayDeque<T> result, T element) -> result.addFirst(element),
 //        (a, b) -> a);
 
-    Collector<T, ArrayDeque<T>, ArrayDeque<T>> collector = Collector.of(ArrayDeque::new, ArrayDeque::addFirst, (a, b) -> a);
+    Collector<T, ArrayDeque<T>, ArrayDeque<T>> collector = Collector.of(ArrayDeque::new, ArrayDeque::addFirst,
+        (a, b) -> a);
     return stream.collect(collector).stream();
   }
 }

@@ -3,7 +3,7 @@ package tweetapp.model;
 import java.time.LocalDateTime;
 
 /**
- * User class contain info about user
+ * User class
  */
 public class User {
   private String id;

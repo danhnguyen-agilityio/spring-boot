@@ -4,6 +4,9 @@ import tweetapp.model.Post;
 
 import java.util.Comparator;
 
+/**
+ * CreatedPostComparator used to sort list user by time created post
+ */
 public class CreatedPostComparator implements Comparator<Post> {
 
   @Override
