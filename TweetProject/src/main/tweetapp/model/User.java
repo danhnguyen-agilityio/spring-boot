@@ -178,7 +178,7 @@ public class User {
 
   @Override
   public String toString() {
-    System.out.println("Info user with id: " + id);
+    System.out.println("INFO USER WITH ID: " + id);
     System.out.println("id: " + id);
     System.out.println("username: " + username);
     System.out.println("firstName: " + firstName);

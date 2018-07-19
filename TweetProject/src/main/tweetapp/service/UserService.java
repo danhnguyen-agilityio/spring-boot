@@ -10,8 +10,24 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class UserService {
+
+  /**
+   * Print all info list users
+   * @param users
+   */
+  public static void print(List<User> users) {
+    IntStream.range(0, users.size())
+        .forEach(idx -> {
+          System.out.println("-------------------------------");
+          System.out.print((idx + 1) + ". ");
+          System.out.println(users.get(idx));
+        });
+  }
 
   /**
    * Process user data and return list user
@@ -80,6 +96,70 @@ public class UserService {
    */
   public static boolean createdWithinNumberDaysAgo(User user, int days) {
     return DateUtil.withinNumberDaysAgo(user.getCreatedAt(), days);
+  }
+
+  /**
+   * Check whether user have birthday within specific month
+   * @param user
+   * @return true if user have birthday within specific month and false if other
+   */
+  public static boolean birthdayInMonth(User user, int month) {
+    return user.getBirthday().getMonthValue() == month;
+  }
+
+  /**
+   * Find users have birthday within specific month
+   * @param users
+   * @param month
+   * @return List users have birthday within specific month
+   */
+  public static List<User> findUsersHaveBirthdayInMonth(List<User> users, int month) {
+    return users.stream()
+        .filter(user -> UserService.birthdayInMonth(user, month))
+        .collect(toList());
+  }
+
+  // FIXME:: consider put method in here or User class
+  /**
+   * Test whether user have given firstName
+   * @param user
+   * @param firstName
+   * @return true if user have given firstName and false if other
+   */
+  public static boolean haveFirstNameWith(User user, String firstName) {
+    return user.getFirstName().equalsIgnoreCase(firstName);
+  }
+
+  /**
+   * Find users have specific first name
+   * @param users
+   * @param firstName
+   * @return List users have specific first name
+   */
+  public static List<User> findUsersWithFirstName(List<User> users, String firstName) {
+    return users.stream()
+        .filter(user -> UserService.haveFirstNameWith(user, firstName))
+        .collect(toList());
+  }
+
+  /**
+   * Check whether user have avatar
+   * @param user
+   * @return true if user havve avatar
+   */
+  public static boolean haveAvatar(User user) {
+    return !("".equals(user.getAvatarUrl()));
+  }
+
+  /**
+   * Find users have avatar
+   * @param users
+   * @return List users have avatar
+   */
+  public static List<User> findUsersHaveAvatar(List<User> users) {
+    return users.stream()
+        .filter(user -> UserService.haveAvatar(user))
+        .collect(toList());
   }
 
 }

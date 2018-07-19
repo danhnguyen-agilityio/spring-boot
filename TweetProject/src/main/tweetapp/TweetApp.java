@@ -10,6 +10,8 @@ import tweetapp.util.FileUtil;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLOutput;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -148,7 +150,36 @@ public class TweetApp {
 
             List<User> usersCreatedWithinAMonth = tweetApp.findUsersCreatedIn(30);
             System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
+            break;
           }
+
+          case 5: { // Find all users who have his/her birthday within the current month");
+            List<User> birthdayInCurrentMonth = UserService.findUsersHaveBirthdayInMonth(tweetApp.users,
+                LocalDateTime.now().getMonthValue());
+            System.out.println(birthdayInCurrentMonth.size() + " users who have his/her birthday within the current month");
+            UserService.print(birthdayInCurrentMonth);
+            break;
+          }
+
+          case 6: { // Find all users who has his first name is James
+            String firstName = "James";
+            List<User> usersWithFirstName = UserService.findUsersWithFirstName(tweetApp.users, firstName);
+            System.out.println(usersWithFirstName.size() + " users who has his first name is James");
+            UserService.print(usersWithFirstName);
+            break;
+          }
+
+          case 7: { // Find all users who has his avatar
+            List<User> usersHaveAvatar = UserService.findUsersHaveAvatar(tweetApp.users);
+            System.out.println(usersHaveAvatar.size() + " users who has his avatar");
+            UserService.print(usersHaveAvatar);
+            break;
+          }
+
+          case 8: { // Find all users who is under 16 years old
+            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeUnder()
+          }
+
         }
       }
 

@@ -37,5 +37,4 @@ public class DateUtil {
     return dateTime.compareTo(beforeNumberDays) >= 0;
   }
 
-
 }
