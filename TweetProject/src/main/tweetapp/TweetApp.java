@@ -220,6 +220,24 @@ public class TweetApp {
             break;
           }
 
+          case 15: { // Find all posts which have been created Within today
+            int periodDays = 1;
+            List<Post> postsCreatedWithinToday = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            System.out.println(postsCreatedWithinToday.size() + " posts which have been created Within today");
+            PostService.print(postsCreatedWithinToday);
+            break;
+          }
+
+          case 16: { // Find all posts which have been created Within a week from today
+            int periodDays = 7;
+            List<Post> postsCreatedWithinWeek = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            System.out.println(postsCreatedWithinWeek.size() + " posts which have been created Within a week from today");
+            PostService.print(postsCreatedWithinWeek);
+            break;
+          }
+
+
+
         }
       }
 

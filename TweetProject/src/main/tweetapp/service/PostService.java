@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 public class PostService {
   /**
@@ -73,5 +76,39 @@ public class PostService {
    */
   public static boolean ownPost(Post post, User user) {
     return post.getAuthorId().equals(user.getId());
+  }
+
+  /**
+   * Check whether post have created within a specific days ago
+   * @param post
+   * @param days
+   * @return true if post have created within a specific days ago and false if other
+   */
+  public static boolean createdWithinNumberDaysAgo(Post post, int days) {
+    return DateUtil.withinNumberDaysAgo(post.getCreatedAt(), days);
+  }
+
+  /**
+   * Find post have created in number days ago
+   * @param days
+   * @return List Post
+   */
+  public static List<Post> findPostsCreatedIn(List<Post> posts, int days) {
+    return posts.stream()
+        .filter(post -> createdWithinNumberDaysAgo(post, days))
+        .collect(toList());
+  }
+
+  /**
+   * Print all info list posts
+   * @param posts
+   */
+  public static void print(List<Post> posts) {
+    IntStream.range(0, posts.size())
+        .forEach(idx -> {
+          System.out.println("-------------------------------");
+          System.out.print((idx + 1) + ". ");
+          System.out.println(posts.get(idx));
+        });
   }
 }
