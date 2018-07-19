@@ -1,12 +1,14 @@
 package tweetapp.service;
 
 import tweetapp.model.User;
+import tweetapp.util.AgeCalculator;
 import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
 import tweetapp.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,4 +164,47 @@ public class UserService {
         .collect(toList());
   }
 
+  /**
+   * Check whether user have age under given age
+   * @param user
+   * @param age
+   * @return true if user have age under given age
+   */
+  public static boolean haveAgeUnder(User user, int age) {
+    return AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now()) < age;
+  }
+
+  /**
+   * Find users have age under given age
+   * @param users
+   * @param age
+   * @return List users have age under given age
+   */
+  public static List<User> findUsersHaveAgeUnder(List<User> users, int age) {
+    return users.stream()
+        .filter(user -> UserService.haveAgeUnder(user, age))
+        .collect(toList());
+  }
+
+  /**
+   * Check whether user have age greater given age
+   * @param user
+   * @param age
+   * @return true if user have age greater given age
+   */
+  public static boolean haveAgeGreater(User user, int age) {
+    return AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now()) > age;
+  }
+
+  /**
+   * Find users have age greater given age
+   * @param users
+   * @param age
+   * @return List users have age greater given age
+   */
+  public static List<User> findUsersHaveAgeGreater(List<User> users, int age) {
+    return users.stream()
+        .filter(user -> UserService.haveAgeGreater(user, age))
+        .collect(toList());
+  }
 }

@@ -177,8 +177,25 @@ public class TweetApp {
           }
 
           case 8: { // Find all users who is under 16 years old
-            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeUnder()
+            int age = 16;
+            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeUnder(tweetApp.users, age);
+            System.out.println(usersHaveAgeUnder.size() + " users who is under 16 years old");
+            UserService.print(usersHaveAgeUnder);
+            break;
           }
+
+          case 9: { // Find all users who is greater than 30 years old
+            int age = 30;
+            List<User> usersHaveAgeGreater = UserService.findUsersHaveAgeGreater(tweetApp.users, age);
+            System.out.println(usersHaveAgeGreater.size() + " users who is greater than 30 years old");
+            UserService.print(usersHaveAgeGreater);
+            break;
+          }
+
+          // Find top 100 female users
+            // Order by first name
+            // Order by last name
+            // Having posts within a week from today, order by post created date
 
         }
       }
