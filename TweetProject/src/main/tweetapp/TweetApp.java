@@ -1,5 +1,7 @@
 package tweetapp;
 
+import tweetapp.comparator.FirstNameComparator;
+import tweetapp.comparator.LastNameComparator;
 import tweetapp.service.PostService;
 import tweetapp.service.UserService;
 import tweetapp.util.BufferedReaderProcessor;
@@ -12,10 +14,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLOutput;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.time.Period;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -84,25 +84,22 @@ public class TweetApp {
       System.out.println("1. Count all users");
       System.out.println("2. Count all female users");
       System.out.println("3. Count all male users");
-      System.out.println("4. Find all users who has been created");
-      System.out.println("  a. Within today");
-      System.out.println("  b. Within a week from today");
-      System.out.println("  c. Within a month from today");
-      System.out.println("5. Find all users who have his/her birthday within the current month");
-      System.out.println("6. Find all users who has his first name is James");
-      System.out.println("7. Find all users who has his avatar");
-      System.out.println("8. Find all users who is under 16 years old");
-      System.out.println("9. Find all users who is greater than 30 years old");
-      System.out.println("10. Find top 100 female users");
-      System.out.println("  a. Order by first name");
-      System.out.println("  b. Order by last name");
-      System.out.println("  c. Having posts within a week from today, order by post created date.");
-      System.out.println("11. Find all posts which have been created");
-      System.out.println("  a. Within today");
-      System.out.println("  b. Within a week from today");
-      System.out.println("  c. Within a month from today");
-      System.out.println("12. Find all posts of a specific user");
-      System.out.print("Please choose question that you want to see (1 -> 12): ");
+      System.out.println("4. Find all users who has been created Within today");
+      System.out.println("5. Find all users who has been created Within a week from today");
+      System.out.println("6. Find all users who has been created Within a month from today");
+      System.out.println("7. Find all users who have his/her birthday within the current month");
+      System.out.println("8. Find all users who has his first name is James");
+      System.out.println("9. Find all users who has his avatar");
+      System.out.println("10. Find all users who is under 16 years old");
+      System.out.println("11. Find all users who is greater than 30 years old");
+      System.out.println("12. Find top 100 female users Order by first name");
+      System.out.println("13. Find top 100 female users Order by last name");
+      System.out.println("14. Find top 100 female users Having posts within a week from today, order by post created date.");
+      System.out.println("15. Find all posts which have been created Within today");
+      System.out.println("16. Find all posts which have been created Within a week from today");
+      System.out.println("17. Find all posts which have been created Within a month from today");
+      System.out.println("18. Find all posts of a specific user");
+      System.out.print("Please choose question that you want to see (1 -> 18): ");
 
       scanner = new Scanner(System.in);
       try {
@@ -114,9 +111,9 @@ public class TweetApp {
       // Exit when user enter 0
       if (question == 0) break;
 
-      // Choose again question if user enter value not belong from 0 -> 12
-      if (question < 0 || question > 12) {
-        System.out.println("Number question only belong from 0 -> 12. Please choose again.");
+      // Choose again question if user enter value not belong from 0 -> 18
+      if (question < 0 || question > 18) {
+        System.out.println("Number question only belong from 0 -> 18. Please choose again.");
       } else { // Show info by correspond question
         switch (question) {
           case 1: { // count all user
@@ -137,23 +134,25 @@ public class TweetApp {
             break;
           }
 
-          // Find all users who has been created
-            // a. Within today
-            // b. Within a week from today
-            // c. Within a month from today
-          case 4: {
+          case 4: { // Find all users who has been created Within today
             List<User> usersCreatedWithinToday = tweetApp.findUsersCreatedIn(1);
             System.out.println("Number users have created within today: " + usersCreatedWithinToday.size());
+            break;
+          }
 
+          case 5: { // Find all users who has been created Within a week from today
             List<User> usersCreatedWithinAWeek = tweetApp.findUsersCreatedIn(7);
             System.out.println("Number users have created within a week: " + usersCreatedWithinAWeek.size());
+            break;
+          }
 
+          case 6: { // Find all users who has been created Within a month from today
             List<User> usersCreatedWithinAMonth = tweetApp.findUsersCreatedIn(30);
             System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
             break;
           }
 
-          case 5: { // Find all users who have his/her birthday within the current month");
+          case 7: { // Find all users who have his/her birthday within the current month");
             List<User> birthdayInCurrentMonth = UserService.findUsersHaveBirthdayInMonth(tweetApp.users,
                 LocalDateTime.now().getMonthValue());
             System.out.println(birthdayInCurrentMonth.size() + " users who have his/her birthday within the current month");
@@ -161,7 +160,7 @@ public class TweetApp {
             break;
           }
 
-          case 6: { // Find all users who has his first name is James
+          case 8: { // Find all users who has his first name is James
             String firstName = "James";
             List<User> usersWithFirstName = UserService.findUsersWithFirstName(tweetApp.users, firstName);
             System.out.println(usersWithFirstName.size() + " users who has his first name is James");
@@ -169,14 +168,14 @@ public class TweetApp {
             break;
           }
 
-          case 7: { // Find all users who has his avatar
+          case 9: { // Find all users who has his avatar
             List<User> usersHaveAvatar = UserService.findUsersHaveAvatar(tweetApp.users);
             System.out.println(usersHaveAvatar.size() + " users who has his avatar");
             UserService.print(usersHaveAvatar);
             break;
           }
 
-          case 8: { // Find all users who is under 16 years old
+          case 10: { // Find all users who is under 16 years old
             int age = 16;
             List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeUnder(tweetApp.users, age);
             System.out.println(usersHaveAgeUnder.size() + " users who is under 16 years old");
@@ -184,7 +183,7 @@ public class TweetApp {
             break;
           }
 
-          case 9: { // Find all users who is greater than 30 years old
+          case 11: { // Find all users who is greater than 30 years old
             int age = 30;
             List<User> usersHaveAgeGreater = UserService.findUsersHaveAgeGreater(tweetApp.users, age);
             System.out.println(usersHaveAgeGreater.size() + " users who is greater than 30 years old");
@@ -192,10 +191,34 @@ public class TweetApp {
             break;
           }
 
-          // Find top 100 female users
-            // Order by first name
-            // Order by last name
-            // Having posts within a week from today, order by post created date
+          case 12: { // Find top 100 female users by Order by first name
+            int limit = 100;
+            List<User> topFemaleUserOrderByFirstName = UserService.findTopFemaleUserOrderBy(tweetApp.users, limit,
+                new FirstNameComparator());
+            System.out.println("************ Top 100 female users order by first name ***********");
+            UserService.print(topFemaleUserOrderByFirstName);
+
+            break;
+          }
+
+          case 13: { // Find top 100 female users by Order by last name
+            int limit = 100;
+            List<User> topFemaleUserOrderByLastName = UserService.findTopFemaleUserOrderBy(tweetApp.users, limit,
+                new LastNameComparator());
+            System.out.println("************ Top 100 female users order by first name **********");
+            UserService.print(topFemaleUserOrderByLastName);
+            break;
+          }
+
+          case 14: { // Find top 100 female users by Having posts within a week from today, order by post created date
+            int limit = 100;
+            int periodDays = 7;
+            List<User> topFemaleUserOrderByCreatedPost = UserService.findTopFemaleUsersOrderByCreatedPost(
+                tweetApp.users, tweetApp.posts, limit, periodDays);
+            System.out.println("Top 100 female users order by first name Having posts within a week from today, order by post created date");
+            UserService.print(topFemaleUserOrderByCreatedPost);
+            break;
+          }
 
         }
       }

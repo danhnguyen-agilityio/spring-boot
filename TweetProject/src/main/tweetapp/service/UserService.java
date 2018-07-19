@@ -1,20 +1,20 @@
 package tweetapp.service;
 
+import tweetapp.comparator.CreatedPostComparator;
+import tweetapp.model.Post;
 import tweetapp.model.User;
-import tweetapp.util.AgeCalculator;
-import tweetapp.util.DateUtil;
-import tweetapp.util.FileUtil;
-import tweetapp.util.StringUtil;
+import tweetapp.util.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 public class UserService {
 
@@ -205,6 +205,73 @@ public class UserService {
   public static List<User> findUsersHaveAgeGreater(List<User> users, int age) {
     return users.stream()
         .filter(user -> UserService.haveAgeGreater(user, age))
+        .collect(toList());
+  }
+
+  /**
+   * Find top female user by given comparator
+   * @param users
+   * @param maxSize
+   * @param comparator
+   * @return Return top female
+   */
+  public static List<User> findTopFemaleUserOrderBy(List<User> users, int maxSize, Comparator<User> comparator) {
+    Stream<User> topFemaleUser = users.stream() // order ascending
+        .filter(User::isFemale)
+        .sorted(comparator);
+
+    topFemaleUser = StreamUtil.reverse(topFemaleUser); // order descending
+    return topFemaleUser
+        .limit(maxSize)
+        .collect(toList());
+  }
+
+  /**
+   * Test whether given user write given post
+   * @param user
+   * @param post
+   * @return true given user write given post or false if other
+   */
+  public static boolean ownPost(User user, Post post) {
+    return post.getAuthorId().equals(user.getId());
+  }
+
+  /**
+   * Find user by given user id
+   * @param users
+   * @param userId
+   * @return Returns user with given id
+   */
+  public static User findUserBy(List<User> users, String userId) {
+    return users.stream()
+        .filter(user -> user.getId().equals(userId))
+        .findFirst()
+        .orElse(null);
+  }
+
+  /**
+   * Find top female users by Having posts within given days from today, order by post created date
+   * @param users
+   * @param posts
+   * @param maxSize
+   * @param days
+   * @return List users
+   */
+  public static List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize, int days) {
+    // Group data with key is userId, and value is latest Post
+    Map<String, Post> latestPostOfEachUser = posts.stream()
+        .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), days))
+        .sorted(Comparator.comparing(Post::getCreatedAt))
+        .collect(groupingBy(Post::getAuthorId, collectingAndThen(maxBy(new CreatedPostComparator()), Optional::get)));
+
+    // Stream user have post order ascending by created date
+    Stream<User> usersOrderByCreatedPost =  latestPostOfEachUser.keySet().stream()
+        .map(userId ->  findUserBy(users, userId))
+        .filter(Objects::nonNull)
+        .filter(User::isFemale);
+
+    return StreamUtil.reverse(usersOrderByCreatedPost) // descending order
+        .limit(maxSize)
         .collect(toList());
   }
 }

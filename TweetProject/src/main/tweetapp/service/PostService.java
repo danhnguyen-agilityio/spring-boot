@@ -3,6 +3,7 @@ package tweetapp.service;
 import javafx.geometry.Pos;
 import tweetapp.TweetApp;
 import tweetapp.model.Post;
+import tweetapp.model.User;
 import tweetapp.util.DateUtil;
 import tweetapp.util.FileUtil;
 import tweetapp.util.StringUtil;
@@ -54,8 +55,6 @@ public class PostService {
     return posts;
   }
 
-
-
   /**
    * Get all post from csv file
    * @return All info posts
@@ -64,5 +63,15 @@ public class PostService {
   public static List<Post> getPosts() throws IOException {
     String csvFile ="./src/main/resources/posts.csv";
     return FileUtil.readFile(csvFile, PostService::processPostData);
+  }
+
+  /**
+   * Test whether given user write given post
+   * @param post
+   * @param user
+   * @return true given user write given post or false if other
+   */
+  public static boolean ownPost(Post post, User user) {
+    return post.getAuthorId().equals(user.getId());
   }
 }
