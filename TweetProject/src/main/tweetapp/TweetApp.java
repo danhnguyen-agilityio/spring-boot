@@ -25,49 +25,6 @@ public class TweetApp {
   List<User> users;
   List<Post> posts;
 
-  /**
-   * Count all users
-   * @return total users
-   */
-  public long countAllUser() {
-    return users.stream().count();
-  }
-
-  /**
-   * Count all posts
-   * @return total posts
-   */
-  public long countAllPost() {
-    return posts.stream().count();
-  }
-
-  /**
-   * Count all female users
-   * @return total female users
-   */
-  public long countFemaleUsers() {
-    return users.stream().filter(User::isFemale).count();
-  }
-
-  /**
-   * Count all male users
-   * @return total male users
-   */
-  public long countMaleUsers() {
-    return users.stream().filter(User::isMale).count();
-  }
-
-  /**
-   * Find user have created in number days ago
-   * @param days
-   * @return List user
-   */
-  public List<User> findUsersCreatedIn(int days) {
-    return users.stream()
-        .filter(user -> UserService.createdWithinNumberDaysAgo(user, days))
-        .collect(Collectors.toList());
-  }
-
   public static void main(String[] args) throws IOException {
     TweetApp tweetApp = new TweetApp();
     try {
@@ -117,37 +74,37 @@ public class TweetApp {
       } else { // Show info by correspond question
         switch (question) {
           case 1: { // count all user
-            long totalUsers = tweetApp.countAllUser();
+            long totalUsers = UserService.countAllUser(tweetApp.users);
             System.out.println("Count all user: " + totalUsers);
             break;
           }
 
           case 2: { // count all female user
-            long totalFemaleUsers = tweetApp.countFemaleUsers();
+            long totalFemaleUsers = UserService.countFemaleUsers(tweetApp.users);
             System.out.println("Count all female user: " + totalFemaleUsers);
             break;
           }
 
           case 3: { // count all male user
-            long totalMaleUsers = tweetApp.countMaleUsers();
+            long totalMaleUsers = UserService.countMaleUsers(tweetApp.users);
             System.out.println("Count all male user: " + totalMaleUsers);
             break;
           }
 
           case 4: { // Find all users who has been created Within today
-            List<User> usersCreatedWithinToday = tweetApp.findUsersCreatedIn(1);
+            List<User> usersCreatedWithinToday = UserService.findUsersCreatedIn(tweetApp.users, Period.ofDays(1));
             System.out.println("Number users have created within today: " + usersCreatedWithinToday.size());
             break;
           }
 
           case 5: { // Find all users who has been created Within a week from today
-            List<User> usersCreatedWithinAWeek = tweetApp.findUsersCreatedIn(7);
+            List<User> usersCreatedWithinAWeek = UserService.findUsersCreatedIn(tweetApp.users, Period.ofWeeks(1));
             System.out.println("Number users have created within a week: " + usersCreatedWithinAWeek.size());
             break;
           }
 
           case 6: { // Find all users who has been created Within a month from today
-            List<User> usersCreatedWithinAMonth = tweetApp.findUsersCreatedIn(30);
+            List<User> usersCreatedWithinAMonth = UserService.findUsersCreatedIn(tweetApp.users, Period.ofMonths(1));
             System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
             break;
           }
@@ -212,33 +169,29 @@ public class TweetApp {
 
           case 14: { // Find top 100 female users by Having posts within a week from today, order by post created date
             int limit = 100;
-            int periodDays = 7;
             List<User> topFemaleUserOrderByCreatedPost = UserService.findTopFemaleUsersOrderByCreatedPost(
-                tweetApp.users, tweetApp.posts, limit, periodDays);
+                tweetApp.users, tweetApp.posts, limit, Period.ofWeeks(1));
             System.out.println("Top 100 female users order by first name Having posts within a week from today, order by post created date");
             UserService.print(topFemaleUserOrderByCreatedPost);
             break;
           }
 
           case 15: { // Find all posts which have been created Within today
-            int periodDays = 1;
-            List<Post> postsCreatedWithinToday = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            List<Post> postsCreatedWithinToday = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofDays(1));
             System.out.println(postsCreatedWithinToday.size() + " posts which have been created Within today");
             PostService.print(postsCreatedWithinToday);
             break;
           }
 
           case 16: { // Find all posts which have been created Within a week from today
-            int periodDays = 7;
-            List<Post> postsCreatedWithinWeek = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            List<Post> postsCreatedWithinWeek = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofWeeks(1));
             System.out.println(postsCreatedWithinWeek.size() + " posts which have been created Within a week from today");
             PostService.print(postsCreatedWithinWeek);
             break;
           }
 
           case 17: { // Find all posts which have been created Within a month from today
-            int periodDays = 30;
-            List<Post> postsCreatedWithinMonth = PostService.findPostsCreatedIn(tweetApp.posts, periodDays);
+            List<Post> postsCreatedWithinMonth = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofMonths(1));
             System.out.println(postsCreatedWithinMonth.size() + " posts which have been created Within a month from today");
             PostService.print(postsCreatedWithinMonth);
             break;

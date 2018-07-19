@@ -10,7 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -72,8 +74,8 @@ public class UserService {
       String version = data[18];
 
       // Create instance User
-      User user = new User(id, username, firstName, lastName, avatarUrl, nickname, email, phone, address, gender, birthday,
-          description, createdAt, modifiedAt, version);
+      User user = new User(id, username, firstName, lastName, avatarUrl, nickname, email, phone, address, gender,
+          birthday, description, createdAt, modifiedAt, version);
 
       users.add(user);
     }
@@ -91,13 +93,52 @@ public class UserService {
   }
 
   /**
+   * Count all users
+   * @param users
+   * @return total users
+   */
+  public static long countAllUser(List<User> users) {
+    return users.stream().count();
+  }
+
+  /**
+   * Count all female users
+   * @param users
+   * @return total female users
+   */
+  public static long countFemaleUsers(List<User> users) {
+    return users.stream().filter(User::isFemale).count();
+  }
+
+  /**
+   * Count all male users
+   * @param users
+   * @return total male users
+   */
+  public static long countMaleUsers(List<User> users) {
+    return users.stream().filter(User::isMale).count();
+  }
+
+  /**
+   * Find user have created in period ago
+   * @param users
+   * @param period
+   * @return List user
+   */
+  public static List<User> findUsersCreatedIn(List<User> users, Period period) {
+    return users.stream()
+        .filter(user -> UserService.createdWithinNumberDaysAgo(user, period))
+        .collect(Collectors.toList());
+  }
+
+  /**
    * Check whether user have created within a specific days ago
    * @param user
-   * @param days
+   * @param period
    * @return true if user have created within a specific days ago and false if other
    */
-  public static boolean createdWithinNumberDaysAgo(User user, int days) {
-    return DateUtil.withinNumberDaysAgo(user.getCreatedAt(), days);
+  public static boolean createdWithinNumberDaysAgo(User user, Period period) {
+    return DateUtil.withinNumberDaysAgo(user.getCreatedAt(), period);
   }
 
   /**
@@ -254,13 +295,14 @@ public class UserService {
    * @param users
    * @param posts
    * @param maxSize
-   * @param days
+   * @param period
    * @return List users
    */
-  public static List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize, int days) {
+  public static List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
+                                                                Period period) {
     // Group data with key is userId, and value is latest Post
     Map<String, Post> latestPostOfEachUser = posts.stream()
-        .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), days))
+        .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period))
         .sorted(Comparator.comparing(Post::getCreatedAt))
         .collect(groupingBy(Post::getAuthorId, collectingAndThen(maxBy(new CreatedPostComparator()), Optional::get)));
 

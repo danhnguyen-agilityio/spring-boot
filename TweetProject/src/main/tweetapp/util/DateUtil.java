@@ -26,14 +26,17 @@ public class DateUtil {
 
   // FIXME:: change name method in here
   /**
-   * Test whether dateTime passed method within specific days ago
+   * Test whether dateTime passed method within given period ago
    * @param dateTime
-   * @param days
-   * @return true if dateTime passed method within specific days ago
+   * @param period
+   * @return true if dateTime passed method within given period ago
    */
-  public static boolean withinNumberDaysAgo(LocalDateTime dateTime, int days) {
+  public static boolean withinNumberDaysAgo(LocalDateTime dateTime, Period period) {
     LocalDateTime endOfToday = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
-    LocalDateTime beforeNumberDays = endOfToday.minusDays(days);
+    LocalDateTime beforeNumberDays = endOfToday
+        .minusYears(period.getYears())
+        .minusMonths(period.getMonths())
+        .minusDays(period.getDays());
     return dateTime.compareTo(beforeNumberDays) >= 0;
   }
 
