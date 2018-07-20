@@ -34,7 +34,7 @@ public class UserServiceTest {
   }
 
   /**
-   * Test get users from file
+   * Test getting users from file
    * @throws IOException
    */
   @Test
@@ -57,7 +57,7 @@ public class UserServiceTest {
   }
 
   /**
-   * Test count all user
+   * Test counting all user
    */
   @Test
   public void testCountAllUser() {
@@ -67,12 +67,23 @@ public class UserServiceTest {
   }
 
   /**
-   * Test count all female users
+   * Test counting all female users
    */
   @Test
   public void testCountFemaleUsers() {
-    long expected = 3;
+    long expected = 2;
     long actual = UserService.countFemaleUsers(users);
+    assertEquals(expected, actual);
+    assertThat(actual, is(expected));
+  }
+
+  /**
+   * Test counting all male users
+   */
+  @Test
+  public void testCountMaleUsers() {
+    long expected = 3;
+    long actual = UserService.countMaleUsers(users);
     assertEquals(expected, actual);
     assertThat(actual, is(expected));
   }
