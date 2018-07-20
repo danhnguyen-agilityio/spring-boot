@@ -109,6 +109,7 @@ public class UserService {
     return users.stream().filter(User::isMale).count();
   }
 
+  // FIXME:: Revise method to implement test
   /**
    * Find user have created in period ago
    * @param users
@@ -121,6 +122,7 @@ public class UserService {
         .collect(Collectors.toList());
   }
 
+  // FIXME:: Revise method to implement test
   /**
    * Check whether user have created within a specific days ago
    * @param user
@@ -132,19 +134,19 @@ public class UserService {
   }
 
   /**
-   * Check whether user have birthday within specific month
+   * Check whether user have birthday within given month
    * @param user
-   * @return true if user have birthday within specific month and false if other
+   * @return true if user have birthday within given month and false if other
    */
   public static boolean birthdayInMonth(User user, int month) {
     return user.getBirthday().getMonthValue() == month;
   }
 
   /**
-   * Find users have birthday within specific month
+   * Find users have birthday within given month
    * @param users
    * @param month
-   * @return List users have birthday within specific month
+   * @return List users have birthday within given month
    */
   public static List<User> findUsersHaveBirthdayInMonth(List<User> users, int month) {
     return users.stream()
