@@ -126,7 +126,7 @@ public class UserServiceTest {
   }
 
   /**
-   * Testing
+   * Test finding users with given first name
    */
   @Test
   public void findUsersWithFirstName() {
@@ -138,11 +138,28 @@ public class UserServiceTest {
     long actualSize = results.size();
     assertEquals(expectedSize, actualSize);
 
-    // Check first user birthday
+    // Check last user id
     String expectedLastUserId = "5b4c63aa170bb81857925072";
-    String actualLastUserId = results.get(1).getId();
+    String actualLastUserId = results.get(results.size() - 1).getId();
     assertEquals(expectedLastUserId, actualLastUserId);
   }
 
+  /**
+   * Test finding users have avatar
+   */
+  @Test
+  public void findUsersHaveAvatar() {
+    List<User> results = UserService.findUsersHaveAvatar(users);
+
+    // Check size
+    long expectedSize = 5;
+    long actualSize = results.size();
+    assertEquals(expectedSize, actualSize);
+
+    // Check last user id
+    String expectedLastUserId = "5b4c63aa170bb81857925072";
+    String actualLastUserId = results.get(results.size() -1).getId();
+    assertEquals(expectedLastUserId, actualLastUserId);
+  }
 
 }
