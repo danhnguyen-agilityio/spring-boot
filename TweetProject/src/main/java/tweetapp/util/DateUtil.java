@@ -1,6 +1,7 @@
 package tweetapp.util;
 
 import java.time.*;
+import java.util.Date;
 
 public class DateUtil {
 
@@ -32,7 +33,17 @@ public class DateUtil {
    * @return true if dateTime passed method within given period ago
    */
   public static boolean withinNumberDaysAgo(LocalDateTime dateTime, Period period) {
-    LocalDateTime endOfToday = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+    return withinNumberDaysAgo(dateTime, period, LocalDate.now());
+  }
+
+  /**
+   * Test whether dateTime passed method within given period ago
+   * @param dateTime
+   * @param period
+   * @return true if dateTime passed method within given period ago
+   */
+  public static boolean withinNumberDaysAgo(LocalDateTime dateTime, Period period, LocalDate checkDateTime) {
+    LocalDateTime endOfToday = LocalDateTime.of(checkDateTime, LocalTime.MAX);
     LocalDateTime beforeNumberDays = endOfToday
         .minusYears(period.getYears())
         .minusMonths(period.getMonths())

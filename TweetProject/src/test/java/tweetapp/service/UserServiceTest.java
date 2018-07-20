@@ -1,7 +1,5 @@
 package tweetapp.service;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import tweetapp.comparator.FirstNameComparator;
@@ -14,7 +12,7 @@ import tweetapp.util.DateUtil;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.time.Period;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -35,24 +33,29 @@ public class UserServiceTest {
         "Quia aut commodi", LocalDateTime.parse("2018-07-16T09:21:45.492"),
         LocalDateTime.parse("2018-07-16T09:21:45.492"), "0");
 
-    String userFile ="./src/test/resources/users-test.csv";
+    String userFile = "./src/test/resources/users-test.csv";
     users = UserService.getUsersFromFile(userFile);
+
+    String postFile = "./src/test/resources/posts-test.csv";
+    posts = PostService.getPostsFromFile(postFile);
   }
 
-  @Before
-  public void setUp() throws Exception {
-  }
-
-  @After
-  public void tearDown() throws Exception {
+  /**
+   * Test getting users from file not found
+   */
+  @Test(expected = IOException.class)
+  public void getUsersFromFileError() throws IOException {
+    String userFile = "./src/test/resources/user-not-found.csv";
+    UserService.getUsersFromFile(userFile);
   }
 
   /**
    * Test getting users from file
-   * @throws IOException
    */
   @Test
-  public void getUsersFromFile() {
+  public void getUsersFromFile() throws IOException {
+    String userFile = "./src/test/resources/users-test.csv";
+    List<User> users = UserService.getUsersFromFile(userFile);
 
     // Check same size
     long expectedSize = 7;
@@ -68,6 +71,21 @@ public class UserServiceTest {
     LocalDateTime expectedFirstUserBirthday = DateUtil.convertStringToLocalDateTime("1974-01-15T12:47:20.430Z");
     LocalDateTime actualFirstUserBirthday = users.get(0).getBirthday();
     assertEquals(expectedFirstUserBirthday, actualFirstUserBirthday);
+  }
+
+  /**
+   * Testing getting users from empty file
+   * @throws IOException
+   */
+  @Test
+  public void getUsersFromEmptyFile() throws IOException {
+    String userFile = "./src/test/resources/empty-users-test.csv";
+    List<User> users = UserService.getUsersFromFile(userFile);
+
+    // Check same size
+    long expectedSize = 0;
+    long actualSize = users.size();
+    assertEquals(expectedSize, actualSize);
   }
 
   /**
@@ -250,10 +268,11 @@ public class UserServiceTest {
   }
 
   /**
-   * Test finding top female users order by created post
+   * Test finding top female users order by created post in given period
    */
   @Test
   public void findTopFemaleUsersOrderByCreatedPost() {
-//    List<User> results = UserService.findTopFemaleUsersOrderByCreatedPost(user,)
+//    List<User> usersHaveCreatedPostToday =
+//        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofWeeks(1));
   }
 }

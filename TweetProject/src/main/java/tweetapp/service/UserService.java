@@ -265,18 +265,19 @@ public class UserService {
   public static List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
                                                                 Period period) {
     // Group data with key is userId, and value is latest Post
-    Map<String, Post> latestPostOfEachUser = posts.stream()
+    Stream<User> latestPostOfEachUser = posts.stream()
         .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period))
         .sorted(Comparator.comparing(Post::getCreatedAt))
-        .collect(groupingBy(Post::getAuthorId, collectingAndThen(maxBy(new CreatedPostComparator()), Optional::get)));
+        .collect(groupingBy(Post::getAuthorId, collectingAndThen(maxBy(new CreatedPostComparator()), Optional::get)))
 
     // Stream user have post order ascending by created date
-    Stream<User> usersOrderByCreatedPost =  latestPostOfEachUser.keySet().stream()
+//    Stream<User> usersOrderByCreatedPost =  latestPostOfEachUser
+        .keySet().stream()
         .map(userId ->  findUserBy(users, userId))
         .filter(Objects::nonNull)
         .filter(User::isFemale);
 
-    return StreamUtil.reverse(usersOrderByCreatedPost) // descending order
+    return StreamUtil.reverse(latestPostOfEachUser) // descending order
         .limit(maxSize)
         .collect(toList());
   }
