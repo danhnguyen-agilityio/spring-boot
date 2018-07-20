@@ -125,7 +125,24 @@ public class UserServiceTest {
     assertEquals(expectedFirstUserBirthday, actualFirstUserBirthday);
   }
 
+  /**
+   * Testing
+   */
+  @Test
+  public void findUsersWithFirstName() {
+    String firstName = "David";
+    List<User> results = UserService.findUsersWithFirstName(users,  firstName);
 
+    // Check size
+    long expectedSize = 2;
+    long actualSize = results.size();
+    assertEquals(expectedSize, actualSize);
+
+    // Check first user birthday
+    String expectedLastUserId = "5b4c63aa170bb81857925072";
+    String actualLastUserId = results.get(1).getId();
+    assertEquals(expectedLastUserId, actualLastUserId);
+  }
 
 
 }
