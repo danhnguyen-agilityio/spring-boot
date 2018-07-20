@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import tweetapp.comparator.FirstNameComparator;
+import tweetapp.comparator.LastNameComparator;
 import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
@@ -12,6 +14,7 @@ import tweetapp.util.DateUtil;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -82,7 +85,7 @@ public class UserServiceTest {
    */
   @Test
   public void testCountFemaleUsers() {
-    long expected = 2;
+    long expected = 3;
     long actual = UserService.countFemaleUsers(users);
     assertThat(actual, is(expected));
   }
@@ -203,11 +206,54 @@ public class UserServiceTest {
   }
 
   /**
-   * Test finding top female user order by
+   * Test finding top female user order by first name
    */
-  
+  @Test
+  public void findTopFemaleUserOrderByFirstName() {
+    List<User> results = UserService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
+    // Check size
+    long expectedSize = 3;
+    long actualSize = results.size();
+    assertEquals(expectedSize, actualSize);
 
+    // Check top first name
+    String expectedTopFirstName = "Kendra";
+    String actualTopFirstName = results.get(0).getFirstName();
+    assertEquals(expectedTopFirstName, actualTopFirstName);
 
+    // Check bottom first name
+    String expectedBottomFirstName = "Arlie";
+    String actualBottomFirstName = results.get(results.size() - 1).getFirstName();
+    assertEquals(expectedBottomFirstName, actualBottomFirstName);
+  }
 
+  /**
+   * Test finding top female user order by last name
+   */
+  @Test
+  public void findTopFemaleUserOrderByLastName() {
+    List<User> results = UserService.findTopFemaleUserOrderBy(users, 5, new LastNameComparator());
+    // Check size
+    long expectedSize = 3;
+    long actualSize = results.size();
+    assertEquals(expectedSize, actualSize);
 
+    // Check last name of first user
+    String expectedTopLastName = "Rose";
+    String actualTopLasttName = results.get(0).getLastName();
+    assertEquals(expectedTopLastName, actualTopLasttName);
+
+    // Check last name of last user
+    String expectedBottomLastName = "Corwin";
+    String actualBottomLastName = results.get(results.size() - 1).getLastName();
+    assertEquals(expectedBottomLastName, actualBottomLastName);
+  }
+
+  /**
+   * Test finding top female users order by created post
+   */
+  @Test
+  public void findTopFemaleUsersOrderByCreatedPost() {
+//    List<User> results = UserService.findTopFemaleUsersOrderByCreatedPost(user,)
+  }
 }

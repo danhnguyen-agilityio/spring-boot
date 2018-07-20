@@ -242,16 +242,6 @@ public class UserService {
   }
 
   /**
-   * Test whether given user write given post
-   * @param user
-   * @param post
-   * @return true given user write given post or false if other
-   */
-  public static boolean ownPost(User user, Post post) {
-    return post.getAuthorId().equals(user.getId());
-  }
-
-  /**
    * Find user by given user id
    * @param users
    * @param userId
