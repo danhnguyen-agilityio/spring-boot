@@ -18,8 +18,12 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
+/**
+ * UserService implement statistic on list user
+ */
 public class UserService {
 
+  // FIXME:: Only print necessary properties
   /**
    * Print all info list users
    * @param users
@@ -33,13 +37,14 @@ public class UserService {
         });
   }
 
+  // FIXME:: Consider type modifier to test this method
   /**
    * Process user data and return list user
    * @param lines
    * @return Return list user
    * @throws IOException
    */
-  private static List<User> processUserData(Stream<String> lines) throws IOException {
+  private static List<User> processUserData(Stream<String> lines) {
     return lines.skip(1)
         .map(line -> {
           // Split line to array data
@@ -73,8 +78,8 @@ public class UserService {
    * @return All info users
    * @throws IOException
    */
-  public static List<User> getUsers() throws IOException {
-    return FileUtil.readFile(App.USER_FILE_PATH, UserService::processUserData);
+  public static List<User> getUsersFromFile(String fileName) throws IOException {
+    return FileUtil.readFile(fileName, UserService::processUserData);
   }
 
   /**

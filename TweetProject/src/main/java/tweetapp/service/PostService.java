@@ -10,7 +10,6 @@ import tweetapp.util.StringUtil;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -50,9 +49,8 @@ public class PostService {
    * @return All info posts
    * @throws IOException
    */
-  public static List<Post> getPosts() throws IOException {
-    String csvFile ="./src/main/resources/posts.csv";
-    return FileUtil.readFile(csvFile, PostService::processPostData);
+  public static List<Post> getPostsFromFile(String fileName) throws IOException {
+    return FileUtil.readFile(fileName, PostService::processPostData);
   }
 
   /**
@@ -100,11 +98,11 @@ public class PostService {
   }
 
   /**
-   *
+   * Find posts by given userName
    * @param users
    * @param posts
    * @param userName
-   * @return
+   * @return Posts have userName contain given userName
    */
   public static List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName) {
     return users.stream()

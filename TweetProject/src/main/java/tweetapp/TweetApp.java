@@ -2,34 +2,30 @@ package tweetapp;
 
 import tweetapp.comparator.FirstNameComparator;
 import tweetapp.comparator.LastNameComparator;
+import tweetapp.constant.App;
 import tweetapp.service.PostService;
 import tweetapp.service.UserService;
-import tweetapp.util.BufferedReaderProcessor;
 import tweetapp.model.Post;
 import tweetapp.model.User;
-import tweetapp.util.FileUtil;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Array;
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * TweetApp implement all statistic
  */
 public class TweetApp {
+
   List<User> users;
   List<Post> posts;
 
   public static void main(String[] args) throws IOException {
+
     TweetApp tweetApp = new TweetApp();
-    tweetApp.users = UserService.getUsers();
-    tweetApp.posts = PostService.getPosts();
+    tweetApp.users = UserService.getUsersFromFile(App.USER_FILE_PATH);
+    tweetApp.posts = PostService.getPostsFromFile(App.POST_FILE_PATH);
 
     String[] menu = {
         "0. Exit",
