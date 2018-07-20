@@ -2,7 +2,9 @@ package tweetapp.service;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.DateUtil;
 
@@ -13,6 +15,14 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
+  public static List<User> users;
+  public static List<Post> posts;
+
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    String userFile ="./src/test/resources/users-test.csv";
+    users = UserService.getUsersFromFile(userFile);
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -47,5 +57,17 @@ public class UserServiceTest {
     assertEquals(expectedFirstUserBirthday, actualFirstUserBirthday);
   }
 
+  /**
+   * Test count all user
+   */
+  @Test
+  public void testCountAllUser() {
+    long expected = 7;
+    long actual = users.size();
+    assertEquals(expected, actual);
+  }
+
   
+
+
 }
