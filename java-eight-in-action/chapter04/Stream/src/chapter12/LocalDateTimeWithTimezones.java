@@ -24,7 +24,7 @@ public class LocalDateTimeWithTimezones {
     ZonedDateTime LADateTimeToGMTPlus2 = LAZone.withZoneSameLocal(ZoneId.of("GMT+01:00"));
     System.out.println("LADateTimeToGMTPlus1: " + LADateTimeToGMTPlus2);
 
-    ZonedDateTime zonedDateTime = ZonedDateTime.parse("2018-07-16T09:21:45.492Z");
+    ZonedDateTime zonedDateTime = ZonedDateTime.parse("1974-01-15T12:47:20.430Z");
     System.out.println("Convert string to ZonedDatetime: " + zonedDateTime);
 
     LocalDateTime localDateTime1 = LocalDateTime.ofInstant(zonedDateTime.toInstant(), TimeZone.getDefault().toZoneId());
