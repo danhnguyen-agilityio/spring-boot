@@ -197,47 +197,29 @@ public class UserService {
         .collect(toList());
   }
 
-  /**
-   * Check whether user have age under given age
-   * @param user
-   * @param age
-   * @return true if user have age under given age
-   */
-  public static boolean haveAgeUnder(User user, int age) {
-    return AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now()) < age;
-  }
-
-  /**
-   * Find users have age under given age
-   * @param users
-   * @param age
-   * @return List users have age under given age
-   */
-  public static List<User> findUsersHaveAgeUnder(List<User> users, int age) {
-    return users.stream()
-        .filter(user -> UserService.haveAgeUnder(user, age))
-        .collect(toList());
-  }
-
+  // FIXME:: Should write unit test this method
   /**
    * Check whether user have age greater given age
    * @param user
    * @param age
+   * @param isGreater
    * @return true if user have age greater given age
    */
-  public static boolean haveAgeGreater(User user, int age) {
-    return AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now()) > age;
+  public static boolean haveAgeGreater(User user, int age, boolean isGreater) {
+    int userAge = AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now());
+    return isGreater ? userAge > age : userAge < age;
   }
 
   /**
    * Find users have age greater given age
    * @param users
    * @param age
+   * @param isGreater
    * @return List users have age greater given age
    */
-  public static List<User> findUsersHaveAgeGreater(List<User> users, int age) {
+  public static List<User> findUsersHaveAgeGreater(List<User> users, int age, boolean isGreater) {
     return users.stream()
-        .filter(user -> UserService.haveAgeGreater(user, age))
+        .filter(user -> UserService.haveAgeGreater(user, age, isGreater))
         .collect(toList());
   }
 

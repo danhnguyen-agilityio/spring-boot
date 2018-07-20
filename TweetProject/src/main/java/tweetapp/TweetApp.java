@@ -136,7 +136,7 @@ public class TweetApp {
 
           case 10: { // Find all users who is under 16 years old
             int age = 16;
-            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeUnder(tweetApp.users, age);
+            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeGreater(tweetApp.users, age, false);
             System.out.println(usersHaveAgeUnder.size() + " users who is under 16 years old");
             UserService.print(usersHaveAgeUnder);
             break;
@@ -144,7 +144,7 @@ public class TweetApp {
 
           case 11: { // Find all users who is greater than 30 years old
             int age = 30;
-            List<User> usersHaveAgeGreater = UserService.findUsersHaveAgeGreater(tweetApp.users, age);
+            List<User> usersHaveAgeGreater = UserService.findUsersHaveAgeGreater(tweetApp.users, age,true);
             System.out.println(usersHaveAgeGreater.size() + " users who is greater than 30 years old");
             UserService.print(usersHaveAgeGreater);
             break;
