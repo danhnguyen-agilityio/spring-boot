@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
@@ -37,9 +38,7 @@ public class UserServiceTest {
    * @throws IOException
    */
   @Test
-  public void getUsersFromFile() throws IOException {
-    String userFile ="./src/test/resources/users-test.csv";
-    List<User> users = UserService.getUsersFromFile(userFile);
+  public void getUsersFromFile() {
 
     // Check same size
     long expectedSize = 7;
@@ -65,6 +64,17 @@ public class UserServiceTest {
     long expected = 7;
     long actual = users.size();
     assertEquals(expected, actual);
+  }
+
+  /**
+   * Test count all female users
+   */
+  @Test
+  public void testCountFemaleUsers() {
+    long expected = 3;
+    long actual = UserService.countFemaleUsers(users);
+    assertEquals(expected, actual);
+    assertThat(actual, is(expected));
   }
 
   
