@@ -9,8 +9,8 @@ public interface StreamReaderProcessor<T> {
 
   /**
    * Resole with given Stream
-   * @param stream
+   * @param stream Stream lines of file
    * @return List<T>
    */
-  List<T> process(Stream<T> stream) throws IOException;
+  List<T> process(Stream<String> stream) throws IOException;
 }

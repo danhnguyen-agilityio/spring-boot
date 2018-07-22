@@ -10,13 +10,13 @@ public class AgeCalculator {
 
   /**
    * Calculate age
-   * @param birthDay
-   * @param currentDate
+   * @param birthday birthday
+   * @param currentDate current date
    * @return age
    */
-  public static int calculateAge(LocalDate birthDay, LocalDate currentDate) {
-    if ((birthDay != null) && (currentDate != null)) {
-      return Period.between(birthDay, currentDate).getYears();
+  public static int calculateAge(LocalDate birthday, LocalDate currentDate) {
+    if ((birthday != null) && (currentDate != null)) {
+      return Period.between(birthday, currentDate).getYears();
     } else {
       return 0;
     }

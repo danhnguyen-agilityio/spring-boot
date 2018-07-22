@@ -14,10 +14,10 @@ public class FileUtil {
   /**
    * Read file and return data by bufferedReaderProcessor passed
    * @param fileName FileUtil name to read
-   * @param bufferedReaderProcessor
-   * @param <T>
+   * @param bufferedReaderProcessor BufferedReaderProcessor
+   * @param <T> Generic type
    * @return data returned by method process
-   * @throws IOException
+   * @throws IOException occur when file not found
    */
   public static  <T> List<T> readFile(String fileName, BufferedReaderProcessor<T> bufferedReaderProcessor)
       throws IOException {
@@ -26,7 +26,15 @@ public class FileUtil {
     }
   }
 
-  public static  <T> List<T> readFile(String fileName, StreamReaderProcessor streamReaderProcessor)
+  /**
+   * Read file and return data by bufferedReaderProcessor passed
+   * @param fileName FileUtil name to read
+   * @param streamReaderProcessor StreamReaderProcessor
+   * @param <T> Generic type
+   * @return data returned by method process
+   * @throws IOException occur when file not found
+   */
+  public static <T> List<T> readFile(String fileName, StreamReaderProcessor<T> streamReaderProcessor)
       throws IOException {
     try (Stream<String> lines = Files.lines(Paths.get(fileName), Charset.defaultCharset())) {
       return streamReaderProcessor.process(lines);

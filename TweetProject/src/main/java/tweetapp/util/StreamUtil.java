@@ -11,8 +11,8 @@ public class StreamUtil {
 
   /**
    * Reverse elements of a sequential Stream
-   * @param stream
-   * @param <T>
+   * @param stream Stream data
+   * @param <T> Generic type
    * @return Stream reversed
    */
   public static <T> Stream<T> reverse(Stream<T> stream) {

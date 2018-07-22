@@ -19,11 +19,10 @@ import static java.util.stream.Collectors.toList;
 public class PostService {
   /**
    * Process post data and return list post
-   * @param lines
+   * @param lines Stream lines in file
    * @return Return list post
-   * @throws IOException
    */
-  private static List<Post> processPostData(Stream<String> lines) throws IOException {
+  private static List<Post> processPostData(Stream<String> lines) {
     return lines.skip(1)
         .map(line -> {
           // Split line to array data
@@ -35,11 +34,7 @@ public class PostService {
           LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[25]);
           LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[26]);
           String version = data[27];
-
-          // Create instance Post
-          Post post = new Post(id, authorId, message, commentsCount, createdAt, modifiedAt, version);
-
-          return post;
+          return new Post(id, authorId, message, commentsCount, createdAt, modifiedAt, version);
         })
         .collect(toList());
   }
@@ -47,35 +42,25 @@ public class PostService {
   /**
    * Get all post from csv file
    * @return All info posts
-   * @throws IOException
+   * @throws IOException exception thrown when occur file not found
    */
   public static List<Post> getPostsFromFile(String fileName) throws IOException {
     return FileUtil.readFile(fileName, PostService::processPostData);
   }
 
   /**
-   * Test whether given user write given post
-   * @param post
-   * @param user
-   * @return true given user write given post or false if other
-   */
-  public static boolean ownPost(Post post, User user) {
-    return post.getAuthorId().equals(user.getId());
-  }
-
-  /**
    * Check whether post have created within given period ago
-   * @param post
-   * @param period
+   * @param post List post
+   * @param period period time
    * @return true if post have created within given period ago ago and false if other
    */
-  public static boolean createdWithinNumberDaysAgo(Post post, Period period) {
+  private static boolean createdWithinNumberDaysAgo(Post post, Period period) {
     return DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period);
   }
 
   /**
    * Find post have created in given period ago
-   * @param period
+   * @param period Period time
    * @return List Post
    */
   public static List<Post> findPostsCreatedIn(List<Post> posts, Period period) {
@@ -86,7 +71,7 @@ public class PostService {
 
   /**
    * Print all info list posts
-   * @param posts
+   * @param posts List post
    */
   public static void print(List<Post> posts) {
     IntStream.range(0, posts.size())
@@ -99,9 +84,9 @@ public class PostService {
 
   /**
    * Find posts by given userName
-   * @param users
-   * @param posts
-   * @param userName
+   * @param users List user
+   * @param posts List post
+   * @param userName user name was search in list user
    * @return Posts have userName contain given userName
    */
   public static List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName) {

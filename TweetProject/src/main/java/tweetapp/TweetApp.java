@@ -18,8 +18,8 @@ import java.util.*;
  */
 public class TweetApp {
 
-  List<User> users;
-  List<Post> posts;
+  private List<User> users;
+  private List<Post> posts;
 
   public static void main(String[] args) throws IOException {
 
@@ -151,8 +151,7 @@ public class TweetApp {
           }
 
           case 12: { // Find top 100 female users by Order by first name
-            int limit = 100;
-            List<User> topFemaleUserOrderByFirstName = UserService.findTopFemaleUserOrderBy(tweetApp.users, limit,
+            List<User> topFemaleUserOrderByFirstName = UserService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
                 new FirstNameComparator());
             System.out.println("************ Top 100 female users order by first name ***********");
             UserService.print(topFemaleUserOrderByFirstName);
@@ -161,8 +160,7 @@ public class TweetApp {
           }
 
           case 13: { // Find top 100 female users by Order by last name
-            int limit = 100;
-            List<User> topFemaleUserOrderByLastName = UserService.findTopFemaleUserOrderBy(tweetApp.users, limit,
+            List<User> topFemaleUserOrderByLastName = UserService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
                 new LastNameComparator());
             System.out.println("************ Top 100 female users order by first name **********");
             UserService.print(topFemaleUserOrderByLastName);
@@ -170,9 +168,8 @@ public class TweetApp {
           }
 
           case 14: { // Find top 100 female users by Having posts within a week from today, order by post created date
-            int limit = 100;
             List<User> topFemaleUserOrderByCreatedPost = UserService.findTopFemaleUsersOrderByCreatedPost(
-                tweetApp.users, tweetApp.posts, limit, Period.ofWeeks(1));
+                tweetApp.users, tweetApp.posts, App.MAX_SIZE, Period.ofWeeks(1));
             System.out.println("Top 100 female users order by first name Having posts within a week from today, " +
                 "order by post created date");
             UserService.print(topFemaleUserOrderByCreatedPost);

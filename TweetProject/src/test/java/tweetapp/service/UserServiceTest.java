@@ -272,7 +272,36 @@ public class UserServiceTest {
    */
   @Test
   public void findTopFemaleUsersOrderByCreatedPost() {
-//    List<User> usersHaveCreatedPostToday =
-//        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofWeeks(1));
+    // users have post created in today
+    List<User> usersHaveCreatedPostToday =
+        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofDays(1),
+            LocalDateTime.parse("2018-07-18T11:21:47.134"));
+    // Check size
+    assertEquals(2, usersHaveCreatedPostToday.size());
+    // Check top user in result
+    assertEquals("5b4c63aa170bb8185792506f", usersHaveCreatedPostToday.get(0).getId());
+    // Check bottom user in result
+    assertEquals("5b4c63aa170bb8185792506c", usersHaveCreatedPostToday.get(usersHaveCreatedPostToday.size() - 1).getId());
+
+    // users have post created in a week ago
+    List<User> usersHaveCreatedPostInWeek =
+        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofWeeks(1),
+            LocalDateTime.parse("2018-07-18T11:21:47.134"));
+    // Check size
+    assertEquals(3, usersHaveCreatedPostInWeek.size());
+    // Check top user in result
+    assertEquals("5b4c63aa170bb8185792506f", usersHaveCreatedPostInWeek.get(0).getId());
+    // Check bottom user in result
+    assertEquals("5b4c63aa170bb81857925070", usersHaveCreatedPostInWeek.get(usersHaveCreatedPostInWeek.size() - 1).getId());
   }
+
+  /**
+   * Test whether or no user contains given user name
+   */
+  @Test
+  public void containsUsername() {
+    assertEquals(true, UserService.containsUsername(mockUser, "Jerrell") );
+    assertEquals(false, UserService.containsUsername(mockUser, "David"));
+  }
+
 }
