@@ -45,7 +45,7 @@ public class PostServiceTest {
    * Test getting users from file not found
    */
   @Test(expected = IOException.class)
-  public void getPostFromFileError() throws IOException {
+  public void testGetPostFromFileError() throws IOException {
     String postFile = "./src/test/resources/post-not-found.csv";
     postService.getPostsFromFile(postFile);
   }
@@ -54,7 +54,7 @@ public class PostServiceTest {
    * Test getting posts from file
    */
   @Test
-  public void getPostUsersFromFile() throws IOException {
+  public void testGetPostUsersFromFile() throws IOException {
     String postFile = "./src/test/resources/posts-test.csv";
     List<Post> posts = postService.getPostsFromFile(postFile);
 
@@ -79,7 +79,7 @@ public class PostServiceTest {
    * @throws IOException
    */
   @Test
-  public void getPostsFromEmptyFile() throws IOException {
+  public void testGetPostsFromEmptyFile() throws IOException {
     String postFile = "./src/test/resources/empty-posts-test.csv";
     List<Post> posts = postService.getPostsFromFile(postFile);
 
@@ -93,7 +93,7 @@ public class PostServiceTest {
    * Test finding post have created in given period ago from given fromDate
    */
   @Test
-  public void findPostsCreatedIn() {
+  public void testFindPostsCreatedIn() {
     // Find post in today
     List<Post> postCreatedInToday = postService.findPostsCreatedIn(posts, Period.ofDays(1),
         LocalDateTime.parse("2018-07-18T09:21:47.134"));
@@ -119,7 +119,7 @@ public class PostServiceTest {
    * Test finding posts by given userName
    */
   @Test
-  public void postService() {
+  public void TestPostService() {
     List<Post> results = postService.findPostsByUserName(users, posts, "David");
 
     // Check size

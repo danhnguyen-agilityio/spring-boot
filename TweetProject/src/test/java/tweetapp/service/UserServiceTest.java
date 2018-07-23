@@ -49,7 +49,7 @@ public class UserServiceTest {
    * Test getting users from file not found
    */
   @Test(expected = IOException.class)
-  public void getUsersFromFileError() throws IOException {
+  public void testGetUsersFromFileError() throws IOException {
     String userFile = "./src/test/resources/user-not-found.csv";
     userService.getUsersFromFile(userFile);
   }
@@ -58,7 +58,7 @@ public class UserServiceTest {
    * Test getting users from file
    */
   @Test
-  public void getUsersFromFile() throws IOException {
+  public void testGetUsersFromFile() throws IOException {
     String userFile = "./src/test/resources/users-test.csv";
     List<User> users = userService.getUsersFromFile(userFile);
 
@@ -83,7 +83,7 @@ public class UserServiceTest {
    * @throws IOException
    */
   @Test
-  public void getUsersFromEmptyFile() throws IOException {
+  public void testGetUsersFromEmptyFile() throws IOException {
     String userFile = "./src/test/resources/empty-users-test.csv";
     List<User> users = userService.getUsersFromFile(userFile);
 
@@ -127,7 +127,7 @@ public class UserServiceTest {
    * Test finding user have created in period ago from given fromDate
    */
   @Test
-  public void findUsersCreatedIn() {
+  public void testFindUsersCreatedIn() {
     // Test user created in today
     List<User> usersCreatedInToday = userService.findUsersCreatedIn(users, Period.ofDays(1),
         LocalDateTime.parse("2018-07-18T11:50:13.448"));
@@ -145,7 +145,7 @@ public class UserServiceTest {
    * Test birthday user in given month
    */
   @Test
-  public void birthdayInMonth() {
+  public void testBirthdayInMonth() {
     boolean expected = true;
     boolean actual = userService.birthdayInMonth(mockUser, 11);
     assertEquals(expected, actual);
@@ -155,7 +155,7 @@ public class UserServiceTest {
    * Test finding users that have birthday same given month
    */
   @Test
-  public void findUsersHaveBirthdayInMonth() {
+  public void testFindUsersHaveBirthdayInMonth() {
     List<User> results = userService.findUsersHaveBirthdayInMonth(users, 11);
 
     // Check size
@@ -173,7 +173,7 @@ public class UserServiceTest {
    * Test finding users with given first name
    */
   @Test
-  public void findUsersWithFirstName() {
+  public void testFindUsersWithFirstName() {
     String firstName = "David";
     List<User> results = userService.findUsersWithFirstName(users,  firstName);
 
@@ -192,7 +192,7 @@ public class UserServiceTest {
    * Test finding users have avatar
    */
   @Test
-  public void findUsersHaveAvatar() {
+  public void testFindUsersHaveAvatar() {
     List<User> results = userService.findUsersHaveAvatar(users);
 
     // Check size
@@ -210,7 +210,7 @@ public class UserServiceTest {
    * Test whether or not user have age grater given age
    */
   @Test
-  public void haveAgeGreater() {
+  public void testHaveAgeGreater() {
     boolean isGreater16 = userService.haveAgeGreater(mockUser, 16, true);
     assertEquals(true, isGreater16);
 
@@ -222,7 +222,7 @@ public class UserServiceTest {
    * Test finding users have age greater given age
    */
   @Test
-  public void findUsersHaveAgeGreater() {
+  public void testFindUsersHaveAgeGreater() {
     // Test for finding user have age less 16
     List<User> usersHaveAgeLess16 = userService.findUsersHaveAgeGreater(users, 16, false);
     // Check size
@@ -250,7 +250,7 @@ public class UserServiceTest {
    * Test finding top female user order by first name
    */
   @Test
-  public void findTopFemaleUserOrderByFirstName() {
+  public void testFindTopFemaleUserOrderByFirstName() {
     List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
     // Check size
     long expectedSize = 3;
@@ -272,7 +272,7 @@ public class UserServiceTest {
    * Test finding top female user order by last name
    */
   @Test
-  public void findTopFemaleUserOrderByLastName() {
+  public void testFindTopFemaleUserOrderByLastName() {
     List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new LastNameComparator());
     // Check size
     long expectedSize = 3;
@@ -294,7 +294,7 @@ public class UserServiceTest {
    * Test finding top female users order by created post in given period
    */
   @Test
-  public void findTopFemaleUsersOrderByCreatedPost() {
+  public void testFindTopFemaleUsersOrderByCreatedPost() {
     // users have post created in today
     List<User> usersHaveCreatedPostToday =
         userService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofDays(1),
@@ -322,7 +322,7 @@ public class UserServiceTest {
    * Test whether or no user contains given user name
    */
   @Test
-  public void containsUsername() {
+  public void testContainsUsername() {
     assertEquals(true, UserService.containsUsername(mockUser, "Jerrell") );
     assertEquals(false, UserService.containsUsername(mockUser, "David"));
   }
