@@ -82,14 +82,14 @@ public class Post {
 
   @Override
   public String toString() {
-    System.out.println("Info post with id: " + id);
-    System.out.println("id: " + id);
-    System.out.println("authorId: " + authorId);
-    System.out.println("message: " + message);
-    System.out.println("commentsCount: " + commentsCount);
-    System.out.println("createdAt: " + createdAt);
-    System.out.println("modifiedAt: " + createdAt);
-    System.out.println("version: " + version);
-    return null;
+    return "Post{" +
+        "id='" + id + '\'' +
+        ", authorId='" + authorId + '\'' +
+        ", message='" + message + '\'' +
+        ", commentsCount='" + commentsCount + '\'' +
+        ", createdAt=" + createdAt +
+        ", modifiedAt=" + modifiedAt +
+        ", version='" + version + '\'' +
+        '}';
   }
 }

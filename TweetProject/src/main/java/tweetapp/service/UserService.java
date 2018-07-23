@@ -25,21 +25,23 @@ import static java.util.stream.Collectors.*;
  */
 public class UserService {
 
-  // FIXME:: Only print necessary properties
   /**
    * Print all info list users
    * @param users List user
    */
   public static void print(List<User> users) {
+    if (users.size() == 0) return;
+
+    System.out.println(String.format("| %-5s | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s",
+        "Index", "Id", "User name", "First name", "Last name", "BirthDate", "Created At"));
     IntStream.range(0, users.size())
         .forEach(idx -> {
-          System.out.println("-------------------------------");
-          System.out.print((idx + 1) + ". ");
-          System.out.println(users.get(idx));
+          User user = users.get(idx);
+          System.out.println(String.format("| %-5d | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s", idx + 1, user.getId(),
+              user.getUsername(), user.getFirstName(), user.getLastName(), user.getBirthday(), user.getCreatedAt()));
         });
   }
 
-  // FIXME:: Consider type modifier to test this method
   /**
    * Process user data and return list user
    * @param lines Streams lines of file

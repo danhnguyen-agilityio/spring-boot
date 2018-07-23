@@ -8,7 +8,6 @@ import tweetapp.util.FileUtil;
 import tweetapp.util.StringUtil;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
@@ -94,11 +93,15 @@ public class PostService {
    * @param posts List post
    */
   public static void print(List<Post> posts) {
+    if (posts.size() == 0) return;
+
+    System.out.println(String.format("| %-5s | %-25s | %-25.25s | %-25.25s",
+        "Index", "Id", "Author Id", "Created At"));
     IntStream.range(0, posts.size())
         .forEach(idx -> {
-          System.out.println("-------------------------------");
-          System.out.print((idx + 1) + ". ");
-          System.out.println(posts.get(idx));
+          Post post = posts.get(idx);
+          System.out.println(String.format("| %-5d | %-25s | %-25.25s | %-15.15s",
+              idx + 1, post.getId(), post.getAuthorId(), post.getCreatedAt()));
         });
   }
 

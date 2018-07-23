@@ -180,22 +180,22 @@ public class User {
 
   @Override
   public String toString() {
-    System.out.println("INFO USER WITH ID: " + id);
-    System.out.println("id: " + id);
-    System.out.println("username: " + username);
-    System.out.println("firstName: " + firstName);
-    System.out.println("LastName: " + lastName);
-    System.out.println("avatarUrl: " + avatarUrl);
-    System.out.println("nickname: " + nickname);
-    System.out.println("email: " + email);
-    System.out.println("phone: " + phone);
-    System.out.println("address: " + address);
-    System.out.println("gender: " + gender);
-    System.out.println("birthday: " + birthday);
-    System.out.println("description: " + description);
-    System.out.println("createdAt: " + createdAt);
-    System.out.println("modifiedAt: " + modifiedAt);
-    System.out.println("version: " + version);
-    return null;
+    return "User{" +
+        "id='" + id + '\'' +
+        ", username='" + username + '\'' +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", avatarUrl='" + avatarUrl + '\'' +
+        ", nickname='" + nickname + '\'' +
+        ", email='" + email + '\'' +
+        ", phone='" + phone + '\'' +
+        ", address='" + address + '\'' +
+        ", gender=" + gender +
+        ", birthday=" + birthday +
+        ", description='" + description + '\'' +
+        ", createdAt=" + createdAt +
+        ", modifiedAt=" + modifiedAt +
+        ", version='" + version + '\'' +
+        '}';
   }
 }

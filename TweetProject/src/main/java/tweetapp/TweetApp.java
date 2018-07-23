@@ -93,21 +93,24 @@ public class TweetApp {
             break;
           }
 
-          case 4: { // Find all users who has been created Within today
+          case 4: { // Find all users who has been created within today
             List<User> usersCreatedWithinToday = UserService.findUsersCreatedIn(tweetApp.users, Period.ofDays(1));
             System.out.println("Number users have created within today: " + usersCreatedWithinToday.size());
+            UserService.print(usersCreatedWithinToday);
             break;
           }
 
-          case 5: { // Find all users who has been created Within a week from today
+          case 5: { // Find all users who has been created within a week from today
             List<User> usersCreatedWithinAWeek = UserService.findUsersCreatedIn(tweetApp.users, Period.ofWeeks(1));
             System.out.println("Number users have created within a week: " + usersCreatedWithinAWeek.size());
+            UserService.print(usersCreatedWithinAWeek);
             break;
           }
 
-          case 6: { // Find all users who has been created Within a month from today
+          case 6: { // Find all users who has been created within a month from today
             List<User> usersCreatedWithinAMonth = UserService.findUsersCreatedIn(tweetApp.users, Period.ofMonths(1));
             System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
+            UserService.print(usersCreatedWithinAMonth);
             break;
           }
 

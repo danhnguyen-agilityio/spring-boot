@@ -117,7 +117,7 @@ public class PostServiceTest {
    */
   @Test
   public void findPostsByUserName() {
-    List<Post> results = PostService.findPostsByUserName(users, posts, "Jerrell");
+    List<Post> results = PostService.findPostsByUserName(users, posts, "David");
 
     // Check size
     assertEquals(5, results.size());
