@@ -24,8 +24,10 @@ public class TweetApp {
   public static void main(String[] args) throws IOException {
 
     TweetApp tweetApp = new TweetApp();
-    tweetApp.users = UserService.getUsersFromFile(App.USER_FILE_PATH);
-    tweetApp.posts = PostService.getPostsFromFile(App.POST_FILE_PATH);
+    UserService userService = new UserService();
+    PostService postService = new PostService();
+    tweetApp.users = userService.getUsersFromFile(App.USER_FILE_PATH);
+    tweetApp.posts = postService.getPostsFromFile(App.POST_FILE_PATH);
 
     String[] menu = {
         "0. Exit",
@@ -76,125 +78,125 @@ public class TweetApp {
       } else { // Show info by correspond question
         switch (question) {
           case 1: { // count all user
-            long totalUsers = UserService.countAllUser(tweetApp.users);
+            long totalUsers = userService.countAllUser(tweetApp.users);
             System.out.println("Count all user: " + totalUsers);
             break;
           }
 
           case 2: { // count all female user
-            long totalFemaleUsers = UserService.countFemaleUsers(tweetApp.users);
+            long totalFemaleUsers = userService.countFemaleUsers(tweetApp.users);
             System.out.println("Count all female user: " + totalFemaleUsers);
             break;
           }
 
           case 3: { // count all male user
-            long totalMaleUsers = UserService.countMaleUsers(tweetApp.users);
+            long totalMaleUsers = userService.countMaleUsers(tweetApp.users);
             System.out.println("Count all male user: " + totalMaleUsers);
             break;
           }
 
           case 4: { // Find all users who has been created within today
-            List<User> usersCreatedWithinToday = UserService.findUsersCreatedIn(tweetApp.users, Period.ofDays(1));
+            List<User> usersCreatedWithinToday = userService.findUsersCreatedIn(tweetApp.users, Period.ofDays(1));
             System.out.println("Number users have created within today: " + usersCreatedWithinToday.size());
-            UserService.print(usersCreatedWithinToday);
+            userService.print(usersCreatedWithinToday);
             break;
           }
 
           case 5: { // Find all users who has been created within a week from today
-            List<User> usersCreatedWithinAWeek = UserService.findUsersCreatedIn(tweetApp.users, Period.ofWeeks(1));
+            List<User> usersCreatedWithinAWeek = userService.findUsersCreatedIn(tweetApp.users, Period.ofWeeks(1));
             System.out.println("Number users have created within a week: " + usersCreatedWithinAWeek.size());
-            UserService.print(usersCreatedWithinAWeek);
+            userService.print(usersCreatedWithinAWeek);
             break;
           }
 
           case 6: { // Find all users who has been created within a month from today
-            List<User> usersCreatedWithinAMonth = UserService.findUsersCreatedIn(tweetApp.users, Period.ofMonths(1));
+            List<User> usersCreatedWithinAMonth = userService.findUsersCreatedIn(tweetApp.users, Period.ofMonths(1));
             System.out.println("Number users have created within a month: " + usersCreatedWithinAMonth.size());
-            UserService.print(usersCreatedWithinAMonth);
+            userService.print(usersCreatedWithinAMonth);
             break;
           }
 
           case 7: { // Find all users who have his/her birthday within the current month");
-            List<User> birthdayInCurrentMonth = UserService.findUsersHaveBirthdayInMonth(tweetApp.users,
+            List<User> birthdayInCurrentMonth = userService.findUsersHaveBirthdayInMonth(tweetApp.users,
                 LocalDateTime.now().getMonthValue());
             System.out.println(birthdayInCurrentMonth.size() + " users who have his/her birthday within the current month");
-            UserService.print(birthdayInCurrentMonth);
+            userService.print(birthdayInCurrentMonth);
             break;
           }
 
           case 8: { // Find all users who has his first name is James
             String firstName = "James";
-            List<User> usersWithFirstName = UserService.findUsersWithFirstName(tweetApp.users, firstName);
+            List<User> usersWithFirstName = userService.findUsersWithFirstName(tweetApp.users, firstName);
             System.out.println(usersWithFirstName.size() + " users who has his first name is James");
-            UserService.print(usersWithFirstName);
+            userService.print(usersWithFirstName);
             break;
           }
 
           case 9: { // Find all users who has his avatar
-            List<User> usersHaveAvatar = UserService.findUsersHaveAvatar(tweetApp.users);
+            List<User> usersHaveAvatar = userService.findUsersHaveAvatar(tweetApp.users);
             System.out.println(usersHaveAvatar.size() + " users who has his avatar");
-            UserService.print(usersHaveAvatar);
+            userService.print(usersHaveAvatar);
             break;
           }
 
           case 10: { // Find all users who is under 16 years old
             int age = 16;
-            List<User> usersHaveAgeUnder = UserService.findUsersHaveAgeGreater(tweetApp.users, age, false);
+            List<User> usersHaveAgeUnder = userService.findUsersHaveAgeGreater(tweetApp.users, age, false);
             System.out.println(usersHaveAgeUnder.size() + " users who is under 16 years old");
-            UserService.print(usersHaveAgeUnder);
+            userService.print(usersHaveAgeUnder);
             break;
           }
 
           case 11: { // Find all users who is greater than 30 years old
             int age = 30;
-            List<User> usersHaveAgeGreater = UserService.findUsersHaveAgeGreater(tweetApp.users, age,true);
+            List<User> usersHaveAgeGreater = userService.findUsersHaveAgeGreater(tweetApp.users, age,true);
             System.out.println(usersHaveAgeGreater.size() + " users who is greater than 30 years old");
-            UserService.print(usersHaveAgeGreater);
+            userService.print(usersHaveAgeGreater);
             break;
           }
 
           case 12: { // Find top 100 female users by Order by first name
-            List<User> topFemaleUserOrderByFirstName = UserService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
+            List<User> topFemaleUserOrderByFirstName = userService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
                 new FirstNameComparator());
             System.out.println("************ Top 100 female users order by first name ***********");
-            UserService.print(topFemaleUserOrderByFirstName);
+            userService.print(topFemaleUserOrderByFirstName);
 
             break;
           }
 
           case 13: { // Find top 100 female users by Order by last name
-            List<User> topFemaleUserOrderByLastName = UserService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
+            List<User> topFemaleUserOrderByLastName = userService.findTopFemaleUserOrderBy(tweetApp.users, App.MAX_SIZE,
                 new LastNameComparator());
             System.out.println("************ Top 100 female users order by first name **********");
-            UserService.print(topFemaleUserOrderByLastName);
+            userService.print(topFemaleUserOrderByLastName);
             break;
           }
 
           case 14: { // Find top 100 female users by Having posts within a week from today, order by post created date
-            List<User> topFemaleUserOrderByCreatedPost = UserService.findTopFemaleUsersOrderByCreatedPost(
+            List<User> topFemaleUserOrderByCreatedPost = userService.findTopFemaleUsersOrderByCreatedPost(
                 tweetApp.users, tweetApp.posts, App.MAX_SIZE, Period.ofWeeks(1));
             System.out.println("Top 100 female users order by first name Having posts within a week from today, " +
                 "order by post created date");
-            UserService.print(topFemaleUserOrderByCreatedPost);
+            userService.print(topFemaleUserOrderByCreatedPost);
             break;
           }
 
           case 15: { // Find all posts which have been created Within today
-            List<Post> postsCreatedWithinToday = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofDays(1));
+            List<Post> postsCreatedWithinToday = postService.findPostsCreatedIn(tweetApp.posts, Period.ofDays(1));
             System.out.println(postsCreatedWithinToday.size() + " posts which have been created Within today");
             PostService.print(postsCreatedWithinToday);
             break;
           }
 
           case 16: { // Find all posts which have been created Within a week from today
-            List<Post> postsCreatedWithinWeek = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofWeeks(1));
+            List<Post> postsCreatedWithinWeek = postService.findPostsCreatedIn(tweetApp.posts, Period.ofWeeks(1));
             System.out.println(postsCreatedWithinWeek.size() + " posts which have been created Within a week from today");
             PostService.print(postsCreatedWithinWeek);
             break;
           }
 
           case 17: { // Find all posts which have been created Within a month from today
-            List<Post> postsCreatedWithinMonth = PostService.findPostsCreatedIn(tweetApp.posts, Period.ofMonths(1));
+            List<Post> postsCreatedWithinMonth = postService.findPostsCreatedIn(tweetApp.posts, Period.ofMonths(1));
             System.out.println(postsCreatedWithinMonth.size() + " posts which have been created Within a month from today");
             PostService.print(postsCreatedWithinMonth);
             break;
@@ -202,7 +204,7 @@ public class TweetApp {
 
           case 18: { // Find all posts of a specific user
             String userName = "Kendra";
-            List<Post> postsByUserName = PostService.findPostsByUserName(tweetApp.users, tweetApp.posts, userName);
+            List<Post> postsByUserName = postService.findPostsByUserName(tweetApp.users, tweetApp.posts, userName);
             System.out.println(postsByUserName.size() + " posts of a user with user name: " + userName );
             PostService.print(postsByUserName);
             break;

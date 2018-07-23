@@ -44,7 +44,7 @@ public class PostService {
    * @return All info posts
    * @throws IOException exception thrown when occur file not found
    */
-  public static List<Post> getPostsFromFile(String fileName) throws IOException {
+  public List<Post> getPostsFromFile(String fileName) throws IOException {
     return FileUtil.readFile(fileName, PostService::processPostData);
   }
 
@@ -54,7 +54,7 @@ public class PostService {
    * @param period period time
    * @return true if post have created within given period ago ago and false if other
    */
-  private static boolean createdWithinNumberDaysAgo(Post post, Period period) {
+  private boolean createdWithinNumberDaysAgo(Post post, Period period) {
     return DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period);
   }
 
@@ -64,7 +64,7 @@ public class PostService {
    * @param period period time
    * @return true if post have created within given period ago ago and false if other
    */
-  private static boolean createdWithinNumberDaysAgo(Post post, Period period, LocalDateTime fromDate) {
+  private boolean createdWithinNumberDaysAgo(Post post, Period period, LocalDateTime fromDate) {
     return DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period, fromDate);
   }
 
@@ -73,7 +73,7 @@ public class PostService {
    * @param period Period time
    * @return List Post
    */
-  public static List<Post> findPostsCreatedIn(List<Post> posts, Period period) {
+  public List<Post> findPostsCreatedIn(List<Post> posts, Period period) {
     return findPostsCreatedIn(posts, period, LocalDateTime.now());
   }
 
@@ -82,7 +82,7 @@ public class PostService {
    * @param period Period time
    * @return List Post
    */
-  public static List<Post> findPostsCreatedIn(List<Post> posts, Period period, LocalDateTime fromDate) {
+  public List<Post> findPostsCreatedIn(List<Post> posts, Period period, LocalDateTime fromDate) {
     return posts.stream()
         .filter(post -> createdWithinNumberDaysAgo(post, period, fromDate))
         .collect(toList());
@@ -112,7 +112,7 @@ public class PostService {
    * @param userName user name was search in list user
    * @return Posts have userName contain given userName
    */
-  public static List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName) {
+  public List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName) {
     return users.stream()
         .filter(user -> UserService.containsUsername(user, userName))
         .map(User::getId)

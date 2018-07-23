@@ -22,9 +22,14 @@ public class UserServiceTest {
   public static User mockUser;
   public static List<User> users;
   public static List<Post> posts;
+  public static UserService userService;
+  public static PostService postService;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
+
+    userService = new UserService();
+    postService = new PostService();
 
     mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
         "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
@@ -34,10 +39,10 @@ public class UserServiceTest {
         LocalDateTime.parse("2018-07-16T09:21:45.492"), "0");
 
     String userFile = "./src/test/resources/users-test.csv";
-    users = UserService.getUsersFromFile(userFile);
+    users = userService.getUsersFromFile(userFile);
 
     String postFile = "./src/test/resources/posts-test.csv";
-    posts = PostService.getPostsFromFile(postFile);
+    posts = postService.getPostsFromFile(postFile);
   }
 
   /**
@@ -46,7 +51,7 @@ public class UserServiceTest {
   @Test(expected = IOException.class)
   public void getUsersFromFileError() throws IOException {
     String userFile = "./src/test/resources/user-not-found.csv";
-    UserService.getUsersFromFile(userFile);
+    userService.getUsersFromFile(userFile);
   }
 
   /**
@@ -55,7 +60,7 @@ public class UserServiceTest {
   @Test
   public void getUsersFromFile() throws IOException {
     String userFile = "./src/test/resources/users-test.csv";
-    List<User> users = UserService.getUsersFromFile(userFile);
+    List<User> users = userService.getUsersFromFile(userFile);
 
     // Check same size
     long expectedSize = 7;
@@ -80,7 +85,7 @@ public class UserServiceTest {
   @Test
   public void getUsersFromEmptyFile() throws IOException {
     String userFile = "./src/test/resources/empty-users-test.csv";
-    List<User> users = UserService.getUsersFromFile(userFile);
+    List<User> users = userService.getUsersFromFile(userFile);
 
     // Check same size
     long expectedSize = 0;
@@ -104,7 +109,7 @@ public class UserServiceTest {
   @Test
   public void testCountFemaleUsers() {
     long expected = 3;
-    long actual = UserService.countFemaleUsers(users);
+    long actual = userService.countFemaleUsers(users);
     assertThat(actual, is(expected));
   }
 
@@ -114,7 +119,7 @@ public class UserServiceTest {
   @Test
   public void testCountMaleUsers() {
     long expected = 3;
-    long actual = UserService.countMaleUsers(users);
+    long actual = userService.countMaleUsers(users);
     assertEquals(expected, actual);
   }
 
@@ -124,13 +129,13 @@ public class UserServiceTest {
   @Test
   public void findUsersCreatedIn() {
     // Test user created in today
-    List<User> usersCreatedInToday = UserService.findUsersCreatedIn(users, Period.ofDays(1),
+    List<User> usersCreatedInToday = userService.findUsersCreatedIn(users, Period.ofDays(1),
         LocalDateTime.parse("2018-07-18T11:50:13.448"));
     assertEquals(2, usersCreatedInToday.size());
     assertEquals("5b4c63aa170bb81857925070", usersCreatedInToday.get(usersCreatedInToday.size() -1).getId());
 
     // Test user created in a week ago
-    List<User> usersCreatedInWeek = UserService.findUsersCreatedIn(users, Period.ofWeeks(1),
+    List<User> usersCreatedInWeek = userService.findUsersCreatedIn(users, Period.ofWeeks(1),
         LocalDateTime.parse("2018-07-18T11:50:13.448"));
     assertEquals(2, usersCreatedInWeek.size());
     assertEquals("5b4c63aa170bb81857925070", usersCreatedInWeek.get(usersCreatedInWeek.size() -1).getId());
@@ -142,7 +147,7 @@ public class UserServiceTest {
   @Test
   public void birthdayInMonth() {
     boolean expected = true;
-    boolean actual = UserService.birthdayInMonth(mockUser, 11);
+    boolean actual = userService.birthdayInMonth(mockUser, 11);
     assertEquals(expected, actual);
   }
 
@@ -151,7 +156,7 @@ public class UserServiceTest {
    */
   @Test
   public void findUsersHaveBirthdayInMonth() {
-    List<User> results = UserService.findUsersHaveBirthdayInMonth(users, 11);
+    List<User> results = userService.findUsersHaveBirthdayInMonth(users, 11);
 
     // Check size
     long expectedSize = 3;
@@ -170,7 +175,7 @@ public class UserServiceTest {
   @Test
   public void findUsersWithFirstName() {
     String firstName = "David";
-    List<User> results = UserService.findUsersWithFirstName(users,  firstName);
+    List<User> results = userService.findUsersWithFirstName(users,  firstName);
 
     // Check size
     long expectedSize = 2;
@@ -188,7 +193,7 @@ public class UserServiceTest {
    */
   @Test
   public void findUsersHaveAvatar() {
-    List<User> results = UserService.findUsersHaveAvatar(users);
+    List<User> results = userService.findUsersHaveAvatar(users);
 
     // Check size
     long expectedSize = 5;
@@ -206,10 +211,10 @@ public class UserServiceTest {
    */
   @Test
   public void haveAgeGreater() {
-    boolean isGreater16 = UserService.haveAgeGreater(mockUser, 16, true);
+    boolean isGreater16 = userService.haveAgeGreater(mockUser, 16, true);
     assertEquals(true, isGreater16);
 
-    boolean isLess24 = UserService.haveAgeGreater(mockUser, 24, false);
+    boolean isLess24 = userService.haveAgeGreater(mockUser, 24, false);
     assertEquals(false, isLess24);
   }
 
@@ -219,7 +224,7 @@ public class UserServiceTest {
   @Test
   public void findUsersHaveAgeGreater() {
     // Test for finding user have age less 16
-    List<User> usersHaveAgeLess16 = UserService.findUsersHaveAgeGreater(users, 16, false);
+    List<User> usersHaveAgeLess16 = userService.findUsersHaveAgeGreater(users, 16, false);
     // Check size
     long expectedSizeUsersHaveAgeLess16 = 2;
     long actualSizeUsersHaveAgeLess16 = usersHaveAgeLess16.size();
@@ -230,7 +235,7 @@ public class UserServiceTest {
     assertEquals(expectedLastUserIdHaveAgeLess16, actualLastUserIdHaveAgeLess16);
 
     // Test for finding user have age greater 30
-    List<User> usersHaveAgeGreater30 = UserService.findUsersHaveAgeGreater(users, 30, true);
+    List<User> usersHaveAgeGreater30 = userService.findUsersHaveAgeGreater(users, 30, true);
     // Check size
     long expectedSizeUsersHaveAgeGreater30 = 2;
     long actualSizeUsersHaveAgeGreater30 = usersHaveAgeGreater30.size();
@@ -246,7 +251,7 @@ public class UserServiceTest {
    */
   @Test
   public void findTopFemaleUserOrderByFirstName() {
-    List<User> results = UserService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
+    List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
     // Check size
     long expectedSize = 3;
     long actualSize = results.size();
@@ -268,7 +273,7 @@ public class UserServiceTest {
    */
   @Test
   public void findTopFemaleUserOrderByLastName() {
-    List<User> results = UserService.findTopFemaleUserOrderBy(users, 5, new LastNameComparator());
+    List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new LastNameComparator());
     // Check size
     long expectedSize = 3;
     long actualSize = results.size();
@@ -292,7 +297,7 @@ public class UserServiceTest {
   public void findTopFemaleUsersOrderByCreatedPost() {
     // users have post created in today
     List<User> usersHaveCreatedPostToday =
-        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofDays(1),
+        userService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofDays(1),
             LocalDateTime.parse("2018-07-18T11:21:47.134"));
     // Check size
     assertEquals(2, usersHaveCreatedPostToday.size());
@@ -303,7 +308,7 @@ public class UserServiceTest {
 
     // users have post created in a week ago
     List<User> usersHaveCreatedPostInWeek =
-        UserService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofWeeks(1),
+        userService.findTopFemaleUsersOrderByCreatedPost(users, posts, 5, Period.ofWeeks(1),
             LocalDateTime.parse("2018-07-18T11:21:47.134"));
     // Check size
     assertEquals(3, usersHaveCreatedPostInWeek.size());

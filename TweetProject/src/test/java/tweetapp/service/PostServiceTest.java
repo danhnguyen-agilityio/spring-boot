@@ -1,12 +1,10 @@
 package tweetapp.service;
 
-import javafx.geometry.Pos;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
-import tweetapp.util.DateUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -20,9 +18,14 @@ public class PostServiceTest {
   public static User mockUser;
   public static List<User> users;
   public static List<Post> posts;
+  public static UserService userService;
+  public static PostService postService;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
+
+    userService = new UserService();
+    postService = new PostService();
 
     mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
         "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
@@ -32,10 +35,10 @@ public class PostServiceTest {
         LocalDateTime.parse("2018-07-16T09:21:45.492"), "0");
 
     String userFile = "./src/test/resources/users-test.csv";
-    users = UserService.getUsersFromFile(userFile);
+    users = userService.getUsersFromFile(userFile);
 
     String postFile = "./src/test/resources/posts-test.csv";
-    posts = PostService.getPostsFromFile(postFile);
+    posts = postService.getPostsFromFile(postFile);
   }
 
   /**
@@ -44,7 +47,7 @@ public class PostServiceTest {
   @Test(expected = IOException.class)
   public void getPostFromFileError() throws IOException {
     String postFile = "./src/test/resources/post-not-found.csv";
-    PostService.getPostsFromFile(postFile);
+    postService.getPostsFromFile(postFile);
   }
 
   /**
@@ -53,7 +56,7 @@ public class PostServiceTest {
   @Test
   public void getPostUsersFromFile() throws IOException {
     String postFile = "./src/test/resources/posts-test.csv";
-    List<Post> posts = PostService.getPostsFromFile(postFile);
+    List<Post> posts = postService.getPostsFromFile(postFile);
 
     // Check same size
     long expectedSize = 7;
@@ -78,7 +81,7 @@ public class PostServiceTest {
   @Test
   public void getPostsFromEmptyFile() throws IOException {
     String postFile = "./src/test/resources/empty-posts-test.csv";
-    List<Post> posts = PostService.getPostsFromFile(postFile);
+    List<Post> posts = postService.getPostsFromFile(postFile);
 
     // Check same size
     long expectedSize = 0;
@@ -92,7 +95,7 @@ public class PostServiceTest {
   @Test
   public void findPostsCreatedIn() {
     // Find post in today
-    List<Post> postCreatedInToday = PostService.findPostsCreatedIn(posts, Period.ofDays(1),
+    List<Post> postCreatedInToday = postService.findPostsCreatedIn(posts, Period.ofDays(1),
         LocalDateTime.parse("2018-07-18T09:21:47.134"));
     // Check size
     assertEquals(3, postCreatedInToday.size());
@@ -102,7 +105,7 @@ public class PostServiceTest {
     assertEquals("5b4c63ab170bb8185792545b", postCreatedInToday.get(postCreatedInToday.size() - 1).getId());
 
     // Find post in a week ago
-    List<Post> postCreatedInWeek = PostService.findPostsCreatedIn(posts, Period.ofWeeks(1),
+    List<Post> postCreatedInWeek = postService.findPostsCreatedIn(posts, Period.ofWeeks(1),
         LocalDateTime.parse("2018-07-18T09:21:47.134"));
     // Check size
     assertEquals(6, postCreatedInWeek.size());
@@ -116,8 +119,8 @@ public class PostServiceTest {
    * Test finding posts by given userName
    */
   @Test
-  public void findPostsByUserName() {
-    List<Post> results = PostService.findPostsByUserName(users, posts, "David");
+  public void postService() {
+    List<Post> results = postService.findPostsByUserName(users, posts, "David");
 
     // Check size
     assertEquals(5, results.size());
