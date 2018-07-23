@@ -112,6 +112,23 @@ public class PostServiceTest {
     assertEquals("5b4c63ab170bb8185792545b", postCreatedInWeek.get(postCreatedInWeek.size() - 1).getId());
   }
 
+  /**
+   * Test finding posts by given userName
+   */
+  @Test
+  public void findPostsByUserName() {
+    List<Post> results = PostService.findPostsByUserName(users, posts, "Jerrell");
+
+    // Check size
+    assertEquals(5, results.size());
+
+    // Check first post id
+    assertEquals("5b4c63ab170bb81857925455", results.get(0).getId());
+
+    // Check last post id
+    assertEquals("5b4c63ab170bb81857925458", results.get(results.size() - 1).getId());
+  }
+
 
 
 }

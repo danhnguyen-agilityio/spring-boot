@@ -27,7 +27,6 @@ public class DateUtil {
     return zonedDateTime.withZoneSameInstant(zoneId).toLocalDateTime();
   }
 
-  // FIXME:: change name method in here
   /**
    * Test whether dateTime passed method within given period ago
    * @param dateTime Date time need check

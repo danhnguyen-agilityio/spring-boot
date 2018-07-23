@@ -45,7 +45,7 @@ public class UserService {
    * @param lines Streams lines of file
    * @return Return list user
    */
-  private static List<User> processUserData(Stream<String> lines) {
+  public static List<User> processUserData(Stream<String> lines) {
     return lines.skip(1)
         .map(line -> {
           // Split line to array data
