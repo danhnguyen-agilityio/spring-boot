@@ -8,6 +8,7 @@ import tweetapp.util.FileUtil;
 import tweetapp.util.StringUtil;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
@@ -59,13 +60,32 @@ public class PostService {
   }
 
   /**
-   * Find post have created in given period ago
+   * Check whether post have created within given period ago
+   * @param post List post
+   * @param period period time
+   * @return true if post have created within given period ago ago and false if other
+   */
+  private static boolean createdWithinNumberDaysAgo(Post post, Period period, LocalDateTime fromDate) {
+    return DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period, fromDate);
+  }
+
+  /**
+   * Find post have created in given period ago from today
    * @param period Period time
    * @return List Post
    */
   public static List<Post> findPostsCreatedIn(List<Post> posts, Period period) {
+    return findPostsCreatedIn(posts, period, LocalDateTime.now());
+  }
+
+  /**
+   * Find post have created in given period ago from given fromDate
+   * @param period Period time
+   * @return List Post
+   */
+  public static List<Post> findPostsCreatedIn(List<Post> posts, Period period, LocalDateTime fromDate) {
     return posts.stream()
-        .filter(post -> createdWithinNumberDaysAgo(post, period))
+        .filter(post -> createdWithinNumberDaysAgo(post, period, fromDate))
         .collect(toList());
   }
 
