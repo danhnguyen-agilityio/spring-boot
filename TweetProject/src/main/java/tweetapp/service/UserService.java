@@ -109,28 +109,26 @@ public class UserService {
     return users.stream().filter(User::isMale).count();
   }
 
-  // FIXME:: Revise method to implement test
   /**
-   * Find user have created in period ago
+   * Find user have created in period ago from given fromDate
+   * @param users List user
+   * @param period Period time
+   * @return List user
+   */
+  public static List<User> findUsersCreatedIn(List<User> users, Period period, LocalDateTime fromDate) {
+    return users.stream()
+        .filter(user -> DateUtil.withinNumberDaysAgo(user.getCreatedAt(), period, fromDate))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Find user have created in period ago from today
    * @param users List user
    * @param period Period time
    * @return List user
    */
   public static List<User> findUsersCreatedIn(List<User> users, Period period) {
-    return users.stream()
-        .filter(user -> UserService.createdWithinNumberDaysAgo(user, period))
-        .collect(Collectors.toList());
-  }
-
-  // FIXME:: Revise method to implement test
-  /**
-   * Check whether user have created within a specific days ago
-   * @param user List user
-   * @param period Period time
-   * @return true if user have created within a specific days ago and false if other
-   */
-  private static boolean createdWithinNumberDaysAgo(User user, Period period) {
-    return DateUtil.withinNumberDaysAgo(user.getCreatedAt(), period);
+    return findUsersCreatedIn(users, period, LocalDateTime.now());
   }
 
   /**
@@ -154,7 +152,6 @@ public class UserService {
         .collect(toList());
   }
 
-  // FIXME:: consider put method in here or User class
   /**
    * Test whether user have given firstName
    * @param user User need check
@@ -197,7 +194,6 @@ public class UserService {
         .collect(toList());
   }
 
-  // FIXME:: Should write unit test this method
   /**
    * Check whether user have age greater given age
    * @param user User need to check

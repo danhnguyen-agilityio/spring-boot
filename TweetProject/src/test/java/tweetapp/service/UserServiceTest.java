@@ -119,6 +119,24 @@ public class UserServiceTest {
   }
 
   /**
+   * Test finding user have created in period ago from given fromDate
+   */
+  @Test
+  public void findUsersCreatedIn() {
+    // Test user created in today
+    List<User> usersCreatedInToday = UserService.findUsersCreatedIn(users, Period.ofDays(1),
+        LocalDateTime.parse("2018-07-18T11:50:13.448"));
+    assertEquals(2, usersCreatedInToday.size());
+    assertEquals("5b4c63aa170bb81857925070", usersCreatedInToday.get(usersCreatedInToday.size() -1).getId());
+
+    // Test user created in a week ago
+    List<User> usersCreatedInWeek = UserService.findUsersCreatedIn(users, Period.ofWeeks(1),
+        LocalDateTime.parse("2018-07-18T11:50:13.448"));
+    assertEquals(2, usersCreatedInWeek.size());
+    assertEquals("5b4c63aa170bb81857925070", usersCreatedInWeek.get(usersCreatedInWeek.size() -1).getId());
+  }
+
+  /**
    * Test birthday user in given month
    */
   @Test
