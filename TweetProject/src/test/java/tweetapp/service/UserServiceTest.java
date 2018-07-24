@@ -22,14 +22,14 @@ public class UserServiceTest {
   public static User mockUser;
   public static List<User> users;
   public static List<Post> posts;
-  public static UserService userService;
-  public static PostService postService;
+  public static UserServiceImpl userService;
+  public static PostServiceImpl postService;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
 
-    userService = new UserService();
-    postService = new PostService();
+    userService = new UserServiceImpl();
+    postService = new PostServiceImpl();
 
     mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
         "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
@@ -147,7 +147,7 @@ public class UserServiceTest {
   @Test
   public void testBirthdayInMonth() {
     boolean expected = true;
-    boolean actual = userService.birthdayInMonth(mockUser, 11);
+    boolean actual = UserService.birthdayInMonth(mockUser, 11);
     assertEquals(expected, actual);
   }
 
@@ -211,10 +211,10 @@ public class UserServiceTest {
    */
   @Test
   public void testHaveAgeGreater() {
-    boolean isGreater16 = userService.haveAgeGreater(mockUser, 16, true);
+    boolean isGreater16 = UserService.haveAgeGreater(mockUser, 16, true);
     assertEquals(true, isGreater16);
 
-    boolean isLess24 = userService.haveAgeGreater(mockUser, 24, false);
+    boolean isLess24 = UserService.haveAgeGreater(mockUser, 24, false);
     assertEquals(false, isLess24);
   }
 

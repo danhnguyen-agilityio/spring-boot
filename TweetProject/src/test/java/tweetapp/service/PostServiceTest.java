@@ -18,14 +18,14 @@ public class PostServiceTest {
   public static User mockUser;
   public static List<User> users;
   public static List<Post> posts;
-  public static UserService userService;
-  public static PostService postService;
+  public static UserServiceImpl userService;
+  public static PostServiceImpl postService;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
 
-    userService = new UserService();
-    postService = new PostService();
+    userService = new UserServiceImpl();
+    postService = new PostServiceImpl();
 
     mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
         "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",

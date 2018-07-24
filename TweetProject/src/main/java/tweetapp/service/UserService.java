@@ -1,8 +1,5 @@
 package tweetapp.service;
 
-import tweetapp.comparator.CreatedPostComparator;
-import tweetapp.constant.App;
-import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.*;
@@ -11,145 +8,21 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.*;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * userService implement statistic on list user
+ * UserService interface
  */
-public class UserService {
-
-  /**
-   * Print all info list users
-   * @param users List user
-   */
-  public void print(List<User> users) {
-    if (users.size() == 0) return;
-
-    System.out.println(String.format("| %-5s | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s",
-        "Index", "Id", "User name", "First name", "Last name", "BirthDate", "Created At"));
-    IntStream.range(0, users.size())
-        .forEach(idx -> {
-          User user = users.get(idx);
-          System.out.println(String.format("| %-5d | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s", idx + 1, user.getId(),
-              user.getUsername(), user.getFirstName(), user.getLastName(), user.getBirthday(), user.getCreatedAt()));
-        });
-  }
-
-  /**
-   * Process user data and return list user
-   * @param lines Streams lines of file
-   * @return Return list user
-   */
-  public static List<User> processUserData(Stream<String> lines) {
-    return lines.skip(1)
-        .map(line -> {
-          // Split line to array data
-          String[] data = line.split(App.SPLIT_BY_CSV);
-          String id = StringUtil.substringBetween(data[0], "\"");
-          String username = data[2];
-          String firstName = data[3];
-          String lastName = data[4];
-          String avatarUrl = data[6];
-          String nickname = data[7];
-          String email = data[8];
-          String phone = data[9];
-          String address = data[10];
-          Gender gender = Gender.valueOf(data[13]);
-          LocalDateTime birthday = DateUtil.convertStringToLocalDateTime(data[14]);
-          String description =  data[15];
-          LocalDateTime createdAt = DateUtil.convertStringToLocalDateTime(data[16]);
-          LocalDateTime modifiedAt = DateUtil.convertStringToLocalDateTime(data[17]);
-          String version = data[18];
-          return new User(id, username, firstName, lastName, avatarUrl, nickname, email, phone, address, gender,
-              birthday, description, createdAt, modifiedAt, version);
-        })
-        .collect(toList());
-  }
-
-  /**
-   * Get all list user from csv file
-   * @return All info users
-   * @throws IOException occur when file not found
-   */
-  public List<User> getUsersFromFile(String fileName) throws IOException {
-    return FileUtil.readFile(fileName, UserService::processUserData);
-  }
-
-  /**
-   * Count all users
-   * @param users List user
-   * @return total users
-   */
-  public long countAllUser(List<User> users) {
-    return users.size();
-  }
-
-  /**
-   * Count all female users
-   * @param users List user
-   * @return total female users
-   */
-  public long countFemaleUsers(List<User> users) {
-    return users.stream().filter(User::isFemale).count();
-  }
-
-  /**
-   * Count all male users
-   * @param users List user
-   * @return total male users
-   */
-  public long countMaleUsers(List<User> users) {
-    return users.stream().filter(User::isMale).count();
-  }
-
-  /**
-   * Find user have created in period ago from given fromDate
-   * @param users List user
-   * @param period Period time
-   * @return List user
-   */
-  public List<User> findUsersCreatedIn(List<User> users, Period period, LocalDateTime fromDate) {
-    return users.stream()
-        .filter(user -> DateUtil.withinNumberDaysAgo(user.getCreatedAt(), period, fromDate))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Find user have created in period ago from today
-   * @param users List user
-   * @param period Period time
-   * @return List user
-   */
-  public List<User> findUsersCreatedIn(List<User> users, Period period) {
-    return findUsersCreatedIn(users, period, LocalDateTime.now());
-  }
+public interface UserService {
 
   /**
    * Check whether user have birthday within given month
    * @param user List user
    * @return true if user have birthday within given month and false if other
    */
-  public boolean birthdayInMonth(User user, int month) {
+  static boolean birthdayInMonth(User user, int month) {
     return user.getBirthday().getMonthValue() == month;
-  }
-
-  /**
-   * Find users have birthday within given month
-   * @param users List user
-   * @param month Month is used to find
-   * @return List users have birthday within given month
-   */
-  public List<User> findUsersHaveBirthdayInMonth(List<User> users, int month) {
-    return users.stream()
-        .filter(user -> birthdayInMonth(user, month))
-        .collect(toList());
   }
 
   /**
@@ -158,20 +31,8 @@ public class UserService {
    * @param firstName First name of user
    * @return true if user have given firstName and false if other
    */
-  public boolean haveFirstNameWith(User user, String firstName) {
+  static boolean haveFirstNameWith(User user, String firstName) {
     return user.getFirstName().equalsIgnoreCase(firstName);
-  }
-
-  /**
-   * Find users have specific first name
-   * @param users List user
-   * @param firstName First name need to find
-   * @return List users have specific first name
-   */
-  public List<User> findUsersWithFirstName(List<User> users, String firstName) {
-    return users.stream()
-        .filter(user -> haveFirstNameWith(user, firstName))
-        .collect(toList());
   }
 
   /**
@@ -179,19 +40,8 @@ public class UserService {
    * @param user List user
    * @return true if user have avatar
    */
-  public static boolean haveAvatar(User user) {
+  static boolean haveAvatar(User user) {
     return !("".equals(user.getAvatarUrl()));
-  }
-
-  /**
-   * Find users have avatar
-   * @param users List user
-   * @return List users have avatar
-   */
-  public static List<User> findUsersHaveAvatar(List<User> users) {
-    return users.stream()
-        .filter(UserService::haveAvatar)
-        .collect(toList());
   }
 
   /**
@@ -201,10 +51,93 @@ public class UserService {
    * @param isGreater Flag to check user have age smaller or greater
    * @return true if user have age greater given age
    */
-  public boolean haveAgeGreater(User user, int age, boolean isGreater) {
+  static boolean haveAgeGreater(User user, int age, boolean isGreater) {
     int userAge = AgeCalculator.calculateAge(user.getBirthday().toLocalDate(), LocalDate.now());
     return isGreater ? userAge > age : userAge < age;
   }
+
+  /**
+   * Check whether user name of user contain given userName
+   * @param user List user
+   * @param userName user name need to find
+   * @return true if user name of user contains given user names
+   */
+  static boolean containsUsername(User user, String userName) {
+    return user.getUsername().toLowerCase().contains(userName.toLowerCase());
+  }
+
+  /**
+   * Print all info list users
+   * @param users List user
+   */
+  void print(List<User> users);
+
+  /**
+   * Get all list user from csv file
+   * @return All info users
+   * @throws IOException occur when file not found
+   */
+  List<User> getUsersFromFile(String fileName) throws IOException;
+
+  /**
+   * Count all users
+   * @param users List user
+   * @return total users
+   */
+  long countAllUser(List<User> users);
+
+  /**
+   * Count all female users
+   * @param users List user
+   * @return total female users
+   */
+  long countFemaleUsers(List<User> users);
+
+  /**
+   * Count all male users
+   * @param users List user
+   * @return total male users
+   */
+  long countMaleUsers(List<User> users);
+
+  /**
+   * Find user have created in period ago from given fromDate
+   * @param users List user
+   * @param period Period time
+   * @return List user
+   */
+  List<User> findUsersCreatedIn(List<User> users, Period period, LocalDateTime fromDate);
+
+  /**
+   * Find user have created in period ago from today
+   * @param users List user
+   * @param period Period time
+   * @return List user
+   */
+  List<User> findUsersCreatedIn(List<User> users, Period period);
+
+  /**
+   * Find users have birthday within given month
+   * @param users List user
+   * @param month Month is used to find
+   * @return List users have birthday within given month
+   */
+  List<User> findUsersHaveBirthdayInMonth(List<User> users, int month);
+
+  /**
+   * Find users have specific first name
+   * @param users List user
+   * @param firstName First name need to find
+   * @return List users have specific first name
+   */
+  List<User> findUsersWithFirstName(List<User> users, String firstName);
+
+  /**
+   * Find users have avatar
+   * @param users List user
+   * @return List users have avatar
+   */
+  List<User> findUsersHaveAvatar(List<User> users);
 
   /**
    * Find users have age greater given age
@@ -213,11 +146,7 @@ public class UserService {
    * @param isGreater Flag to check user have age smaller or greater
    * @return List users have age greater given age
    */
-  public List<User> findUsersHaveAgeGreater(List<User> users, int age, boolean isGreater) {
-    return users.stream()
-        .filter(user -> haveAgeGreater(user, age, isGreater))
-        .collect(toList());
-  }
+  List<User> findUsersHaveAgeGreater(List<User> users, int age, boolean isGreater);
 
   /**
    * Find top female user by given comparator
@@ -226,16 +155,8 @@ public class UserService {
    * @param comparator Comparator is used to compare
    * @return Return top female
    */
-  public List<User> findTopFemaleUserOrderBy(List<User> users, int maxSize, Comparator<User> comparator) {
-    Stream<User> topFemaleUser = users.stream() // order ascending
-        .filter(User::isFemale)
-        .sorted(comparator);
 
-    topFemaleUser = StreamUtil.reverse(topFemaleUser); // order descending
-    return topFemaleUser
-        .limit(maxSize)
-        .collect(toList());
-  }
+  List<User> findTopFemaleUserOrderBy(List<User> users, int maxSize, Comparator<User> comparator);
 
   /**
    * Find user by given user id
@@ -243,12 +164,7 @@ public class UserService {
    * @param userId Id of user
    * @return Returns user with given id
    */
-  public User findUserBy(List<User> users, String userId) {
-    return users.stream()
-        .filter(user -> user.getId().equals(userId))
-        .findFirst()
-        .orElse(null);
-  }
+  User findUserBy(List<User> users, String userId);
 
   /**
    * Find top female users by Having posts within given days from today, order by post created date
@@ -258,10 +174,8 @@ public class UserService {
    * @param period Period time
    * @return List users
    */
-  public List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
-                                                                Period period) {
-    return findTopFemaleUsersOrderByCreatedPost(users, posts, maxSize, period, LocalDateTime.now());
-  }
+  List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
+                                                         Period period);
 
   /**
    * Find top female users by having posts within period days ago from startDateTime, order by post created date
@@ -271,33 +185,6 @@ public class UserService {
    * @param period Period time
    * @return List users
    */
-  public List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
-                                                                Period period, LocalDateTime startDateTime) {
-    // Group data with key is userId, and value is latest Post
-    Stream<User> latestPostOfEachUser = posts.stream()
-        .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period, startDateTime))
-        .sorted(Comparator.comparing(Post::getCreatedAt))
-        .collect(toMap(Post::getAuthorId, Function.identity(), BinaryOperator.maxBy(new CreatedPostComparator())))
-
-    // Stream user have post order ascending by created date
-//    Stream<User> usersOrderByCreatedPost =  latestPostOfEachUser
-        .keySet().stream()
-        .map(userId ->  findUserBy(users, userId))
-        .filter(Objects::nonNull)
-        .filter(User::isFemale);
-
-    return StreamUtil.reverse(latestPostOfEachUser) // descending order
-        .limit(maxSize)
-        .collect(toList());
-  }
-
-  /**
-   * Check whether user name of user contain given userName
-   * @param user List user
-   * @param userName user name need to find
-   * @return true if user name of user contains given user names
-   */
-  public static boolean containsUsername(User user, String userName) {
-    return user.getUsername().toLowerCase().contains(userName.toLowerCase());
-  }
+  List<User> findTopFemaleUsersOrderByCreatedPost(List<User> users, List<Post> posts, int maxSize,
+                                                         Period period, LocalDateTime startDateTime);
 }

@@ -3,8 +3,8 @@ package tweetapp;
 import tweetapp.comparator.FirstNameComparator;
 import tweetapp.comparator.LastNameComparator;
 import tweetapp.constant.App;
-import tweetapp.service.PostService;
-import tweetapp.service.UserService;
+import tweetapp.service.PostServiceImpl;
+import tweetapp.service.UserServiceImpl;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 
@@ -24,8 +24,8 @@ public class TweetApp {
   public static void main(String[] args) throws IOException {
 
     TweetApp tweetApp = new TweetApp();
-    UserService userService = new UserService();
-    PostService postService = new PostService();
+    UserServiceImpl userService = new UserServiceImpl();
+    PostServiceImpl postService = new PostServiceImpl();
     tweetApp.users = userService.getUsersFromFile(App.USER_FILE_PATH);
     tweetApp.posts = postService.getPostsFromFile(App.POST_FILE_PATH);
 
@@ -184,21 +184,21 @@ public class TweetApp {
           case 15: { // Find all posts which have been created Within today
             List<Post> postsCreatedWithinToday = postService.findPostsCreatedIn(tweetApp.posts, Period.ofDays(1));
             System.out.println(postsCreatedWithinToday.size() + " posts which have been created Within today");
-            PostService.print(postsCreatedWithinToday);
+            postService.print(postsCreatedWithinToday);
             break;
           }
 
           case 16: { // Find all posts which have been created Within a week from today
             List<Post> postsCreatedWithinWeek = postService.findPostsCreatedIn(tweetApp.posts, Period.ofWeeks(1));
             System.out.println(postsCreatedWithinWeek.size() + " posts which have been created Within a week from today");
-            PostService.print(postsCreatedWithinWeek);
+            postService.print(postsCreatedWithinWeek);
             break;
           }
 
           case 17: { // Find all posts which have been created Within a month from today
             List<Post> postsCreatedWithinMonth = postService.findPostsCreatedIn(tweetApp.posts, Period.ofMonths(1));
             System.out.println(postsCreatedWithinMonth.size() + " posts which have been created Within a month from today");
-            PostService.print(postsCreatedWithinMonth);
+            postService.print(postsCreatedWithinMonth);
             break;
           }
 
@@ -206,7 +206,7 @@ public class TweetApp {
             String userName = "Kendra";
             List<Post> postsByUserName = postService.findPostsByUserName(tweetApp.users, tweetApp.posts, userName);
             System.out.println(postsByUserName.size() + " posts of a user with user name: " + userName );
-            PostService.print(postsByUserName);
+            postService.print(postsByUserName);
             break;
           }
 

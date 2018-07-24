@@ -2,7 +2,7 @@ package tweetapp.util;
 
 import org.junit.Test;
 import tweetapp.model.User;
-import tweetapp.service.UserService;
+import tweetapp.service.UserServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,7 +16,7 @@ public class FileUtilTest {
    */
   @Test(expected = IOException.class)
   public void readFileFail() throws IOException {
-    FileUtil.readFile("file-not-found", UserService::processUserData);
+    FileUtil.readFile("file-not-found", UserServiceImpl::processUserData);
   }
 
   /**
@@ -25,7 +25,7 @@ public class FileUtilTest {
   @Test
   public void readFileSuccess() throws IOException {
     String userFile = "./src/test/resources/users-test.csv";
-    List<User> users = FileUtil.readFile(userFile, UserService::processUserData);
+    List<User> users = FileUtil.readFile(userFile, UserServiceImpl::processUserData);
     assertEquals(7, users.size());
   }
 }
