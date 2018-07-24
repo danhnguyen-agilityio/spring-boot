@@ -18,6 +18,7 @@ public class MockUser {
 
   /**
    * Fake id user
+   * @return Fake id of user
    */
   public String fakeId() {
     return UUID.randomUUID().toString();
@@ -25,6 +26,7 @@ public class MockUser {
 
   /**
    * Create list with n user
+   * @return List n users
    */
   public List<User> createList(int n) {
     List<User> userList = new ArrayList<>();
@@ -40,6 +42,7 @@ public class MockUser {
 
   /**
    * Create list 0 female user
+   * @return List have no user
    */
   public List<User> createList0FemaleUser() {
     List<User> userList = new ArrayList<>();
@@ -60,6 +63,7 @@ public class MockUser {
 
   /**
    * Create list 1 female user
+   * @return List have 1 female user
    */
   public List<User> createList1FemaleUser() {
     List<User> userList = new ArrayList<>();
@@ -80,6 +84,7 @@ public class MockUser {
 
   /**
    * Create list 10 female user
+   * @return List 10 female user
    */
   public List<User> createList10FemaleUser() {
     List<User> userList = new ArrayList<>();
@@ -100,6 +105,7 @@ public class MockUser {
 
   /**
    * Create list 0 male user
+   * @return List have no male user
    */
   public List<User> createList0MaleUser() {
     List<User> userList = new ArrayList<>();
@@ -120,6 +126,7 @@ public class MockUser {
 
   /**
    * Create list 1 male user
+   * @return List 1 male user
    */
   public List<User> createList1MaleUser() {
     List<User> userList = new ArrayList<>();
@@ -140,6 +147,7 @@ public class MockUser {
 
   /**
    * Create list 10 male user
+   * @return List 10 male user
    */
   public List<User> createList10MaleUser() {
     List<User> userList = new ArrayList<>();
@@ -159,22 +167,39 @@ public class MockUser {
   }
 
   /**
-   * Create list user with created time of each user correspond with given times
-   * @param times List time that have formatted string
+   * Create list user with created time of each user correspond with given createdTimes
+   * @param createdTimes List time that formatted string
    * @return List user with created time correspond with given times
    */
-  public List<User> createListUserCreatedAt(String[] times) {
+  public List<User> createListUserWithCreatedAt(String[] createdTimes) {
     List<User> userList = new ArrayList<>();
     User user;
-    for (int i = 0; i < times.length; i++) {
+    for (int i = 0; i < createdTimes.length; i++) {
       user = UserBuilder.user()
           .withId(fakeId())
-          .withCreatedAt(LocalDateTime.parse(times[i]))
+          .withCreatedAt(LocalDateTime.parse(createdTimes[i]))
           .build();
       userList.add(user);
     }
     return userList;
   }
 
+  /**
+   * Create list user with birthday time of each user correspond with given birthdayTimes
+   * @param birthdayTimes List time that formatted string
+   * @return List user with created time correspond with given birthdayTimes
+   */
+  public List<User> createListUserWithBirthday(String[] birthdayTimes) {
+    List<User> userList = new ArrayList<>();
+    User user;
+    for (int i = 0; i < birthdayTimes.length; i++) {
+      user = UserBuilder.user()
+          .withId(fakeId())
+          .withBirthday(LocalDateTime.parse(birthdayTimes[i]))
+          .build();
+      userList.add(user);
+    }
+    return userList;
+  }
 
 }

@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
@@ -194,7 +193,7 @@ public class UserServiceTest {
         "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-17T22:21:45",
         "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
     };
-    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
     List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
     assertEquals(0, result.size());
   }
@@ -211,7 +210,7 @@ public class UserServiceTest {
         "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-18T22:21:45",
         "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
     };
-    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
     List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
     assertEquals(1, result.size());
   }
@@ -228,58 +227,153 @@ public class UserServiceTest {
         "2018-07-18T23:21:45", "2018-07-18T09:21:45", "2018-07-18T00:00:00", "2018-07-18T22:21:45",
         "2018-07-18T09:21:45", "2018-07-18T03:21:45", "2018-07-18T09:21:45"
     };
-    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
     List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
     assertEquals(7, result.size());
   }
 
-  
-
-
   /**
-   * Test finding user have created in period ago from given fromDate
+   * Test no users created in a week
    */
   @Test
-  public void testFindUsersCreatedIn() {
-    // Test user created in today
-    List<User> usersCreatedInToday = userService.findUsersCreatedIn(users, Period.ofDays(1),
-        LocalDateTime.parse("2018-07-18T11:50:13.448"));
-    assertEquals(2, usersCreatedInToday.size());
-    assertEquals("5b4c63aa170bb81857925070", usersCreatedInToday.get(usersCreatedInToday.size() -1).getId());
+  public void testNoUsersCreatedInAWeek() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
 
-    // Test user created in a week ago
-    List<User> usersCreatedInWeek = userService.findUsersCreatedIn(users, Period.ofWeeks(1),
-        LocalDateTime.parse("2018-07-18T11:50:13.448"));
-    assertEquals(2, usersCreatedInWeek.size());
-    assertEquals("5b4c63aa170bb81857925070", usersCreatedInWeek.get(usersCreatedInWeek.size() -1).getId());
+    String[] times = {
+        "2018-07-11T09:21:45", "2018-07-10T09:21:45", "2018-07-09T09:21:45", "2018-07-08T22:21:45",
+        "2018-07-07T09:21:45", "2018-07-06T09:21:45", "2018-07-05T09:21:45"
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
+    assertEquals(0, result.size());
   }
 
   /**
-   * Test birthday user in given month
+   * Test one user created in a week
    */
   @Test
-  public void testBirthdayInMonth() {
-    boolean expected = true;
-    boolean actual = UserService.birthdayInMonth(user, 11);
-    assertEquals(expected, actual);
+  public void testOneUserCreatedInAWeek() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    String[] times = {
+        "2018-07-12T00:21:45", "2018-07-10T09:21:45", "2018-07-09T09:21:45", "2018-07-08T22:21:45",
+        "2018-07-07T09:21:45", "2018-07-06T09:21:45", "2018-07-05T09:21:45"
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
+    assertEquals(1, result.size());
   }
 
   /**
-   * Test finding users that have birthday same given month
+   * Test seven user created in a week
    */
   @Test
-  public void testFindUsersHaveBirthdayInMonth() {
-    List<User> results = userService.findUsersHaveBirthdayInMonth(users, 11);
+  public void testSevenUserCreatedInAWeek() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
 
-    // Check size
-    long expectedSize = 3;
-    long actualSize = results.size();
-    assertEquals(expectedSize, actualSize);
+    String[] times = {
+        "2018-07-12T00:21:45", "2018-07-13T09:21:45", "2018-07-14T09:21:45", "2018-07-15T22:21:45",
+        "2018-07-16T09:21:45", "2018-07-17T09:21:45", "2018-07-18T09:21:45"
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
+    assertEquals(7, result.size());
+  }
 
-    // Check first user birthday
-    LocalDate expectedFirstUserBirthday = LocalDateTime.parse("1961-11-15T11:50:13.448").toLocalDate();
-    LocalDate actualFirstUserBirthday = results.get(0).getBirthday().toLocalDate();
-    assertEquals(expectedFirstUserBirthday, actualFirstUserBirthday);
+  /**
+   * Test no user created in a month
+   */
+  @Test
+  public void testNoUserCreatedInAMonth() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    String[] times = {
+        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
+        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
+    assertEquals(0, result.size());
+  }
+
+  /**
+   * Test one user created in a month
+   */
+  @Test
+  public void testOneUserCreatedInAMonth() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    String[] times = {
+        "2018-06-19T00:21:45", "2018-06-18T23:59:59", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
+        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
+    assertEquals(1, result.size());
+  }
+
+  /**
+   * Test seven user created in a month
+   */
+  @Test
+  public void testSevenUserCreatedInAMonth() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    String[] times = {
+        "2018-06-19T00:21:45", "2018-06-20T23:59:59", "2018-06-21T00:21:45", "2018-06-22T00:21:45",
+        "2018-06-23T00:21:45", "2018-06-24T00:21:45", "2018-06-25T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
+    assertEquals(7, result.size());
+  }
+
+  /**
+   * Test no user have birthday in month
+   */
+  @Test
+  public void testNoUsersHaveBirthdayInMonth() {
+    int month = 11;
+
+    String[] times = {
+        "2018-06-18T00:21:45", "2018-07-18T00:21:45", "2018-08-18T00:21:45", "2018-09-18T00:21:45",
+        "2018-10-18T00:21:45", "2018-12-18T00:21:45", "2018-05-18T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithBirthday(times);
+    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
+    assertEquals(0, result.size());
+  }
+
+  /**
+   * Test one user have birthday in month
+   */
+  @Test
+  public void testOneUserHaveBirthdayInMonth() {
+    int month = 11;
+
+    String[] times = {
+        "2018-06-18T00:21:45", "2018-07-18T00:21:45", "2018-08-18T00:21:45", "2018-09-18T00:21:45",
+        "2018-10-18T00:21:45", "2018-12-18T00:21:45", "2018-11-18T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithBirthday(times);
+    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
+    assertEquals(1, result.size());
+  }
+
+  /**
+   * Test seven user have birthday in month
+   */
+  @Test
+  public void testSevenUserHaveBirthdayInMonth() {
+    int month = 11;
+
+    String[] times = {
+        "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45",
+        "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45",
+    };
+    List<User> users = mockUser.createListUserWithBirthday(times);
+    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
+    assertEquals(7, result.size());
   }
 
   /**
