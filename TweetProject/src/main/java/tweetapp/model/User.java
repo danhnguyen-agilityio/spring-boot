@@ -22,6 +22,14 @@ public class User {
   private LocalDateTime modifiedAt;
   private String version;
 
+  /**
+   * Constructor default
+   */
+  public User() {}
+
+  /**
+   * Constructor with given parameters
+   */
   public User(String id, String username, String firstName, String lastName, String avatarUrl, String nickname,
       String email, String phone, String address, Gender gender, LocalDateTime birthday, String description,
       LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {

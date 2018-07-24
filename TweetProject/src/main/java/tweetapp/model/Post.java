@@ -14,7 +14,10 @@ public class Post {
   private LocalDateTime modifiedAt;
   private String version;
 
-  public Post(String id, String authorId, String message, String commentsCount, LocalDateTime createdAt, LocalDateTime modifiedAt, String version) {
+  public Post() {}
+
+  public Post(String id, String authorId, String message, String commentsCount, LocalDateTime createdAt,
+              LocalDateTime modifiedAt, String version) {
     this.id = id;
     this.authorId = authorId;
     this.message = message;
