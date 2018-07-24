@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import tweetapp.comparator.FirstNameComparator;
 import tweetapp.comparator.LastNameComparator;
+import tweetapp.mock.MockUser;
 import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
@@ -19,19 +20,21 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
-  public static User mockUser;
+  public static User user;
   public static List<User> users;
   public static List<Post> posts;
   public static UserServiceImpl userService;
   public static PostServiceImpl postService;
+  public static MockUser mockUser;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
 
     userService = new UserServiceImpl();
     postService = new PostServiceImpl();
+    mockUser = new MockUser();
 
-    mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
+    user = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
         "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
         "Alexa Volkman IV", "orville.bogan@yahoo.com","1-330-949-7777 x444",
         "Suite 935 28068 Oswaldo Manors", Gender.MALE, LocalDateTime.parse("1993-11-07T12:47:20.430"),
@@ -94,33 +97,90 @@ public class UserServiceTest {
   }
 
   /**
-   * Test counting all user
+   * Test count equal 0 if list empty
    */
   @Test
-  public void testCountAllUser() {
-    long expected = 7;
-    long actual = users.size();
-    assertEquals(expected, actual);
+  public void testCountEqual0IfListEmpty() {
+    long actual = mockUser.createList(0).size();
+    assertEquals(0, actual);
   }
 
   /**
-   * Test counting all female users
+   * Test count equal 1 if list have 1 element
    */
   @Test
-  public void testCountFemaleUsers() {
-    long expected = 3;
+  public void testCountEqual1IfListHave1Users() {
+    long actual = mockUser.createList(1).size();
+    assertEquals(1, actual);
+  }
+
+  /**
+   * Test count equal 10 if list have 10 element
+   */
+  @Test
+  public void testCountEqual1IfListHave10Users() {
+    long actual = mockUser.createList(10).size();
+    assertEquals(10, actual);
+  }
+
+  /**
+   * Test count equal 0 if list no have female user
+   */
+  @Test
+  public void testCountEqual0IfListNoHaveFemaleUser() {
+    List<User> users = mockUser.createList0FemaleUser();
     long actual = userService.countFemaleUsers(users);
-    assertThat(actual, is(expected));
+    assertEquals(0, actual);
   }
 
   /**
-   * Test counting all male users
+   * Test count equal 0 if list have one female user
    */
   @Test
-  public void testCountMaleUsers() {
-    long expected = 3;
+  public void testCountEqual1IfListHave1FemaleUser() {
+    List<User> users = mockUser.createList1FemaleUser();
+    long actual = userService.countFemaleUsers(users);
+    assertEquals(1, actual);
+  }
+
+  /**
+   * Test count equal 10 if list have 10 female user
+   */
+  @Test
+  public void testCountEqual10IfListNoHave10FemaleUser() {
+    List<User> users = mockUser.createList10FemaleUser();
+    long actual = userService.countFemaleUsers(users);
+    assertEquals(10, actual);
+  }
+
+  /**
+   * Test count equal 0 if list no have male user
+   */
+  @Test
+  public void testCountEqual0IfListNoHaveMaleUser() {
+    List<User> users = mockUser.createList0MaleUser();
     long actual = userService.countMaleUsers(users);
-    assertEquals(expected, actual);
+    assertEquals(0, actual);
+  }
+
+  /**
+   * Test count equal 0 if list have one male user
+   */
+  @Test
+  public void testCountEqual1IfListHave1MaleUser() {
+    List<User> users = mockUser.createList1MaleUser();
+    long actual = userService.countMaleUsers(users);
+    assertEquals(1, actual);
+  }
+
+  /**
+   * Test count equal 10 if list have 10 male user
+   */
+  @Test
+  public void testCountEqual10IfListNoHave10MaleUser() {
+    List<User> users = mockUser.createList10MaleUser();
+    long actual = userService.countMaleUsers(users);
+    assertEquals(10, actual);
   }
 
   /**
@@ -147,7 +207,7 @@ public class UserServiceTest {
   @Test
   public void testBirthdayInMonth() {
     boolean expected = true;
-    boolean actual = UserService.birthdayInMonth(mockUser, 11);
+    boolean actual = UserService.birthdayInMonth(user, 11);
     assertEquals(expected, actual);
   }
 
@@ -211,10 +271,10 @@ public class UserServiceTest {
    */
   @Test
   public void testHaveAgeGreater() {
-    boolean isGreater16 = UserService.haveAgeGreater(mockUser, 16, true);
+    boolean isGreater16 = UserService.haveAgeGreater(user, 16, true);
     assertEquals(true, isGreater16);
 
-    boolean isLess24 = UserService.haveAgeGreater(mockUser, 24, false);
+    boolean isLess24 = UserService.haveAgeGreater(user, 24, false);
     assertEquals(false, isLess24);
   }
 
@@ -323,8 +383,8 @@ public class UserServiceTest {
    */
   @Test
   public void testContainsUsername() {
-    assertEquals(true, UserService.containsUsername(mockUser, "Jerrell") );
-    assertEquals(false, UserService.containsUsername(mockUser, "David"));
+    assertEquals(true, UserService.containsUsername(user, "Jerrell") );
+    assertEquals(false, UserService.containsUsername(user, "David"));
   }
 
 }
