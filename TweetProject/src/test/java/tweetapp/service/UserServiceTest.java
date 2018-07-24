@@ -361,7 +361,7 @@ public class UserServiceTest {
   }
 
   /**
-   * Test seven user have birthday in month
+   * Test seven user have birthday in specific month
    */
   @Test
   public void testSevenUserHaveBirthdayInMonth() {
@@ -377,40 +377,78 @@ public class UserServiceTest {
   }
 
   /**
-   * Test finding users with given first name
+   * Test no user with given first name
    */
   @Test
-  public void testFindUsersWithFirstName() {
+  public void testNoUsersWithFirstName() {
     String firstName = "David";
-    List<User> results = userService.findUsersWithFirstName(users,  firstName);
 
-    // Check size
-    long expectedSize = 2;
-    long actualSize = results.size();
-    assertEquals(expectedSize, actualSize);
-
-    // Check last user id
-    String expectedLastUserId = "5b4c63aa170bb81857925072";
-    String actualLastUserId = results.get(results.size() - 1).getId();
-    assertEquals(expectedLastUserId, actualLastUserId);
+    String[] firstNames = { "Back", "Rose", "Henry", "Luis", "Torres", "Steven", "Lucian"};
+    List<User> users = mockUser.createListUserWithFirstName(firstNames);
+    List<User> result = userService.findUsersWithFirstName(users, firstName);
+    assertEquals(0, result.size());
   }
 
   /**
-   * Test finding users have avatar
+   * Test one user with given first name
    */
   @Test
-  public void testFindUsersHaveAvatar() {
-    List<User> results = userService.findUsersHaveAvatar(users);
+  public void testOneUsersWithFirstName() {
+    String firstName = "David";
 
-    // Check size
-    long expectedSize = 5;
-    long actualSize = results.size();
-    assertEquals(expectedSize, actualSize);
+    String[] firstNames = { "Back", firstName, "Henry", "Luis", "Torres", "Steven", "Lucian"};
+    List<User> users = mockUser.createListUserWithFirstName(firstNames);
+    List<User> result = userService.findUsersWithFirstName(users, firstName);
+    assertEquals(1, result.size());
+  }
 
-    // Check last user id
-    String expectedLastUserId = "5b4c63aa170bb81857925072";
-    String actualLastUserId = results.get(results.size() -1).getId();
-    assertEquals(expectedLastUserId, actualLastUserId);
+  /**
+   * Test two user with given first name
+   */
+  @Test
+  public void testTwoUsersWithFirstName() {
+    String firstName = "David";
+
+    String[] firstNames = { "Back", firstName, "Henry", "Luis", firstName, "Steven", "Lucian"};
+    List<User> users = mockUser.createListUserWithFirstName(firstNames);
+    List<User> result = userService.findUsersWithFirstName(users, firstName);
+    assertEquals(2, result.size());
+  }
+
+  /**
+   * Test no users have avatar
+   */
+  @Test
+  public void testNoUsersHaveAvatar() {
+    String[] avatarUrls = { "", "", "", "", "", "", "" };
+    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
+    List<User> result = userService.findUsersHaveAvatar(users);
+    assertEquals(0, result.size());
+  }
+
+  /**
+   * Test one user have avatar
+   */
+  @Test
+  public void testOneUserHaveAvatar() {
+    String[] avatarUrls = { mockUser.fakeAvatarUrl(), "", "", "", "", "", "" };
+    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
+    List<User> result = userService.findUsersHaveAvatar(users);
+    assertEquals(1, result.size());
+  }
+
+  /**
+   * Test seven user have avatar
+   */
+  @Test
+  public void testSevenUserHaveAvatar() {
+    String[] avatarUrls = {
+        mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(),
+        mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl()
+    };
+    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
+    List<User> result = userService.findUsersHaveAvatar(users);
+    assertEquals(7, result.size());
   }
 
   /**

@@ -4,17 +4,19 @@ import com.github.javafaker.Faker;
 import tweetapp.model.Gender;
 import tweetapp.model.User;
 import tweetapp.model.UserBuilder;
+import tweetapp.util.RandomUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Mock data user
  */
 public class MockUser {
-  Faker faker = new Faker();
+  final static Faker faker = new Faker(new Locale("en-US"));
 
   /**
    * Fake id user
@@ -22,6 +24,10 @@ public class MockUser {
    */
   public String fakeId() {
     return UUID.randomUUID().toString();
+  }
+
+  public String fakeAvatarUrl() {
+    return "https://s3.amazonaws.com/" + RandomUtil.randomString() + ".img";
   }
 
   /**
@@ -196,6 +202,42 @@ public class MockUser {
       user = UserBuilder.user()
           .withId(fakeId())
           .withBirthday(LocalDateTime.parse(birthdayTimes[i]))
+          .build();
+      userList.add(user);
+    }
+    return userList;
+  }
+
+  /**
+   * Create list user with first name of each user correspond with given firstNames
+   * @param firstNames List first name
+   * @return List user with first name correspond with given firstNames
+   */
+  public List<User> createListUserWithFirstName(String[] firstNames) {
+    List<User> userList = new ArrayList<>();
+    User user;
+    for (int i = 0; i < firstNames.length; i++) {
+      user = UserBuilder.user()
+          .withId(fakeId())
+          .withFirstName(firstNames[i])
+          .build();
+      userList.add(user);
+    }
+    return userList;
+  }
+
+  /**
+   * Create list user with avatar of each user correspond with given avatarUrls
+   * @param avatarUrls List avatar
+   * @return List user with avatar correspond with given avatarUrls
+   */
+  public List<User> createListUserWithAvatar(String[] avatarUrls) {
+    List<User> userList = new ArrayList<>();
+    User user;
+    for (int i = 0; i < avatarUrls.length; i++) {
+      user = UserBuilder.user()
+          .withId(fakeId())
+          .withAvatarUrl(avatarUrls[i])
           .build();
       userList.add(user);
     }
