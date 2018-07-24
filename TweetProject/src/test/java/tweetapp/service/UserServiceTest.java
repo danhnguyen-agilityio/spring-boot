@@ -184,6 +184,59 @@ public class UserServiceTest {
   }
 
   /**
+   * Test no users created in today
+   */
+  @Test
+  public void testNoUsersCreatedInToday() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    String[] times = {
+        "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-17T22:21:45",
+        "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
+    };
+    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
+    assertEquals(0, result.size());
+  }
+
+  /**
+   * Test 1 user created in today
+   */
+  @Test
+  public void testOneUserCreatedInToday() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    // List contain one time created in today
+    String[] times = {
+        "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-18T22:21:45",
+        "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
+    };
+    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
+    assertEquals(1, result.size());
+  }
+
+  /**
+   * Test 7 user created in today
+   */
+  @Test
+  public void testSevenUserCreatedInToday() {
+    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+
+    // List contain one time created in today
+    String[] times = {
+        "2018-07-18T23:21:45", "2018-07-18T09:21:45", "2018-07-18T00:00:00", "2018-07-18T22:21:45",
+        "2018-07-18T09:21:45", "2018-07-18T03:21:45", "2018-07-18T09:21:45"
+    };
+    List<User> users = mockUser.createListUserCreatedAt(times);
+    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
+    assertEquals(7, result.size());
+  }
+
+  
+
+
+  /**
    * Test finding user have created in period ago from given fromDate
    */
   @Test

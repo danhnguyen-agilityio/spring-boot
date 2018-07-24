@@ -5,6 +5,7 @@ import tweetapp.model.Gender;
 import tweetapp.model.User;
 import tweetapp.model.UserBuilder;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -156,5 +157,24 @@ public class MockUser {
     }
     return userList;
   }
+
+  /**
+   * Create list user with created time of each user correspond with given times
+   * @param times List time that have formatted string
+   * @return List user with created time correspond with given times
+   */
+  public List<User> createListUserCreatedAt(String[] times) {
+    List<User> userList = new ArrayList<>();
+    User user;
+    for (int i = 0; i < times.length; i++) {
+      user = UserBuilder.user()
+          .withId(fakeId())
+          .withCreatedAt(LocalDateTime.parse(times[i]))
+          .build();
+      userList.add(user);
+    }
+    return userList;
+  }
+
 
 }
