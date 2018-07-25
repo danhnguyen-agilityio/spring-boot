@@ -33,13 +33,14 @@ public class UserServiceImpl implements UserService {
   public void print(List<User> users) {
     if (users.isEmpty()) return;
 
-    System.out.println(String.format("| %-5s | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s",
+    System.out.println(String.format("| %-5s | %-25.25s | %-20.20s | %-15.15s | %-15.15s | %-25.25s | %-25.25s",
         "Index", "Id", "User name", "First name", "Last name", "BirthDate", "Created At"));
     IntStream.range(0, users.size())
         .forEach(idx -> {
           User user = users.get(idx);
-          System.out.println(String.format("| %-5d | %-25s | %-20.20s | %-15.15s | %-15.15s | %-25s | %-25s", idx + 1, user.getId(),
-              user.getUsername(), user.getFirstName(), user.getLastName(), user.getBirthday(), user.getCreatedAt()));
+          System.out.println(String.format("| %-5d | %-25.25s | %-20.20s | %-15.15s | %-15.15s | %-25.25s | %-25.25s",
+              idx + 1, user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getBirthday(),
+              user.getCreatedAt()));
         });
   }
 
@@ -254,7 +255,7 @@ public class UserServiceImpl implements UserService {
     Map<String, Post> latestPostOfEachUser = posts.stream()
         .filter(post -> DateUtil.withinNumberDaysAgo(post.getCreatedAt(), period, startDateTime))
         .sorted(Comparator.comparing(Post::getCreatedAt))
-        .collect(toMap(Post::getAuthorId, Function.identity(), BinaryOperator.maxBy(new CreatedPostComparator())));
+        .collect(toMap(Post::getAuthorId, p -> p, (p1, p2) -> p2, LinkedHashMap::new));
 
     // Stream user have post order ascending by created date
     Stream<User> usersOrderByCreatedPost =  latestPostOfEachUser

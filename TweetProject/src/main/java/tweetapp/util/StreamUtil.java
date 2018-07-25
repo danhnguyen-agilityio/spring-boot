@@ -39,4 +39,13 @@ public class StreamUtil {
     return list.stream().sorted(comparator).collect(Collectors.toList()).equals(list);
   }
 
+  /**
+   * Check given list is sorted or no
+   * @param list List need test
+   * @return true if list is sorted or false if other
+   */
+  public static boolean isSorted(List list) {
+    return list.stream().sorted(Comparator.naturalOrder()).collect(Collectors.toList()).equals(list);
+  }
+
 }

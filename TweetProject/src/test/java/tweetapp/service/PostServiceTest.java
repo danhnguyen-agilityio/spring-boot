@@ -89,6 +89,9 @@ public class PostServiceTest {
 
   /**
    * Test find posts created in period time with given size
+   * @param n Size of list
+   * @param number Number post created in period time
+   * @param period Period time
    */
   private void testFindPostsCreatedInWithSize(int n, int number, Period period) {
     List<Post> posts = mockPost.createListPostWithCreatedTimeIn(n, number, period);
@@ -96,8 +99,18 @@ public class PostServiceTest {
     assertEquals(number, result.size());
   }
 
-  private void testFindPostsByUserNameWithSize(int n, int number, String userName) {
-
+  /**
+   * Test find posts created by user name
+   * @param n Size of list
+   * @param numberPost Number post created given user name
+   * @param numberUser Number user contain given user name
+   * @param userName User name of user
+   */
+  private void testFindPostsByUserNameWithSize(int n, int numberPost, int numberUser, String userName) {
+    List<User> users = mockUser.createListUserContainUsername(n, numberUser,userName);
+    List<Post> posts = mockPost.createListPostCreatedByUserName(n, numberPost, users, userName);
+    List<Post> result = postService.findPostsByUserName(users, posts, userName);
+    assertEquals(numberPost, result.size());
   }
 
 
@@ -136,12 +149,17 @@ public class PostServiceTest {
 
   @Test
   public void findPostsByUserName() {
-    List<User> users = mockUser.createListUserContainUsername(10, 5,"David");
-    userService.print(users);
-    List<Post> posts = mockPost.createListPostCreatedByUserName(10, 3, users, "David");
-    postService.print(posts);
-    List<Post> result = postService.findPostsByUserName(users, posts, "David");
-    assertEquals(3, result.size());
+    // Test list post no have post that created by David
+    testFindPostsByUserNameWithSize(10, 0, 5, "David");
+
+    // Test list post have one post that created by David
+    testFindPostsByUserNameWithSize(10, 1, 5, "David");
+
+    // Test list post have 10 post that created by David
+    testFindPostsByUserNameWithSize(10, 10, 5, "David");
+
+    // Test list post have 10 post that created by David
+    testFindPostsByUserNameWithSize(10, 5, 1, "David");
   }
 
 }

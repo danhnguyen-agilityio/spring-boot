@@ -56,12 +56,12 @@ public class PostServiceImpl implements PostService {
   public void print(List<Post> posts) {
     if (posts.size() == 0) return;
 
-    System.out.println(String.format("| %-5s | %-25s | %-25.25s | %-25.25s",
+    System.out.println(String.format("| %-5s | %-25.25s | %-25.25s | %-25.25s",
         "Index", "Id", "Author Id", "Created At"));
     IntStream.range(0, posts.size())
         .forEach(idx -> {
           Post post = posts.get(idx);
-          System.out.println(String.format("| %-5d | %-25s | %-25.25s | %-15.15s",
+          System.out.println(String.format("| %-5d | %-25.25s | %-25.25s | %-25.25s",
               idx + 1, post.getId(), post.getAuthorId(), post.getCreatedAt()));
         });
   }
@@ -74,6 +74,19 @@ public class PostServiceImpl implements PostService {
   @Override
   public List<Post> getPostsFromFile(String fileName) throws IOException {
     return FileUtil.readFile(fileName, PostServiceImpl::processPostData);
+  }
+
+  /**
+   * Find post by given author user id
+   * @param posts List post
+   * @param authorId Author id
+   * @return Returns post with given author id
+   */
+  public Post findPostBy(List<Post> posts, String authorId) {
+    return posts.stream()
+        .filter(post -> post.getAuthorId().equals(authorId))
+        .findFirst()
+        .orElse(null);
   }
 
   /**

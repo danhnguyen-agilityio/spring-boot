@@ -1,10 +1,11 @@
 package tweetapp.service;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import tweetapp.comparator.CreatedPostComparator;
 import tweetapp.comparator.FirstNameComparator;
 import tweetapp.comparator.LastNameComparator;
+import tweetapp.mock.MockPost;
 import tweetapp.mock.MockUser;
 import tweetapp.model.Gender;
 import tweetapp.model.Post;
@@ -17,30 +18,24 @@ import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
-  public static User user;
-  public static List<User> users;
-  public static List<Post> posts;
-  public static UserServiceImpl userService;
-  public static PostServiceImpl postService;
-  public static MockUser mockUser;
+  private static List<User> users;
+  private static List<Post> posts;
+  private static UserServiceImpl userService;
+  private static PostServiceImpl postService;
+  private static MockUser mockUser;
+  private static MockPost mockPost;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
-
     userService = new UserServiceImpl();
     postService = new PostServiceImpl();
     mockUser = new MockUser();
-
-    user = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
-        "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
-        "Alexa Volkman IV", "orville.bogan@yahoo.com","1-330-949-7777 x444",
-        "Suite 935 28068 Oswaldo Manors", Gender.MALE, LocalDateTime.parse("1993-11-07T12:47:20.430"),
-        "Quia aut commodi", LocalDateTime.parse("2018-07-16T09:21:45.492"),
-        LocalDateTime.parse("2018-07-16T09:21:45.492"), "0");
+    mockPost = new MockPost();
 
     String userFile = "./src/test/resources/users-test.csv";
     users = userService.getUsersFromFile(userFile);
@@ -193,7 +188,28 @@ public class UserServiceTest {
 
     // Check order
     boolean isSorted = StreamUtil.isSorted(result, comparator);
-    assertEquals(true, isSorted);
+    assertTrue(isSorted);
+  }
+
+  /**
+   * Test find top female users have posted created in period time order by time created post
+   * @param n Size of list user
+   * @param number Number user have post created in period time
+   * @param period Period time
+   * @param maxSize Max size of result
+   */
+  private void testFindTopFemaleUsersOrderByCreatedPost(int n, int number, Period period, int maxSize) {
+    List<User> users = mockUser.createListUserWithGender(n, number, Gender.FEMALE);
+    List<Post> posts = mockPost.createListPostCreatedByFemaleUserAndPeriodTime(users, number, period);
+    List<User> result = userService.findTopFemaleUsersOrderByCreatedPost(users, posts, maxSize, period);
+    assertEquals(Math.min(number, maxSize), result.size());
+
+    // Check order
+    List<Post> postsCreatedByFemale = result.stream()
+        .map(user -> postService.findPostBy(posts, user.getId()))
+        .collect(Collectors.toList());
+    boolean isSorted = StreamUtil.isSorted(postsCreatedByFemale, new CreatedPostComparator().reversed());
+    assertTrue(isSorted);
   }
 
   /**
@@ -380,11 +396,36 @@ public class UserServiceTest {
   }
 
   /**
-   * Test find top female users order by created post
+   * Test find top female users by having posts within period time, order by time created post
    */
   @Test
   public void testFindTopFemaleUsersOrderByCreatedPost() {
-//    userService.findTopFemaleUsersOrderByCreatedPost()
+    // Test list user have 0 female user have post created in today
+    testFindTopFemaleUsersOrderByCreatedPost(20, 0, Period.ofDays(1), 10);
+
+    // Test list user have 10 female user have post created in today
+    testFindTopFemaleUsersOrderByCreatedPost(20, 10, Period.ofDays(1), 10);
+
+    // Test list user have 15 female user have post created in today
+    testFindTopFemaleUsersOrderByCreatedPost(20, 15, Period.ofDays(1), 10);
+
+    // Test list user have 0 female user have post created in a week
+    testFindTopFemaleUsersOrderByCreatedPost(20, 0, Period.ofWeeks(1), 10);
+
+    // Test list user have 10 female user have post created in a week
+    testFindTopFemaleUsersOrderByCreatedPost(20, 10, Period.ofWeeks(1), 10);
+
+    // Test list user have 15 female user have post created in a week
+    testFindTopFemaleUsersOrderByCreatedPost(20, 15, Period.ofWeeks(1), 10);
+
+    // Test list user have 0 female user have post created in a month
+    testFindTopFemaleUsersOrderByCreatedPost(20, 0, Period.ofMonths(1), 10);
+
+    // Test list user have 10 female user have post created in a month
+    testFindTopFemaleUsersOrderByCreatedPost(20, 10, Period.ofMonths(1), 10);
+
+    // Test list user have 15 female user have post created in a month
+    testFindTopFemaleUsersOrderByCreatedPost(25, 15, Period.ofMonths(1), 10);
   }
 
 }

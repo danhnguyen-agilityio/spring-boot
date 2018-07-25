@@ -111,4 +111,35 @@ public class MockPost {
     return postList;
   }
 
+  /**
+   * Create list post, while have number female user that have post created in period time
+   * @param number Number female user that have post created in period time
+   * @param period Period time
+   * @return List post have size equal size of users
+   */
+  public List<Post> createListPostCreatedByFemaleUserAndPeriodTime(List<User> users, int number, Period period) {
+    List<Post> postList = new ArrayList<>();
+    Post post;
+    LocalDateTime endOfDate = LocalDate.now().atTime(LocalTime.MAX);
+    LocalDateTime dateAgoPeriod = endOfDate.minus(period);
+    LocalDateTime randomDate;
+
+    for (User user : users) {
+      if (number > 0 && user.isFemale()) {
+        randomDate = RandomUtil.randomDateTimeBetween(dateAgoPeriod, endOfDate);
+        number--;
+      } else {
+        randomDate = RandomUtil.randomDateTimeBefore(dateAgoPeriod);
+      }
+      post = PostBuilder.post()
+          .withId(fakeId())
+          .withAuthorId(user.getId())
+          .withCreatedAt(randomDate)
+          .build();
+      postList.add(post);
+    }
+
+    return postList;
+  }
+
 }
