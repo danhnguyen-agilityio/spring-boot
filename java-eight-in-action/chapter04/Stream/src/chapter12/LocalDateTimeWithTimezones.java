@@ -2,8 +2,11 @@ package chapter12;
 
 import java.sql.Time;
 import java.time.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 public class LocalDateTimeWithTimezones {
   public static void main(String[] args) {
@@ -38,12 +41,24 @@ public class LocalDateTimeWithTimezones {
     System.out.println("Today: " + now);
 
     LocalDateTime endOfDay = now.with(LocalDateTime.MAX);
-    System.out.println("End of today: " + endOfDay);
+    endOfDay.withMonth(1);
+    System.out.println("End of today: " + endOfDay.withMonth(1));
 
     System.out.println(Duration.between(LocalDateTime.parse("1974-01-15T12:47:20.430"), LocalDateTime.parse("1974-01-14T12:47:20.430"))
     .getSeconds());
 
     Random random = new Random();
     System.out.println(random.nextInt(2));
+
+    LocalDate currentDate = LocalDate.of(2017, 11, 07);
+    LocalDate birthday = LocalDate.of(2015, 11, 7);
+    System.out.println(Period.between(birthday, currentDate).getYears());
+
+    List<String> list = Arrays.asList("David", "Tu", "Anna", "Lui");
+    list = Arrays.asList("d", "c", "b", "a");
+    boolean isSorted = list.stream().sorted().collect(Collectors.toList()).equals(list);
+    System.out.println(isSorted);
+
+
   }
 }

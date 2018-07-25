@@ -204,12 +204,9 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public List<User> findTopFemaleUserOrderBy(List<User> users, int maxSize, Comparator<User> comparator) {
-    Stream<User> topFemaleUser = users.stream() // order ascending
+    return users.stream()
         .filter(User::isFemale)
-        .sorted(comparator);
-
-    topFemaleUser = StreamUtil.reverse(topFemaleUser); // order descending
-    return topFemaleUser
+        .sorted(comparator)
         .limit(maxSize)
         .collect(toList());
   }

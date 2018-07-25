@@ -10,10 +10,12 @@ import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.DateUtil;
+import tweetapp.util.StreamUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -129,6 +131,72 @@ public class UserServiceTest {
   }
 
   /**
+   * Test find user with birthday in month with given size
+   * @param n Size of list
+   * @param number Number user have birthday in given month
+   * @param month Month of year
+   */
+  private void testFindUserWithBirthdayInMonthWithSize(int n, int number, int month) {
+    List<User> users = mockUser.createListUserWithBirthdayInMonth(n, number, month);
+    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
+    assertEquals(number, result.size());
+  }
+
+  /**
+   * Test find users with first name with given size
+   * @param n Size of list
+   * @param number Number user have given first name
+   * @param firstName First name of user
+   */
+  private void testFindUsesWithFirstNameWithSize(int n, int number, String firstName) {
+    List<User> users = mockUser.createListUserWithFirstName(n, number, firstName);
+    List<User> result = userService.findUsersWithFirstName(users, firstName);
+    assertEquals(number, result.size());
+  }
+
+  /**
+   * Test find users have avatar with given size
+   * @param n Size of list
+   * @param number Number user have avatar
+   */
+  private void testFindUsesHaveAvatarWithSize(int n, int number) {
+    List<User> users = mockUser.createListUserHaveAvatar(n, number);
+    List<User> result = userService.findUsersHaveAvatar(users);
+    assertEquals(number, result.size());
+  }
+
+  /**
+   * Test find users have age greater given age
+   * @param n Size of list
+   * @param number Number users have age greater given age
+   * @param age Age to compare
+   * @param isGreater Flag used to check age greater than or less than given age
+   */
+  private void testFindUsersHaveAgeGreaterWithSize(int n, int number, int age, boolean isGreater) {
+    List<User> users = mockUser.createListUserHaveAgeGreater(n, number, age, isGreater);
+    List<User> result = userService.findUsersHaveAgeGreater(users, age, isGreater);
+    assertEquals(number, result.size());
+  }
+
+  /**
+   * Test find top female user order by given comparator
+   * @param n Size of list
+   * @param number Number gender user
+   * @param gender Gender of user
+   * @param maxSize max size of result
+   * @param comparator Comparator used to compare
+   */
+  private void testFindTopFemaleUserOrderBy(int n, int number, Gender gender, int maxSize, Comparator comparator) {
+    List<User> users = mockUser.createListUserWithGender(n, number, gender);
+    List<User> result = userService.findTopFemaleUserOrderBy(users, maxSize, comparator);
+    assertEquals(Math.min(number, maxSize), result.size());
+
+    // Check order
+    boolean isSorted = StreamUtil.isSorted(result, comparator);
+    assertEquals(true, isSorted);
+  }
+
+  /**
    * Test count all user
    */
   @Test
@@ -206,378 +274,109 @@ public class UserServiceTest {
     testFindUsersCreatedInWithSize(10, 9, Period.ofMonths(1));
   }
 
-
-
   /**
-   * Test no users created in today
+   * Test find user have birthday in month
    */
   @Test
-  public void testNoUsersCreatedInToday() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+  public void testFindUsersHaveBirthdayInMonth() {
+    // Test list user no have user with birthday in month 11
+    testFindUserWithBirthdayInMonthWithSize(10, 0, 11);
 
-    String[] times = {
-        "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-17T22:21:45",
-        "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
-    assertEquals(0, result.size());
+    // Test list user have one user with birthday in month 11
+    testFindUserWithBirthdayInMonthWithSize(10, 1, 11);
+
+    // Test list user have 10user with birthday in month 11
+    testFindUserWithBirthdayInMonthWithSize(10, 10, 11);
   }
 
   /**
-   * Test 1 user created in today
+   * Test find users with first name
    */
   @Test
-  public void testOneUserCreatedInToday() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+  public void testFindUsesWithFirstName() {
+    // Test list user no have user with first name is DaVid
+    testFindUsesWithFirstNameWithSize(10, 0, "David");
 
-    // List contain one time created in today
-    String[] times = {
-        "2018-07-11T09:21:45", "2018-07-12T09:21:45", "2018-07-16T09:21:45", "2018-07-18T22:21:45",
-        "2018-07-12T09:21:45", "2018-07-13T09:21:45", "2018-07-17T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
-    assertEquals(1, result.size());
+    // Test list user have one user with first name is DaVid
+    testFindUsesWithFirstNameWithSize(10, 1, "David");
+
+    // Test list user have ten users with first name is DaVid
+    testFindUsesWithFirstNameWithSize(10, 10, "David");
   }
 
   /**
-   * Test 7 user created in today
+   * Test find users have avatar
    */
   @Test
-  public void testSevenUserCreatedInToday() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
+  public void testFindUsersHaveAvatar() {
+    // Test list user no have user that have avatar url
+    testFindUsesHaveAvatarWithSize(10, 0);
 
-    // List contain one time created in today
-    String[] times = {
-        "2018-07-18T23:21:45", "2018-07-18T09:21:45", "2018-07-18T00:00:00", "2018-07-18T22:21:45",
-        "2018-07-18T09:21:45", "2018-07-18T03:21:45", "2018-07-18T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofDays(1), fromDate);
-    assertEquals(7, result.size());
+    // Test list user have one user that have avatar url
+    testFindUsesHaveAvatarWithSize(10, 1);
+
+    // Test list user have 10 user that have avatar url
+    testFindUsesHaveAvatarWithSize(10, 10);
   }
 
   /**
-   * Test no users created in a week
+   * Test find users have age greater than or less than
    */
   @Test
-  public void testNoUsersCreatedInAWeek() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-07-11T09:21:45", "2018-07-10T09:21:45", "2018-07-09T09:21:45", "2018-07-08T22:21:45",
-        "2018-07-07T09:21:45", "2018-07-06T09:21:45", "2018-07-05T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
-    assertEquals(0, result.size());
-  }
-
-  /**
-   * Test one user created in a week
-   */
-  @Test
-  public void testOneUserCreatedInAWeek() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-07-12T00:21:45", "2018-07-10T09:21:45", "2018-07-09T09:21:45", "2018-07-08T22:21:45",
-        "2018-07-07T09:21:45", "2018-07-06T09:21:45", "2018-07-05T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
-    assertEquals(1, result.size());
-  }
-
-  /**
-   * Test seven user created in a week
-   */
-  @Test
-  public void testSevenUserCreatedInAWeek() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-07-12T00:21:45", "2018-07-13T09:21:45", "2018-07-14T09:21:45", "2018-07-15T22:21:45",
-        "2018-07-16T09:21:45", "2018-07-17T09:21:45", "2018-07-18T09:21:45"
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofWeeks(1), fromDate);
-    assertEquals(7, result.size());
-  }
-
-  /**
-   * Test no user created in a month
-   */
-  @Test
-  public void testNoUserCreatedInAMonth() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
-        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
-    assertEquals(0, result.size());
-  }
-
-  /**
-   * Test one user created in a month
-   */
-  @Test
-  public void testOneUserCreatedInAMonth() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-06-19T00:21:45", "2018-06-18T23:59:59", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
-        "2018-06-18T00:21:45", "2018-06-18T00:21:45", "2018-06-18T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
-    assertEquals(1, result.size());
-  }
-
-  /**
-   * Test seven user created in a month
-   */
-  @Test
-  public void testSevenUserCreatedInAMonth() {
-    LocalDateTime fromDate = LocalDateTime.parse("2018-07-18T09:21:45.492");
-
-    String[] times = {
-        "2018-06-19T00:21:45", "2018-06-20T23:59:59", "2018-06-21T00:21:45", "2018-06-22T00:21:45",
-        "2018-06-23T00:21:45", "2018-06-24T00:21:45", "2018-06-25T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithCreatedAt(times);
-    List<User> result = userService.findUsersCreatedIn(users, Period.ofMonths(1), fromDate);
-    assertEquals(7, result.size());
-  }
-
-  /**
-   * Test no user have birthday in month
-   */
-  @Test
-  public void testNoUsersHaveBirthdayInMonth() {
-    int month = 11;
-
-    String[] times = {
-        "2018-06-18T00:21:45", "2018-07-18T00:21:45", "2018-08-18T00:21:45", "2018-09-18T00:21:45",
-        "2018-10-18T00:21:45", "2018-12-18T00:21:45", "2018-05-18T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithBirthday(times);
-    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
-    assertEquals(0, result.size());
-  }
-
-  /**
-   * Test one user have birthday in month
-   */
-  @Test
-  public void testOneUserHaveBirthdayInMonth() {
-    int month = 11;
-
-    String[] times = {
-        "2018-06-18T00:21:45", "2018-07-18T00:21:45", "2018-08-18T00:21:45", "2018-09-18T00:21:45",
-        "2018-10-18T00:21:45", "2018-12-18T00:21:45", "2018-11-18T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithBirthday(times);
-    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
-    assertEquals(1, result.size());
-  }
-
-  /**
-   * Test seven user have birthday in specific month
-   */
-  @Test
-  public void testSevenUserHaveBirthdayInMonth() {
-    int month = 11;
-
-    String[] times = {
-        "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45",
-        "2018-11-18T00:21:45", "2018-11-18T00:21:45", "2018-11-18T00:21:45",
-    };
-    List<User> users = mockUser.createListUserWithBirthday(times);
-    List<User> result = userService.findUsersHaveBirthdayInMonth(users, month);
-    assertEquals(7, result.size());
-  }
-
-  /**
-   * Test no user with given first name
-   */
-  @Test
-  public void testNoUsersWithFirstName() {
-    String firstName = "David";
-
-    String[] firstNames = { "Back", "Rose", "Henry", "Luis", "Torres", "Steven", "Lucian"};
-    List<User> users = mockUser.createListUserWithFirstName(firstNames);
-    List<User> result = userService.findUsersWithFirstName(users, firstName);
-    assertEquals(0, result.size());
-  }
-
-  /**
-   * Test one user with given first name
-   */
-  @Test
-  public void testOneUsersWithFirstName() {
-    String firstName = "David";
-
-    String[] firstNames = { "Back", firstName, "Henry", "Luis", "Torres", "Steven", "Lucian"};
-    List<User> users = mockUser.createListUserWithFirstName(firstNames);
-    List<User> result = userService.findUsersWithFirstName(users, firstName);
-    assertEquals(1, result.size());
-  }
-
-  /**
-   * Test two user with given first name
-   */
-  @Test
-  public void testTwoUsersWithFirstName() {
-    String firstName = "David";
-
-    String[] firstNames = { "Back", firstName, "Henry", "Luis", firstName, "Steven", "Lucian"};
-    List<User> users = mockUser.createListUserWithFirstName(firstNames);
-    List<User> result = userService.findUsersWithFirstName(users, firstName);
-    assertEquals(2, result.size());
-  }
-
-  /**
-   * Test no users have avatar
-   */
-  @Test
-  public void testNoUsersHaveAvatar() {
-    String[] avatarUrls = { "", "", "", "", "", "", "" };
-    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
-    List<User> result = userService.findUsersHaveAvatar(users);
-    assertEquals(0, result.size());
-  }
-
-  /**
-   * Test one user have avatar
-   */
-  @Test
-  public void testOneUserHaveAvatar() {
-    String[] avatarUrls = { mockUser.fakeAvatarUrl(), "", "", "", "", "", "" };
-    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
-    List<User> result = userService.findUsersHaveAvatar(users);
-    assertEquals(1, result.size());
-  }
-
-  /**
-   * Test seven user have avatar
-   */
-  @Test
-  public void testSevenUserHaveAvatar() {
-    String[] avatarUrls = {
-        mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(),
-        mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl(), mockUser.fakeAvatarUrl()
-    };
-    List<User> users = mockUser.createListUserWithAvatar(avatarUrls);
-    List<User> result = userService.findUsersHaveAvatar(users);
-    assertEquals(7, result.size());
-  }
-
-  /**
-   * Test whether or not user have age greater given age
-   */
-  @Test
-  @Ignore
-  public void testHaveAgeGreater() {
-    boolean isGreater16 = UserService.haveAgeGreater(user, 16, true);
-    assertEquals(true, isGreater16);
-
-    boolean isLess24 = UserService.haveAgeGreater(user, 24, false);
-    assertEquals(false, isLess24);
-  }
-
-  /**
-   * Test finding users have age greater given age
-   */
-  @Test
-  @Ignore
   public void testFindUsersHaveAgeGreater() {
-    // Test for finding user have age less 16
-    List<User> usersHaveAgeLess16 = userService.findUsersHaveAgeGreater(users, 16, false);
-    // Check size
-    long expectedSizeUsersHaveAgeLess16 = 2;
-    long actualSizeUsersHaveAgeLess16 = usersHaveAgeLess16.size();
-    assertEquals(expectedSizeUsersHaveAgeLess16, actualSizeUsersHaveAgeLess16);
-    // Check last user id
-    String expectedLastUserIdHaveAgeLess16 = "5b4c63aa170bb81857925072";
-    String actualLastUserIdHaveAgeLess16 = usersHaveAgeLess16.get(usersHaveAgeLess16.size() -1).getId();
-    assertEquals(expectedLastUserIdHaveAgeLess16, actualLastUserIdHaveAgeLess16);
+    // Test list user no have user that have age greater than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 0, 18, true);
 
-    // Test for finding user have age greater 30
-    List<User> usersHaveAgeGreater30 = userService.findUsersHaveAgeGreater(users, 30, true);
-    // Check size
-    long expectedSizeUsersHaveAgeGreater30 = 2;
-    long actualSizeUsersHaveAgeGreater30 = usersHaveAgeGreater30.size();
-    assertEquals(expectedSizeUsersHaveAgeGreater30, actualSizeUsersHaveAgeGreater30);
-    // Check last user id
-    String expectedLastUserIdHaveAgeGreater30 = "5b4c63aa170bb8185792506d";
-    String actualLastUserIdHaveAgeGreater30 = usersHaveAgeGreater30.get(usersHaveAgeLess16.size() -1).getId();
-    assertEquals(expectedLastUserIdHaveAgeGreater30, actualLastUserIdHaveAgeGreater30);
-  }
+    // Test list user have one user that have age greater than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 1, 18, true);
 
-  public void testFindTopFemaleUserOrderByFirstName1() {
-    String[] firstNames = {
-        "A", "D", "F", "E", "D", "C", "B"
-    };
-    Gender[] genders = {
-        Gender.FEMALE, Gender.FEMALE, Gender.OTHER, Gender.MALE, Gender.FEMALE, Gender.FEMALE, Gender.FEMALE
-    };
-    List<User> users = mockUser.createListUserWithFirstNameAndGender(firstNames, genders);
-    List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
-    // Check size
-    assertEquals(5, results.size());
-    // Check top first name
-    assertEquals(firstNames[2], results.get(0).getFirstName());
-    // Check bottom first name
-    assertEquals(firstNames[0], results.get(results.size() - 1).getFirstName());
+    // Test list user have 10 user that have age greater than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 10, 18, true);
+
+    // Test list user no have user that have age less than than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 0, 18, false);
+
+    // Test list user have one user that have age less than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 1, 18, false);
+
+    // Test list user have 10 user that have age less than 18
+    testFindUsersHaveAgeGreaterWithSize(10, 10, 18, false);
   }
 
   /**
-   * Test finding top female user order by first name
+   * Test find top female users order by first name
    */
   @Test
   public void testFindTopFemaleUserOrderByFirstName() {
-    List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new FirstNameComparator());
-    // Check size
-    long expectedSize = 3;
-    long actualSize = results.size();
-    assertEquals(expectedSize, actualSize);
+    // Test get top 10 female user of list user no have female user
+    testFindTopFemaleUserOrderBy(10, 0, Gender.FEMALE, 10, new FirstNameComparator());
 
-    // Check top first name
-    String expectedTopFirstName = "Kendra";
-    String actualTopFirstName = results.get(0).getFirstName();
-    assertEquals(expectedTopFirstName, actualTopFirstName);
+    // Test get top 10 female user of list user have 5 female user
+    testFindTopFemaleUserOrderBy(10, 5, Gender.FEMALE, 10, new FirstNameComparator());
 
-    // Check bottom first name
-    String expectedBottomFirstName = "Arlie";
-    String actualBottomFirstName = results.get(results.size() - 1).getFirstName();
-    assertEquals(expectedBottomFirstName, actualBottomFirstName);
+    // Test get top 5 female user of list user have 10 female user
+    testFindTopFemaleUserOrderBy(10, 10, Gender.FEMALE, 5, new FirstNameComparator());
+
+    // Test get top 10 female user of list user have 10 female user
+    testFindTopFemaleUserOrderBy(10, 10, Gender.FEMALE, 10, new FirstNameComparator());
   }
 
   /**
-   * Test finding top female user order by last name
+   * Test find top female users order by last name
    */
   @Test
   public void testFindTopFemaleUserOrderByLastName() {
-    List<User> results = userService.findTopFemaleUserOrderBy(users, 5, new LastNameComparator());
-    // Check size
-    long expectedSize = 3;
-    long actualSize = results.size();
-    assertEquals(expectedSize, actualSize);
+    // Test get top 10 female user of list user no have female user
+    testFindTopFemaleUserOrderBy(10, 0, Gender.FEMALE, 10, new LastNameComparator());
 
-    // Check last name of first user
-    String expectedTopLastName = "Rose";
-    String actualTopLasttName = results.get(0).getLastName();
-    assertEquals(expectedTopLastName, actualTopLasttName);
+    // Test get top 10 female user of list user have 5 female user
+    testFindTopFemaleUserOrderBy(10, 5, Gender.FEMALE, 10, new LastNameComparator());
 
-    // Check last name of last user
-    String expectedBottomLastName = "Corwin";
-    String actualBottomLastName = results.get(results.size() - 1).getLastName();
-    assertEquals(expectedBottomLastName, actualBottomLastName);
+    // Test get top 5 female user of list user have 10 female user
+    testFindTopFemaleUserOrderBy(10, 10, Gender.FEMALE, 5, new LastNameComparator());
+
+    // Test get top 10 female user of list user have 10 female user
+    testFindTopFemaleUserOrderBy(10, 10, Gender.FEMALE, 10, new LastNameComparator());
   }
 
   /**
@@ -606,15 +405,6 @@ public class UserServiceTest {
     assertEquals("5b4c63aa170bb8185792506f", usersHaveCreatedPostInWeek.get(0).getId());
     // Check bottom user in result
     assertEquals("5b4c63aa170bb81857925070", usersHaveCreatedPostInWeek.get(usersHaveCreatedPostInWeek.size() - 1).getId());
-  }
-
-  /**
-   * Test whether or no user contains given user name
-   */
-  @Test
-  public void testContainsUsername() {
-    assertEquals(true, UserService.containsUsername(user, "Jerrell") );
-    assertEquals(false, UserService.containsUsername(user, "David"));
   }
 
 }

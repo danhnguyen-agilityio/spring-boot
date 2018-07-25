@@ -21,4 +21,22 @@ public class AgeCalculator {
       return 0;
     }
   }
+
+  /**
+   * Calculate max date have given age
+   * @param age age
+   * @return Date have given age
+   */
+  public static LocalDate maxDate(int age) {
+    return LocalDate.now().minusYears(age);
+  }
+
+  /**
+   * Calculate min date have given age
+   * @param age age
+   * @return Date have given age
+   */
+  public static LocalDate minDate(int age) {
+    return LocalDate.now().minusYears(age + 1).plusDays(1);
+  }
 }

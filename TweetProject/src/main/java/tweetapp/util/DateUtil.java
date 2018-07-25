@@ -51,7 +51,4 @@ public class DateUtil {
         .minusDays(period.getDays());
     return dateTime.compareTo(beforeNumberDays) >= 0;
   }
-
-
-
 }

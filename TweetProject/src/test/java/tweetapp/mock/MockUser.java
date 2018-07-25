@@ -19,6 +19,8 @@ import java.util.UUID;
  */
 public class MockUser {
 
+  private Random random = new Random();
+
   /**
    * Fake id user
    * @return Fake id of user
@@ -85,6 +87,8 @@ public class MockUser {
       }
       user = UserBuilder.user()
           .withId(fakeId())
+          .withFirstName(RandomUtil.randomString())
+          .withLastName(RandomUtil.randomString())
           .withGender(randomGender)
           .build();
       userList.add(user);
@@ -115,14 +119,11 @@ public class MockUser {
       } else {
         if (number == 0) {
           randomDate = RandomUtil.randomDateTimeBefore(dateAgoPeriod);
-          System.out.println("randomDate" + randomDate);
         } else if (random.nextBoolean()) {
           randomDate = RandomUtil.randomDateTimeBetween(dateAgoPeriod, endOfDate);
-          System.out.println(randomDate);
           number--;
         } else {
           randomDate = RandomUtil.randomDateTimeBefore(dateAgoPeriod);
-          System.out.println(randomDate);
         }
       }
       user = UserBuilder.user()
@@ -135,29 +136,44 @@ public class MockUser {
   }
 
   /**
-   * Create user with given birthday
-   * @param birthday
-   * @return User
+   * Create list user with number user have birthday in given month
+   * @param n Size of list
+   * @param number Number user have birthday in given month
+   * @param monthOfYear Month of year
+   * @return List n user, while have given number user that have birthday in given month
    */
-  public User createUserWithBirthday(LocalDateTime birthday) {
-    return UserBuilder.user()
-        .withId(fakeId())
-        .withBirthday(birthday)
-        .build();
-  }
-
-  /**
-   * Create list user with created time of each user correspond with given createdTimes
-   * @param createdTimes List time that formatted string
-   * @return List user with created time correspond with given times
-   */
-  public List<User> createListUserWithCreatedAt(String[] createdTimes) {
+  public List<User> createListUserWithBirthdayInMonth(int n, int number, int monthOfYear) {
     List<User> userList = new ArrayList<>();
     User user;
-    for (int i = 0; i < createdTimes.length; i++) {
+    int randomMonth;
+
+    for (int i = 0; i < n; i++) {
+      if (number == n - i) {
+        randomMonth = monthOfYear;
+        number--;
+      } else {
+        while (true) {
+          // Random month
+          randomMonth = RandomUtil.randomMonthOfYear();
+
+          // If size != 0
+          if (number != 0) {
+            // If randomMonth equal given monthOfYear, decrease size 1
+            if (randomMonth == monthOfYear) {
+              number--;
+            }
+            break;
+          }
+          // If size = 0 and randomMonth equal given monthOfYear => random month again
+          if (randomMonth == monthOfYear) continue;
+
+          // If size = 0 and randomMonth not equal given monthOfYear => break
+          break;
+        }
+      }
       user = UserBuilder.user()
           .withId(fakeId())
-          .withCreatedAt(LocalDateTime.parse(createdTimes[i]))
+          .withBirthday(RandomUtil.randomDate().withMonth(randomMonth).atStartOfDay())
           .build();
       userList.add(user);
     }
@@ -165,17 +181,44 @@ public class MockUser {
   }
 
   /**
-   * Create list user with birthday time of each user correspond with given birthdayTimes
-   * @param birthdayTimes List time that formatted string
-   * @return List user with created time correspond with given birthdayTimes
+   * Create list user with number user have given first name
+   * @param n Size of list
+   * @param number Number user have given first name
+   * @param firstName First name of user
+   * @return List n user, while have given number user that have given first name
    */
-  public List<User> createListUserWithBirthday(String[] birthdayTimes) {
+  public List<User> createListUserWithFirstName(int n, int number, String firstName) {
     List<User> userList = new ArrayList<>();
     User user;
-    for (int i = 0; i < birthdayTimes.length; i++) {
+    String randomFirstName;
+
+    for (int i = 0; i < n; i++) {
+      if (number == n - i) {
+        randomFirstName = firstName;
+        number--;
+      } else {
+        while (true) {
+          // Random first name
+          randomFirstName = RandomUtil.randomString();
+
+          // If size != 0
+          if (number != 0) {
+            // If randomFirstName equal given firstName, decrease size 1
+            if (randomFirstName.equals(firstName)) {
+              number--;
+            }
+            break;
+          }
+          // If size = 0 and randomFirstName equal given firstName => random firstName again
+          if (randomFirstName.equals(firstName)) continue;
+
+          // If size = 0 and randomFirstName not equal given firstName => break
+          break;
+        }
+      }
       user = UserBuilder.user()
           .withId(fakeId())
-          .withBirthday(LocalDateTime.parse(birthdayTimes[i]))
+          .withFirstName(randomFirstName)
           .build();
       userList.add(user);
     }
@@ -183,55 +226,86 @@ public class MockUser {
   }
 
   /**
-   * Create list user with first name of each user correspond with given firstNames
-   * @param firstNames List first name
-   * @return List user with first name correspond with given firstNames
+   * Create list user with number user have avatar
+   * @param n Size of list
+   * @param number Number user have avatar
+   * @return List n user, while have given number user that have avatar
    */
-  public List<User> createListUserWithFirstName(String[] firstNames) {
+  public List<User> createListUserHaveAvatar(int n, int number) {
     List<User> userList = new ArrayList<>();
     User user;
-    for (int i = 0; i < firstNames.length; i++) {
+    String randomAvatar;
+
+    for (int i = 0; i < n; i++) {
+      if (number == n - i) {
+        randomAvatar = fakeAvatarUrl();
+        number--;
+      } else {
+        if (number == 0) {
+          randomAvatar = "";
+        } else if (random.nextBoolean()) {
+          randomAvatar = fakeAvatarUrl();
+          number--;
+        } else {
+          randomAvatar = "";
+        }
+      }
       user = UserBuilder.user()
           .withId(fakeId())
-          .withFirstName(firstNames[i])
+          .withAvatarUrl(randomAvatar)
           .build();
       userList.add(user);
     }
     return userList;
   }
 
-  /**
-   * Create list user with avatar of each user correspond with given avatarUrls
-   * @param avatarUrls List avatar
-   * @return List user with avatar correspond with given avatarUrls
-   */
-  public List<User> createListUserWithAvatar(String[] avatarUrls) {
-    List<User> userList = new ArrayList<>();
-    User user;
-    for (int i = 0; i < avatarUrls.length; i++) {
-      user = UserBuilder.user()
-          .withId(fakeId())
-          .withAvatarUrl(avatarUrls[i])
-          .build();
-      userList.add(user);
-    }
-    return userList;
-  }
 
   /**
-   * Create list user with firstName and gender of each user correspond with given avatarUrls and genders
-   * @param firstNames List first name
-   * @param genders List gender
-   * @return List user
+   * Create list user have age greater given age or less than given age
+   * @param n Size of list
+   * @param number Number users have age greater given age
+   * @param age Age to compare
+   * @param isGreater Flag to check greater than or less than
+   * @return List n user have number user that have age greater given age or less than given age
    */
-  public List<User> createListUserWithFirstNameAndGender(String[] firstNames, Gender[] genders) {
+  public List<User> createListUserHaveAgeGreater(int n, int number, int age, boolean isGreater) {
     List<User> userList = new ArrayList<>();
     User user;
-    for (int i = 0; i < firstNames.length; i++) {
+    int randomAge;
+
+    for (int i = 0; i < n; i++) {
+      if (number == n - i) {
+        if (isGreater) {
+          randomAge = random.nextInt(100) + age + 1;
+        } else {
+          randomAge = random.nextInt(age);
+        }
+        number--;
+      } else {
+        while (true) {
+          // Random age
+          randomAge = random.nextInt(100 + age);
+
+          // If size != 0
+          if (number != 0) {
+            // If randomAge greater given age and flag isGreater true
+            // or randomAge less than given age and flag isGreater false, decrease size 1
+            if ((randomAge > age) == isGreater ) {
+              number--;
+            }
+            break;
+          }
+          // If size = 0 and randomAge greater given age and flag isGreater true
+          // or randomAge less than given age and flag isGreater false => random age again
+          if ((randomAge > age) == isGreater) continue;
+
+          // Other case => break
+          break;
+        }
+      }
       user = UserBuilder.user()
           .withId(fakeId())
-          .withFirstName(firstNames[i])
-          .withGender(genders[i])
+          .withBirthday(RandomUtil.randomDateFromAge(randomAge))
           .build();
       userList.add(user);
     }

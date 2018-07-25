@@ -1,7 +1,10 @@
 package tweetapp.util;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -24,4 +27,16 @@ public class StreamUtil {
         (a, b) -> a);
     return stream.collect(collector).stream();
   }
+
+  /**
+   * Check given list is sorted or no
+   * @param list List need test
+   * @param comparator Comparator used to compare
+   * @param <T> Generic type
+   * @return true if list is sorted or false if other
+   */
+  public static <T> boolean isSorted(List<T> list, Comparator<T> comparator) {
+    return list.stream().sorted(comparator).collect(Collectors.toList()).equals(list);
+  }
+
 }
