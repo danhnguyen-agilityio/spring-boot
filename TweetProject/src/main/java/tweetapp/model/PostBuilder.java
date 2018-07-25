@@ -22,7 +22,7 @@ public class PostBuilder {
   }
 
   public PostBuilder withAuthorId(String authorId) {
-    post.setId(authorId);
+    post.setAuthorId(authorId);
     return this;
   }
 

@@ -4,6 +4,7 @@ import tweetapp.model.Gender;
 import tweetapp.model.User;
 import tweetapp.model.UserBuilder;
 import tweetapp.util.RandomUtil;
+import tweetapp.util.StringUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -108,7 +109,6 @@ public class MockUser {
     User user;
     LocalDateTime endOfDate = LocalDate.now().atTime(LocalTime.MAX);
     LocalDateTime dateAgoPeriod = endOfDate.minus(period);
-    System.out.println("dateAgoPeriod" + dateAgoPeriod);
     Random random = new Random();
     LocalDateTime randomDate;
 
@@ -306,6 +306,52 @@ public class MockUser {
       user = UserBuilder.user()
           .withId(fakeId())
           .withBirthday(RandomUtil.randomDateFromAge(randomAge))
+          .build();
+      userList.add(user);
+    }
+    return userList;
+  }
+
+  /**
+   * Create list user have number userName of user contains given userName
+   * @param n Size of list
+   * @param number Number userName of user contains given userName
+   * @param userName Substring of username of user
+   * @return List user
+   */
+  public List<User> createListUserContainUsername(int n, int number, String userName) {
+    List<User> userList = new ArrayList<>();
+    User user;
+    String randomUserName;
+
+    for (int i = 0; i < n; i++) {
+      if (number == n - i) {
+        randomUserName = userName + RandomUtil.randomString();
+        number--;
+      } else {
+        while (true) {
+          // Random user name
+          randomUserName = RandomUtil.randomString();
+
+          // If size != 0
+          if (number != 0) {
+            // If randomFirstName contain given userName, decrease size 1
+            if (randomUserName.contains(userName)) {
+              number--;
+            }
+            break;
+          }
+          // If size = 0 and randomUserName contain given userName => random userName again
+          if (randomUserName.contains(userName)) continue;
+
+          // If size = 0 and randomUserName not contain given userName => break
+          break;
+        }
+      }
+      System.out.println(randomUserName);
+      user = UserBuilder.user()
+          .withId(fakeId())
+          .withUsername(randomUserName)
           .build();
       userList.add(user);
     }

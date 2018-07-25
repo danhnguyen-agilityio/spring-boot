@@ -2,6 +2,8 @@ package tweetapp.service;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import tweetapp.mock.MockPost;
+import tweetapp.mock.MockUser;
 import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
@@ -15,24 +17,20 @@ import static org.junit.Assert.*;
 
 public class PostServiceTest {
 
-  public static User mockUser;
   public static List<User> users;
   public static List<Post> posts;
   public static UserServiceImpl userService;
   public static PostServiceImpl postService;
+  public static MockUser mockUser;
+  public static MockPost mockPost;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
 
     userService = new UserServiceImpl();
     postService = new PostServiceImpl();
-
-    mockUser = new User("5b4c63aa170bb8185792506c", "Jerrell-Herman",
-        "Jerrell", "Herman", "https://s3.amazonaws.com./mage.jpg",
-        "Alexa Volkman IV", "orville.bogan@yahoo.com","1-330-949-7777 x444",
-        "Suite 935 28068 Oswaldo Manors", Gender.MALE, LocalDateTime.parse("1993-11-07T12:47:20.430"),
-        "Quia aut commodi", LocalDateTime.parse("2018-07-16T09:21:45.492"),
-        LocalDateTime.parse("2018-07-16T09:21:45.492"), "0");
+    mockUser = new MockUser();
+    mockPost = new MockPost();
 
     String userFile = "./src/test/resources/users-test.csv";
     users = userService.getUsersFromFile(userFile);
@@ -90,48 +88,60 @@ public class PostServiceTest {
   }
 
   /**
-   * Test finding post have created in given period ago from given fromDate
+   * Test find posts created in period time with given size
+   */
+  private void testFindPostsCreatedInWithSize(int n, int number, Period period) {
+    List<Post> posts = mockPost.createListPostWithCreatedTimeIn(n, number, period);
+    List<Post> result = postService.findPostsCreatedIn(posts, period);
+    assertEquals(number, result.size());
+  }
+
+  private void testFindPostsByUserNameWithSize(int n, int number, String userName) {
+
+  }
+
+
+  /**
+   * Test finding post have created in given period time ago
    */
   @Test
   public void testFindPostsCreatedIn() {
-    // Find post in today
-    List<Post> postCreatedInToday = postService.findPostsCreatedIn(posts, Period.ofDays(1),
-        LocalDateTime.parse("2018-07-18T09:21:47.134"));
-    // Check size
-    assertEquals(3, postCreatedInToday.size());
-    // Check id of first post
-    assertEquals("5b4c63ab170bb81857925455", postCreatedInToday.get(0).getId());
-    // Check if of last post
-    assertEquals("5b4c63ab170bb8185792545b", postCreatedInToday.get(postCreatedInToday.size() - 1).getId());
+    // Test list post no have post created in today
+    testFindPostsCreatedInWithSize(10, 0, Period.ofDays(1));
 
-    // Find post in a week ago
-    List<Post> postCreatedInWeek = postService.findPostsCreatedIn(posts, Period.ofWeeks(1),
-        LocalDateTime.parse("2018-07-18T09:21:47.134"));
-    // Check size
-    assertEquals(6, postCreatedInWeek.size());
-    // Check id of first post
-    assertEquals("5b4c63ab170bb81857925455", postCreatedInWeek.get(0).getId());
-    // Check if of last post
-    assertEquals("5b4c63ab170bb8185792545b", postCreatedInWeek.get(postCreatedInWeek.size() - 1).getId());
+    // Test list post have one post created in today
+    testFindPostsCreatedInWithSize(10, 1, Period.ofDays(1));
+
+    // Test list post have ten post created in today
+    testFindPostsCreatedInWithSize(10, 10, Period.ofDays(1));
+
+    // Test list post no have post created in a week ago
+    testFindPostsCreatedInWithSize(10, 0, Period.ofWeeks(1));
+
+    // Test list post have one post created in a week ago
+    testFindPostsCreatedInWithSize(10, 1, Period.ofWeeks(1));
+
+    // Test list post have ten post created in a week ago
+    testFindPostsCreatedInWithSize(10, 10, Period.ofWeeks(1));
+
+    // Test list post no have post created in a month ago
+    testFindPostsCreatedInWithSize(10, 0, Period.ofMonths(1));
+
+    // Test list post have one post created in a month ago
+    testFindPostsCreatedInWithSize(10, 1, Period.ofMonths(1));
+
+    // Test list post have ten post created in a month ago
+    testFindPostsCreatedInWithSize(10, 10, Period.ofMonths(1));
   }
 
-  /**
-   * Test finding posts by given userName
-   */
   @Test
-  public void TestPostService() {
-    List<Post> results = postService.findPostsByUserName(users, posts, "David");
-
-    // Check size
-    assertEquals(5, results.size());
-
-    // Check first post id
-    assertEquals("5b4c63ab170bb81857925455", results.get(0).getId());
-
-    // Check last post id
-    assertEquals("5b4c63ab170bb81857925458", results.get(results.size() - 1).getId());
+  public void findPostsByUserName() {
+    List<User> users = mockUser.createListUserContainUsername(10, 5,"David");
+    userService.print(users);
+    List<Post> posts = mockPost.createListPostCreatedByUserName(10, 3, users, "David");
+    postService.print(posts);
+    List<Post> result = postService.findPostsByUserName(users, posts, "David");
+    assertEquals(3, result.size());
   }
-
-
 
 }
