@@ -2,6 +2,7 @@ package chapter12;
 
 import java.sql.Time;
 import java.time.*;
+import java.util.Random;
 import java.util.TimeZone;
 
 public class LocalDateTimeWithTimezones {
@@ -39,5 +40,10 @@ public class LocalDateTimeWithTimezones {
     LocalDateTime endOfDay = now.with(LocalDateTime.MAX);
     System.out.println("End of today: " + endOfDay);
 
+    System.out.println(Duration.between(LocalDateTime.parse("1974-01-15T12:47:20.430"), LocalDateTime.parse("1974-01-14T12:47:20.430"))
+    .getSeconds());
+
+    Random random = new Random();
+    System.out.println(random.nextInt(2));
   }
 }

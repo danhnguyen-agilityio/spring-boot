@@ -95,9 +95,9 @@ public class Person {
 
     System.out.println(optionalEmpty.orElseGet(() -> new Insurance("Empty value")).getName());
 
-    optionalInsurance.orElseThrow(() -> {
-      throw new NoSuchElementException("No have element");
-    }).getName();
+//    optionalInsurance.orElseThrow(() -> {
+//      throw new NoSuchElementException("No have element");
+//    }).getName();
 
     optionalInsurance.ifPresent(insurance1 -> {
       System.out.println(insurance1.getName() + "AAAA");

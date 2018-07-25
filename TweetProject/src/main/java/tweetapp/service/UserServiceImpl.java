@@ -110,23 +110,13 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Count all female users
+   * Count all users  with given gender
    * @param users List user
-   * @return total female users
+   * @return Number users with given gender
    */
   @Override
-  public long countFemaleUsers(List<User> users) {
-    return users.stream().filter(User::isFemale).count();
-  }
-
-  /**
-   * Count all male users
-   * @param users List user
-   * @return total male users
-   */
-  @Override
-  public long countMaleUsers(List<User> users) {
-    return users.stream().filter(User::isMale).count();
+  public long countUsersByGender(List<User> users, Gender gender) {
+    return users.stream().filter(user -> user.getGender().equals(gender)).count();
   }
 
   /**

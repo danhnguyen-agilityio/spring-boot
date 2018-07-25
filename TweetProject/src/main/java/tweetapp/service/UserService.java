@@ -1,5 +1,6 @@
 package tweetapp.service;
 
+import tweetapp.model.Gender;
 import tweetapp.model.Post;
 import tweetapp.model.User;
 import tweetapp.util.*;
@@ -87,18 +88,11 @@ public interface UserService {
   long countAllUser(List<User> users);
 
   /**
-   * Count all female users
+   * Count all users  with given gender
    * @param users List user
-   * @return total female users
+   * @return Number users with given gender
    */
-  long countFemaleUsers(List<User> users);
-
-  /**
-   * Count all male users
-   * @param users List user
-   * @return total male users
-   */
-  long countMaleUsers(List<User> users);
+  long countUsersByGender(List<User> users, Gender gender);
 
   /**
    * Find user have created in period ago from given fromDate

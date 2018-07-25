@@ -3,6 +3,7 @@ package tweetapp;
 import tweetapp.comparator.FirstNameComparator;
 import tweetapp.comparator.LastNameComparator;
 import tweetapp.constant.App;
+import tweetapp.model.Gender;
 import tweetapp.service.PostServiceImpl;
 import tweetapp.service.UserServiceImpl;
 import tweetapp.model.Post;
@@ -84,13 +85,13 @@ public class TweetApp {
           }
 
           case 2: { // count all female user
-            long totalFemaleUsers = userService.countFemaleUsers(tweetApp.users);
+            long totalFemaleUsers = userService.countUsersByGender(tweetApp.users, Gender.FEMALE);
             System.out.println("Count all female user: " + totalFemaleUsers);
             break;
           }
 
           case 3: { // count all male user
-            long totalMaleUsers = userService.countMaleUsers(tweetApp.users);
+            long totalMaleUsers = userService.countUsersByGender(tweetApp.users, Gender.MALE);
             System.out.println("Count all male user: " + totalMaleUsers);
             break;
           }
