@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
               .withCommentsCount(commentsCount)
               .withCreatedAt(createdAt)
               .withModifiedAt(modifiedAt)
-              .withVerion(version)
+              .withVersion(version)
               .build();
         })
         .collect(toList());
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService {
    * @param authorId Author id
    * @return Returns post with given author id
    */
-  public Post findPostBy(List<Post> posts, String authorId) {
+  Post findPostBy(List<Post> posts, String authorId) {
     return posts.stream()
         .filter(post -> post.getAuthorId().equals(authorId))
         .findFirst()

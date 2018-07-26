@@ -68,5 +68,5 @@ public interface PostService {
    * @param userName user name was search in list user
    * @return Posts have userName contain given userName
    */
-  public List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName);
+  List<Post> findPostsByUserName(List<User> users, List<Post> posts, String userName);
 }

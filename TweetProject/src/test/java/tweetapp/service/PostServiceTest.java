@@ -17,12 +17,10 @@ import static org.junit.Assert.*;
 
 public class PostServiceTest {
 
-  public static List<User> users;
-  public static List<Post> posts;
-  public static UserServiceImpl userService;
-  public static PostServiceImpl postService;
-  public static MockUser mockUser;
-  public static MockPost mockPost;
+  private static UserServiceImpl userService;
+  private static PostServiceImpl postService;
+  private static MockUser mockUser;
+  private static MockPost mockPost;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
@@ -32,11 +30,6 @@ public class PostServiceTest {
     mockUser = new MockUser();
     mockPost = new MockPost();
 
-    String userFile = "./src/test/resources/users-test.csv";
-    users = userService.getUsersFromFile(userFile);
-
-    String postFile = "./src/test/resources/posts-test.csv";
-    posts = postService.getPostsFromFile(postFile);
   }
 
   /**
@@ -66,7 +59,7 @@ public class PostServiceTest {
     String actualFirstPostId = posts.get(0).getId();
     assertEquals(expectedFirstPostId, actualFirstPostId);
 
-    // Check id of first post
+    // Check id of last post
     String expectedLastPostId = "5b4c63ab170bb8185792545b";
     String actualLastPostId = posts.get(posts.size() -1).getId();
     assertEquals(expectedLastPostId, actualLastPostId);

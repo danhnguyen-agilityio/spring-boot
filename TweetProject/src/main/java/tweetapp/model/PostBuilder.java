@@ -46,7 +46,7 @@ public class PostBuilder {
     return this;
   }
 
-  public PostBuilder withVerion(String version) {
+  public PostBuilder withVersion(String version) {
     post.setVersion(version);
     return this;
   }

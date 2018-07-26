@@ -3,7 +3,6 @@ package tweetapp.mock;
 import tweetapp.model.Post;
 import tweetapp.model.PostBuilder;
 import tweetapp.model.User;
-import tweetapp.model.UserBuilder;
 import tweetapp.service.UserService;
 import tweetapp.util.RandomUtil;
 
@@ -24,7 +23,7 @@ public class MockPost {
    * Fake id post
    * @return Fake id of post
    */
-  public String fakeId() {
+  private String fakeId() {
     return UUID.randomUUID().toString();
   }
 

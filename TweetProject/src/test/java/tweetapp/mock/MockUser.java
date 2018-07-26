@@ -4,7 +4,6 @@ import tweetapp.model.Gender;
 import tweetapp.model.User;
 import tweetapp.model.UserBuilder;
 import tweetapp.util.RandomUtil;
-import tweetapp.util.StringUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,11 +25,11 @@ public class MockUser {
    * Fake id user
    * @return Fake id of user
    */
-  public String fakeId() {
+  private String fakeId() {
     return UUID.randomUUID().toString();
   }
 
-  public String fakeAvatarUrl() {
+  private String fakeAvatarUrl() {
     return "https://s3.amazonaws.com/" + RandomUtil.randomString() + ".img";
   }
 

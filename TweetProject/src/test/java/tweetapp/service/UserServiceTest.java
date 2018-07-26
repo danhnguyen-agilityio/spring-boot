@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class UserServiceTest {
-  private static List<User> users;
-  private static List<Post> posts;
   private static UserServiceImpl userService;
   private static PostServiceImpl postService;
   private static MockUser mockUser;
@@ -36,12 +34,6 @@ public class UserServiceTest {
     postService = new PostServiceImpl();
     mockUser = new MockUser();
     mockPost = new MockPost();
-
-    String userFile = "./src/test/resources/users-test.csv";
-    users = userService.getUsersFromFile(userFile);
-
-    String postFile = "./src/test/resources/posts-test.csv";
-    posts = postService.getPostsFromFile(postFile);
   }
 
   /**
@@ -57,7 +49,7 @@ public class UserServiceTest {
    * Test getting users from file
    */
   @Test
-  public void testGetUsersFromFile() throws IOException {
+  public void testGetUsersFromFileSuccess() throws IOException {
     String userFile = "./src/test/resources/users-test.csv";
     List<User> users = userService.getUsersFromFile(userFile);
 
@@ -79,7 +71,7 @@ public class UserServiceTest {
 
   /**
    * Testing getting users from empty file
-   * @throws IOException
+   * @throws IOException Thrown when occur file not found
    */
   @Test
   public void testGetUsersFromEmptyFile() throws IOException {
@@ -181,7 +173,7 @@ public class UserServiceTest {
    * @param maxSize max size of result
    * @param comparator Comparator used to compare
    */
-  private void testFindTopFemaleUserOrderBy(int n, int number, Gender gender, int maxSize, Comparator comparator) {
+  private void testFindTopFemaleUserOrderBy(int n, int number, Gender gender, int maxSize, Comparator<User> comparator) {
     List<User> users = mockUser.createListUserWithGender(n, number, gender);
     List<User> result = userService.findTopFemaleUserOrderBy(users, maxSize, comparator);
     assertEquals(Math.min(number, maxSize), result.size());
