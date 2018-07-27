@@ -16,13 +16,15 @@ public interface PostService {
 
   /**
    * Print all info list posts
+   *
    * @param posts List post
    */
   void print(List<Post> posts);
 
   /**
    * Check whether post have created within given period ago
-   * @param post List post
+   *
+   * @param post   List post
    * @param period period time
    * @return true if post have created within given period ago ago and false if other
    */
@@ -32,7 +34,8 @@ public interface PostService {
 
   /**
    * Check whether post have created within given period ago
-   * @param post List post
+   *
+   * @param post   List post
    * @param period period time
    * @return true if post have created within given period ago ago and false if other
    */
@@ -42,6 +45,7 @@ public interface PostService {
 
   /**
    * Get all post from csv file
+   *
    * @return All info posts
    * @throws IOException exception thrown when occur file not found
    */
@@ -49,6 +53,7 @@ public interface PostService {
 
   /**
    * Find post have created in given period ago from today
+   *
    * @param period Period time
    * @return List Post
    */
@@ -56,6 +61,7 @@ public interface PostService {
 
   /**
    * Find post have created in given period ago from given fromDate
+   *
    * @param period Period time
    * @return List Post
    */
@@ -63,8 +69,9 @@ public interface PostService {
 
   /**
    * Find posts by given userName
-   * @param users List user
-   * @param posts List post
+   *
+   * @param users    List user
+   * @param posts    List post
    * @param userName user name was search in list user
    * @return Posts have userName contain given userName
    */
