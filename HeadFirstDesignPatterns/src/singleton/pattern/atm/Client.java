@@ -1,4 +1,4 @@
-package singleton.patten.atm;
+package singleton.pattern.atm;
 
 abstract class Factory {
   protected abstract StatementType createStatements(String selection);
