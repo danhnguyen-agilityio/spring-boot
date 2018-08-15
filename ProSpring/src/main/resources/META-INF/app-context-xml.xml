@@ -34,4 +34,11 @@
           c:message="This is a configurable message"
           c:author="David Nguyen">
     </bean>
+
+    <bean id="constructorConfusion"
+          class="com.agility.prospring4.chapter03.xml.ConstructorConfusion">
+        <constructor-arg type="int">
+            <value>90</value>
+        </constructor-arg>
+    </bean>
 </beans>
