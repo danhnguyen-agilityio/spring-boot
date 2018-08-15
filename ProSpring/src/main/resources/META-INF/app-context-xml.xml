@@ -35,10 +35,30 @@
           c:author="David Nguyen">
     </bean>
 
+    <!--Constructor confusion-->
     <bean id="constructorConfusion"
           class="com.agility.prospring4.chapter03.xml.ConstructorConfusion">
         <constructor-arg type="int">
             <value>90</value>
         </constructor-arg>
     </bean>
+
+    <!--Injection parameter-->
+    <bean id="injectSimple1" class="com.agility.prospring4.chapter03.xml.InjectSimple"
+          p:name="David Nguyen"
+          p:age="32"
+          p:ageInSeconds="1009843200"
+          p:height="1.778"
+          p:programmer="true"/>
+
+    <!--Injection parameter-->
+    <bean id="injectSimple" class="com.agility.prospring4.chapter03.xml.InjectSimple">
+        <property name="name" value="David Nguyen"/>
+        <property name="age" value="32"/>
+        <property name="ageInSeconds" value="1009843200"/>
+        <property name="height" value="1.778"/>
+        <property name="programmer" value="true"/>
+    </bean>
+
+
 </beans>
