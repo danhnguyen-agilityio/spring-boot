@@ -70,4 +70,13 @@
           p:programmer="#{injectSimpleConfig.programmer}"
           p:ageInSeconds="#{injectSimpleConfig.ageInSeconds}"/>
 
+    <!--Injecting Bean in the same XML Unit-->
+    <bean id="oracle" name="wiseworm" class="com.agility.prospring4.chapter03.beanfactory.BookwormOracle"/>
+
+    <bean id="injectRef" class="com.agility.prospring4.chapter03.xml.InjectRef">
+        <property name="oracle">
+            <ref bean="wiseworm"/>
+        </property>
+    </bean>
+
 </beans>
