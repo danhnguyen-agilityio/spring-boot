@@ -10,5 +10,8 @@ public class DeclareSpringComponents {
 
     MessageProvider messageProvider = context.getBean("messageProvider", MessageProvider.class);
     System.out.println(messageProvider.getMessage());
+
+    MessageRenderer messageRenderer = context.getBean("messageRenderer", MessageRenderer.class);
+    System.out.println(messageRenderer.getMessageProvider().getMessage());
   }
 }
