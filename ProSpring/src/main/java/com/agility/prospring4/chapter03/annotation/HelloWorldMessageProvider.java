@@ -14,7 +14,6 @@ public class HelloWorldMessageProvider implements MessageProvider {
     this.message = message;
   }
 
-  @Autowired
   public String getMessage() {
     return message;
   }

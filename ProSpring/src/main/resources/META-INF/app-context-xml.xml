@@ -79,4 +79,39 @@
         </property>
     </bean>
 
+    <!--Collections for Injection-->
+    <bean id="injectCollection" class="com.agility.prospring4.chapter03.xml.CollectionInjection">
+        <property name="map">
+            <map>
+                <entry key="someValue">
+                    <value>Hello world</value>
+                </entry>
+                <entry key="someBean">
+                    <ref bean="oracle"/>
+                </entry>
+            </map>
+        </property>
+        
+        <property name="props">
+            <props>
+                <prop key="firstName">Nguyen</prop>
+                <prop key="lastName">David</prop>
+            </props>
+        </property>
+        
+        <property name="set">
+            <set>
+                <value>Hello world</value>
+                <ref bean="oracle"/>
+            </set>
+        </property>
+
+        <property name="list">
+            <list>
+                <value>Hello world</value>
+                <ref bean="oracle"/>
+            </list>
+        </property>
+    </bean>
+
 </beans>
