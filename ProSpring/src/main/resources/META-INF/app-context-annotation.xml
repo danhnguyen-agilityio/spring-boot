@@ -3,6 +3,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:c="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
@@ -13,4 +14,7 @@
         <context:exclude-filter type="assignable" expression="com.agility.prospring4.chapter03.beanfactory.BookwormOracle"/>
         <!--<context:include-filter type="assignable" expression="com.agility.prospring4.chapter03.ConstructorInjection"/>-->
     </context:component-scan>
+
+    <bean id="message" class="java.lang.String" c:_0="Annotation Configuration externally"/>
+
 </beans>
