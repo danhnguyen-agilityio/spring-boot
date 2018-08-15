@@ -43,7 +43,7 @@
         </constructor-arg>
     </bean>
 
-    <!--Injection parameter-->
+    <!--Injection parameter: Injecting simple value-->
     <bean id="injectSimple1" class="com.agility.prospring4.chapter03.xml.InjectSimple"
           p:name="David Nguyen"
           p:age="32"
@@ -51,7 +51,7 @@
           p:height="1.778"
           p:programmer="true"/>
 
-    <!--Injection parameter-->
+    <!--Injection parameter: Injecting simple value-->
     <bean id="injectSimple" class="com.agility.prospring4.chapter03.xml.InjectSimple">
         <property name="name" value="David Nguyen"/>
         <property name="age" value="32"/>
@@ -60,5 +60,14 @@
         <property name="programmer" value="true"/>
     </bean>
 
+    <!--Injection parameter: Injecting Value by Using SpEL-->
+    <bean id="injectSimpleConfig" class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"/>
+
+    <bean id="injectSimpleSpel" class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"
+          p:name="#{injectSimpleConfig.name}"
+          p:age="#{injectSimpleConfig.age}"
+          p:height="#{injectSimpleConfig.height}"
+          p:programmer="#{injectSimpleConfig.programmer}"
+          p:ageInSeconds="#{injectSimpleConfig.ageInSeconds}"/>
 
 </beans>
