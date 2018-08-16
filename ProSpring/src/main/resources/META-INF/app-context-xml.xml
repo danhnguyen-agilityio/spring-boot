@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans.xsd
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--Setter Injection use property attribute-->
-    <bean id="messageRenderer1" class="com.agility.prospring4.chapter03.xml.StandardOutMessageRenderer">
+    <bean id="messageRenderer1"
+          class="com.agility.prospring4.chapter03.xml.StandardOutMessageRenderer">
         <property name="messageProvider" ref="messageProvider"/>
     </bean>
 
@@ -44,7 +45,8 @@
     </bean>
 
     <!--Injection parameter: Injecting simple value-->
-    <bean id="injectSimple1" class="com.agility.prospring4.chapter03.xml.InjectSimple"
+    <bean id="injectSimple1"
+          class="com.agility.prospring4.chapter03.xml.InjectSimple"
           p:name="David Nguyen"
           p:age="32"
           p:ageInSeconds="1009843200"
@@ -52,7 +54,8 @@
           p:programmer="true"/>
 
     <!--Injection parameter: Injecting simple value-->
-    <bean id="injectSimple" class="com.agility.prospring4.chapter03.xml.InjectSimple">
+    <bean id="injectSimple"
+          class="com.agility.prospring4.chapter03.xml.InjectSimple">
         <property name="name" value="David Nguyen"/>
         <property name="age" value="32"/>
         <property name="ageInSeconds" value="1009843200"/>
@@ -61,9 +64,11 @@
     </bean>
 
     <!--Injection parameter: Injecting Value by Using SpEL-->
-    <bean id="injectSimpleConfig" class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"/>
+    <bean id="injectSimpleConfig"
+          class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"/>
 
-    <bean id="injectSimpleSpel" class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"
+    <bean id="injectSimpleSpel"
+          class="com.agility.prospring4.chapter03.xml.InjectSimpleConfig"
           p:name="#{injectSimpleConfig.name}"
           p:age="#{injectSimpleConfig.age}"
           p:height="#{injectSimpleConfig.height}"
@@ -71,7 +76,8 @@
           p:ageInSeconds="#{injectSimpleConfig.ageInSeconds}"/>
 
     <!--Injecting Bean in the same XML Unit-->
-    <bean id="oracle" name="wiseworm" class="com.agility.prospring4.chapter03.beanfactory.BookwormOracle"/>
+    <bean id="oracle" name="wiseworm"
+          class="com.agility.prospring4.chapter03.beanfactory.BookwormOracle"/>
 
     <bean id="injectRef" class="com.agility.prospring4.chapter03.xml.InjectRef">
         <property name="oracle">
@@ -80,7 +86,8 @@
     </bean>
 
     <!--Collections for Injection-->
-    <bean id="injectCollection" class="com.agility.prospring4.chapter03.xml.CollectionInjection">
+    <bean id="injectCollection"
+          class="com.agility.prospring4.chapter03.xml.CollectionInjection">
         <property name="map">
             <map>
                 <entry key="someValue">
@@ -91,14 +98,14 @@
                 </entry>
             </map>
         </property>
-        
+
         <property name="props">
             <props>
                 <prop key="firstName">Nguyen</prop>
                 <prop key="lastName">David</prop>
             </props>
         </property>
-        
+
         <property name="set">
             <set>
                 <value>Hello world</value>
@@ -125,7 +132,8 @@
 
     <!--Configuring Autowiring-->
     <bean id="foo" class="com.agility.prospring4.chapter03.xml.autowiring.Foo"/>
-    <bean id="bar1" class="com.agility.prospring4.chapter03.xml.autowiring.Bar"/>
+    <bean id="bar1"
+          class="com.agility.prospring4.chapter03.xml.autowiring.Bar"/>
 
     <bean id="target"
           class="com.agility.prospring4.chapter03.xml.autowiring.Target"/>
@@ -141,5 +149,17 @@
     <bean id="targetConstructor" autowire="constructor"
           class="com.agility.prospring4.chapter03.xml.autowiring.Target"
           lazy-init="true"/>
+
+    <!--Bean inheritance-->
+    <bean id="inheritParent"
+          class="com.agility.prospring4.chapter03.xml.SimpleBean"
+          p:name="David Nguyen"
+          p:age="32"/>
+
+    <bean id="inheritChild"
+          class="com.agility.prospring4.chapter03.xml.SimpleBean"
+          parent="inheritParent"
+          p:age="35"/>
+
 
 </beans>
