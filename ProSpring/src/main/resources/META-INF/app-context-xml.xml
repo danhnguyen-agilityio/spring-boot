@@ -122,4 +122,24 @@
     <!--Nonsingleton bean-->
     <bean id="nonSingleton" class="java.lang.String" scope="prototype"
           c:_0="David Nguyen"/>
+
+    <!--Configuring Autowiring-->
+    <bean id="foo" class="com.agility.prospring4.chapter03.xml.autowiring.Foo"/>
+    <bean id="bar1" class="com.agility.prospring4.chapter03.xml.autowiring.Bar"/>
+
+    <bean id="target"
+          class="com.agility.prospring4.chapter03.xml.autowiring.Target"/>
+
+    <bean id="targetByName" autowire="byName"
+          class="com.agility.prospring4.chapter03.xml.autowiring.Target"
+          lazy-init="true"/>
+
+    <bean id="targetByType" autowire="byType"
+          class="com.agility.prospring4.chapter03.xml.autowiring.Target"
+          lazy-init="true"/>
+
+    <bean id="targetConstructor" autowire="constructor"
+          class="com.agility.prospring4.chapter03.xml.autowiring.Target"
+          lazy-init="true"/>
+
 </beans>
