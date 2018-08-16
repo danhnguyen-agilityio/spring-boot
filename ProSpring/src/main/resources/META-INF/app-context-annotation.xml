@@ -43,7 +43,4 @@
         <value>Hello World!</value>
         <ref bean="oracle"/>
     </util:list>
-
-    <bean class="com.agility.prospring4.chapter03.annotation.ConstructorConfusion"/>
-    <bean class="com.agility.prospring4.chapter03.annotation.ConstructorConfusion"/>
 </beans>
