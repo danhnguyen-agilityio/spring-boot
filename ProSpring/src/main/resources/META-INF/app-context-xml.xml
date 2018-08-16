@@ -162,4 +162,21 @@
           p:age="35"/>
 
 
+    <!--Method injection-->
+    <bean id="helper"
+          class="com.agility.prospring4.chapter03.methodinjection.MyHelper"
+          scope="prototype"/>
+
+    <bean id="abstractLookupBean"
+          class="com.agility.prospring4.chapter03.methodinjection.AbstractLookupDemoBean">
+        <lookup-method name="getMyHelper" bean="helper"/>
+    </bean>
+
+    <bean id="standardLookupBean"
+          class="com.agility.prospring4.chapter03.methodinjection.StandardLookupDemoBean">
+        <property name="myHelper">
+            <ref bean="helper"/>
+        </property>
+    </bean>
+
 </beans>
