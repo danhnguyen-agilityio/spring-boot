@@ -172,11 +172,26 @@
         <lookup-method name="getMyHelper" bean="helper"/>
     </bean>
 
+    <!--Lookup method in method injection-->
     <bean id="standardLookupBean"
           class="com.agility.prospring4.chapter03.methodinjection.StandardLookupDemoBean">
         <property name="myHelper">
             <ref bean="helper"/>
         </property>
     </bean>
+
+    <!--Method replacement in method injection-->
+    <bean id="methodReplacer"
+          class="com.agility.prospring4.chapter03.methodinjection.FormatMessageReplacer"/>
+
+    <bean id="replacementTarget"
+          class="com.agility.prospring4.chapter03.methodinjection.ReplacementTarget">
+        <replaced-method name="formatMessage" replacer="methodReplacer">
+            <arg-type>String</arg-type>
+        </replaced-method>
+    </bean>
+
+    <bean id="standardTarget"
+          class="com.agility.prospring4.chapter03.methodinjection.ReplacementTarget"/>
 
 </beans>
