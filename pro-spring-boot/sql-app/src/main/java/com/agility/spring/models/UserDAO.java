@@ -1,4 +1,4 @@
-package com.agility.spring.model;
+package com.agility.spring.models;
 
 import org.springframework.data.repository.CrudRepository;
 
