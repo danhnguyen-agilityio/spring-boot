@@ -1,7 +1,7 @@
 package com.agility.spring;
 
-import com.agility.spring.model.User;
-import com.agility.spring.model.UserDAO;
+import com.agility.spring.models.User;
+import com.agility.spring.models.UserDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
