@@ -3,7 +3,7 @@ package com.agility.jpa.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "husband")
+@Table(name = "husband_table")
 public class Husband {
 
   @Id
@@ -12,6 +12,7 @@ public class Husband {
 
   private String name;
 
+  // Value husband is mapped by property of Wife.husband
   @OneToOne(mappedBy = "husband")
   private Wife wife;
 
