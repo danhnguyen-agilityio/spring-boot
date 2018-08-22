@@ -49,6 +49,12 @@ public class UserRestController {
     }
   }
 
+  @RequestMapping(value ="/{userId}", method = RequestMethod.GET,
+  headers = {"X-API-Version=3"})
+  public String getUserV3(@PathVariable("userId") long id) {
+    return "This is api version 3 get user by id ";
+  }
+
   @RequestMapping(value = "/all", method = RequestMethod.GET)
   public List<User> getAll() {
     List<User> users = new ArrayList<>();
