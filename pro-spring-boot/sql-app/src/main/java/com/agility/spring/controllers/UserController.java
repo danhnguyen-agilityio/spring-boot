@@ -56,7 +56,7 @@ public class UserController {
     try {
       User user = userDAO.findById(id).orElse(null);
       user.setEmail(email);
-      user.setName(name);
+      user.setLastName(name);
       userDAO.save(user);
     }
     catch (Exception ex) {

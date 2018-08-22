@@ -1,18 +1,23 @@
 package com.agility.spring.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+//@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private long id;
 
+  @JsonProperty("customEmail")
   private String email;
 
-  private String name;
+  @Column(name = "lastName")
+  private String lastName;
 
   public User() {
   }
@@ -23,7 +28,7 @@ public class User {
 
   public User(String email, String name) {
     this.email = email;
-    this.name = name;
+    this.lastName = name;
   }
 
   public long getId() {
@@ -42,16 +47,16 @@ public class User {
     this.email = email;
   }
 
-  public String getName() {
-    return name;
+  public String getLastName() {
+    return lastName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 
   @Override
   public String toString() {
-    return "Id: " + id + ", " + "Name: " + name + ", " + "Email: " + email;
+    return "Id: " + id + ", " + "Name: " + lastName + ", " + "Email: " + email;
   }
 }

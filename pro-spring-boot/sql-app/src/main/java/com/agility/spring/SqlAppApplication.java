@@ -36,7 +36,7 @@ public class SqlAppApplication {
 
 			log.info(">>> Update User");
 			userByEmail.setEmail("david@gmail.com");
-			userByEmail.setName("David Nguyen");
+			userByEmail.setLastName("David Nguyen");
 			dao.save(userByEmail);
 
 			log.info(">>> Show all user: ");
