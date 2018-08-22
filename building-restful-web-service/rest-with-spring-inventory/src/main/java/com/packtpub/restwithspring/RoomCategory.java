@@ -3,34 +3,39 @@ package com.packtpub.restwithspring;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "room-categories")
+@Entity(name = "category")
 public class RoomCategory {
+
+  @Id
+  @GeneratedValue
   private long id;
+
+  @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+  @OrderBy("name asc")
   private List<Room> rooms;
+
+  @Column(name = "name", unique = true, nullable = false, length = 128)
   private String name;
+
+  @Column(name = "description")
   private String description;
 
   public RoomCategory() {
 
   }
 
-  @Id
-  @GeneratedValue
   public long getId() {
     return id;
   }
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   public List<Room> getRooms() {
     return rooms;
   }
 
-  @Column(name = "name", unique = true, nullable = false, length = 128)
   public String getName() {
     return name;
   }
 
-  @Column(name = "desciption")
   public String getDescription() {
     return description;
   }

@@ -4,32 +4,39 @@ import javax.persistence.*;
 
 @Entity(name = "rooms")
 public class Room {
+
+  @Id
+  @GeneratedValue
   private long id;
+
+  @ManyToOne
+  @JoinColumn(name = "categoryId")
   private RoomCategory roomCategory;
+
+  @Column(name = "name", unique = true, nullable = false, length = 128)
   private String name;
+
+  @Column(name = "description")
   private String description;
 
   public Room() {
 
   }
 
-  @Id
-  @GeneratedValue
   public long getId() {
     return id;
   }
 
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
   public RoomCategory getRoomCategory() {
     return roomCategory;
   }
 
-  @Column(name = "name", unique = true, nullable = false, length = 128)
+
   public String getName() {
     return name;
   }
 
-  @Column(name = "desciption")
+
   public String getDescription() {
     return description;
   }

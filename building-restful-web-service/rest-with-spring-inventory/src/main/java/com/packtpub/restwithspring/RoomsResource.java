@@ -15,15 +15,22 @@ public class RoomsResource {
   }
 
   @RequestMapping(value = "/{roomId}", method = RequestMethod.GET)
-  public RoomDTO getRoom(@PathVariable("roomId") String roomId) {
-    RoomDTO room = null;
-    return room;
+  public RoomDTO getRoom(@PathVariable("roomId") long id) {
+    Room room = inventoryService.getRoom(id);
+    return new RoomDTO(room);
+  }
+
+  @RequestMapping(value = "/{roomId}", method = RequestMethod.GET,
+  consumes = "application/json;version=2")
+  public RoomDTOv2 getRoomV2(@PathVariable("roomId") long id) {
+    Room room = inventoryService.getRoom(id);
+    return new RoomDTOv2(room);
   }
 
   @RequestMapping(method = RequestMethod.GET)
   public List<RoomDTO> getRoomsInCategory(@RequestParam("categoryId") long categoryId) {
     RoomCategory category = inventoryService.getRoomCategory(categoryId);
-    return inventoryService.getAllRoomsWithCategoy(category)
+    return inventoryService.getAllRoomsWithCategory(category)
         .stream().map(RoomDTO::new).collect(Collectors.toList());
   }
 }

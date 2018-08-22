@@ -7,5 +7,5 @@ public interface InventoryService {
 
   RoomCategory getRoomCategory(long categoryId);
 
-  List<Room> getAllRoomsWithCategoy(RoomCategory category);
+  List<Room> getAllRoomsWithCategory(RoomCategory category);
 }
