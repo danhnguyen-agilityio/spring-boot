@@ -38,6 +38,17 @@ public class UserRestController {
     }
   }
 
+  @RequestMapping(value ="/{userId}", method = RequestMethod.GET,
+  consumes = "application/json;version=2")
+  public String getUserV2(@PathVariable("userId") long id) {
+    try {
+      User user = userDAO.findById(id).orElse(null);
+      return "User have email: " + user.getEmail();
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+
   @RequestMapping(value = "/all", method = RequestMethod.GET)
   public List<User> getAll() {
     List<User> users = new ArrayList<>();
