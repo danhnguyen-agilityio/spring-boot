@@ -5,24 +5,24 @@ package com.agility.spring.exceptions;
  */
 public enum CustomError {
 
-  NOT_FOUND(400, "Resource not found"),
-  NOT_FOUND_USER(401, "User is not found"),
-  BAD_REQUEST(402, "Invalid request");
+    NOT_FOUND(400, "Resource not found"),
+    NOT_FOUND_USER(401, "User is not found"),
+    BAD_REQUEST(402, "Invalid request");
 
-  private int code;
-  private String message;
+    private int code;
+    private String message;
 
 
-  CustomError(int code, String message) {
-    this.code = code;
-    this.message = message;
-  }
+    CustomError(int code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 
-  public int code() {
-    return code;
-  }
+    public int code() {
+        return code;
+    }
 
-  public String message() {
-    return message;
-  }
+    public String message() {
+        return message;
+    }
 }

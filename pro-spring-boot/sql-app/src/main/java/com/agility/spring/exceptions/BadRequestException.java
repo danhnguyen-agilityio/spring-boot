@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  */
 public class BadRequestException extends BaseCustomException {
 
-  public BadRequestException(CustomError error) {
-    super(error, HttpStatus.BAD_REQUEST);
-  }
+    public BadRequestException(CustomError error) {
+        super(error, HttpStatus.BAD_REQUEST);
+    }
 }

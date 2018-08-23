@@ -11,64 +11,64 @@ import java.io.Serializable;
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class User implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
-  @JsonProperty("customEmail")
-  private String email;
+    @JsonProperty("customEmail")
+    private String email;
 
-  @Column(name = "lastName")
-  private String lastName;
+    @Column(name = "lastName")
+    private String lastName;
 
-  public User() {
-  }
+    public User() {
+    }
 
-  public User(long id) {
-    this.id = id;
-  }
+    public User(long id) {
+        this.id = id;
+    }
 
-  public User(String email, String name) {
-    this.email = email;
-    this.lastName = name;
-  }
+    public User(String email, String name) {
+        this.email = email;
+        this.lastName = name;
+    }
 
-  public User(long id, String email, String lastName) {
-    this.id = id;
-    this.email = email;
-    this.lastName = lastName;
-  }
+    public User(long id, String email, String lastName) {
+        this.id = id;
+        this.email = email;
+        this.lastName = lastName;
+    }
 
-  public User(UserDTO userDTO) {
-    this(userDTO.getId(), userDTO.getEmail(), userDTO.getLastName());
-  }
+    public User(UserDTO userDTO) {
+        this(userDTO.getId(), userDTO.getEmail(), userDTO.getLastName());
+    }
 
-  public long getId() {
-    return id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public String getLastName() {
-    return lastName;
-  }
+    public String getLastName() {
+        return lastName;
+    }
 
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-  @Override
-  public String toString() {
-    return "Id: " + this.id + ", " + "Name: " + this.lastName + ", " + "Email: " + this.email;
-  }
+    @Override
+    public String toString() {
+        return "Id: " + this.id + ", " + "Name: " + this.lastName + ", " + "Email: " + this.email;
+    }
 }

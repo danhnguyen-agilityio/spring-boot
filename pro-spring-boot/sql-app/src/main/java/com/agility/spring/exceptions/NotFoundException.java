@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
  */
 public class NotFoundException extends BaseCustomException {
 
-  public NotFoundException(CustomError error) {
-    super(error, HttpStatus.NOT_FOUND);
-  }
+    public NotFoundException(CustomError error) {
+        super(error, HttpStatus.NOT_FOUND);
+    }
 }

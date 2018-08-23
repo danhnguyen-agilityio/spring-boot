@@ -5,45 +5,48 @@ import com.agility.spring.models.User;
 import javax.validation.constraints.Email;
 
 public class UserDTO {
-  private long id;
-  private String email;
-  private String lastName;
+    private long id;
 
-  public UserDTO() {
-  }
+    @Email
+    private String email;
 
-  public UserDTO(User user) {
-    this.id = user.getId();
-    this.lastName = user.getLastName();
-    this.email = user.getEmail();
-  }
+    private String lastName;
 
-  public long getId() {
-    return id;
-  }
+    public UserDTO() {
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public UserDTO(User user) {
+        this.id = user.getId();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public String getLastName() {
-    return lastName;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  @Override
-  public String toString() {
-    return "Email: " + email + ", Name: " + lastName;
-  }
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Email: " + email + ", Name: " + lastName;
+    }
 }

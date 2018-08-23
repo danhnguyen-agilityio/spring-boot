@@ -7,22 +7,22 @@ import org.springframework.http.HttpStatus;
  */
 public class BaseCustomException extends RuntimeException {
 
-  private int code;
+    private int code;
 
-  private HttpStatus httpStatus;
+    private HttpStatus httpStatus;
 
-  public BaseCustomException(CustomError error, HttpStatus httpStatus) {
-    super(error.message());
+    public BaseCustomException(CustomError error, HttpStatus httpStatus) {
+        super(error.message());
 
-    this.code = error.code();
-    this.httpStatus = httpStatus;
-  }
+        this.code = error.code();
+        this.httpStatus = httpStatus;
+    }
 
-  public int getCode() {
-    return code;
-  }
+    public int getCode() {
+        return code;
+    }
 
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
+    }
 }

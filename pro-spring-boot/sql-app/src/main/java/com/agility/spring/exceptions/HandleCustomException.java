@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class HandleCustomException {
 
-  @ExceptionHandler(BaseCustomException.class)
-  public ResponseEntity handleIOException(BaseCustomException e){
-    ApiError apiError = new ApiError(e.getCode(), e.getMessage());
-    return new ResponseEntity<>(apiError, e.getHttpStatus());
-  }
+    @ExceptionHandler(BaseCustomException.class)
+    public ResponseEntity handleIOException(BaseCustomException e) {
+        ApiError apiError = new ApiError(e.getCode(), e.getMessage());
+        return new ResponseEntity<>(apiError, e.getHttpStatus());
+    }
 }

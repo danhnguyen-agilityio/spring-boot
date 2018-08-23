@@ -11,15 +11,15 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class SqlAppApplication {
 
-	private static final Logger log = LoggerFactory.getLogger(SqlAppApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(SqlAppApplication.class);
 
-	public static void main(String[] args) {
-		SpringApplication.run(SqlAppApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SqlAppApplication.class, args);
+    }
 
-	@Bean
-	CommandLineRunner start(UserRepository dao) {
-		return args -> {
+    @Bean
+    CommandLineRunner start(UserRepository dao) {
+        return args -> {
 //			log.info(">>> Create User");
 //			dao.save(new User("danhnguyen@gmail.com", "Nguyen Danh"));
 //			dao.save(new User("tunguyen@gmail.com", "Nguyen Tu"));
@@ -41,6 +41,6 @@ public class SqlAppApplication {
 //			log.info(">>> Show all user: ");
 //			dao.findAll().forEach(user -> System.out.println(user));
 
-		};
-	}
+        };
+    }
 }
