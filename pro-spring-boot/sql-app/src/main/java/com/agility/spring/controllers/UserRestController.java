@@ -94,5 +94,16 @@ public class UserRestController {
     }
   }
 
+  @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+  public ApiResponse deleteRoom(@PathVariable long userId) {
+    try {
+      userRepository.deleteById(userId);
+      return new ApiResponse(Status.OK, null);
+    } catch (Exception e) {
+      return new ApiResponse(Status.ERROR,
+          new ApiError(999, e.getMessage()));
+    }
+  }
+
 
 }
