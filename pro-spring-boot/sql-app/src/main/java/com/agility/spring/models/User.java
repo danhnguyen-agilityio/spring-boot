@@ -1,13 +1,15 @@
 package com.agility.spring.models;
 
+import com.agility.spring.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class User {
+public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +31,10 @@ public class User {
   public User(String email, String name) {
     this.email = email;
     this.lastName = name;
+  }
+
+  public User(UserDTO userDTO) {
+    this(userDTO.getEmail(), userDTO.getLastName());
   }
 
   public long getId() {
@@ -57,6 +63,6 @@ public class User {
 
   @Override
   public String toString() {
-    return "Id: " + id + ", " + "Name: " + lastName + ", " + "Email: " + email;
+    return "Id: " + this.id + ", " + "Name: " + this.lastName + ", " + "Email: " + this.email;
   }
 }
