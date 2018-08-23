@@ -1,5 +1,8 @@
 package com.agility.spring.response;
 
+/**
+ * ApiError class describe info about code and message
+ */
 public class ApiError {
     int code;
     String message;

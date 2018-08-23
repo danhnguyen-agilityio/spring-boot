@@ -6,9 +6,6 @@ import com.agility.spring.exceptions.CustomError;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
-import com.agility.spring.response.ApiError;
-import com.agility.spring.response.ApiResponse;
-import com.agility.spring.response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +72,7 @@ public class UserRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
-        logger.info("UserDTO: " + userDTO);
         User user = new User(userDTO);
-        logger.info("User: " + user);
         userRepository.save(user);
         return new UserDTO(user);
     }
@@ -120,17 +115,36 @@ public class UserRestController {
         return new UserDTO(updatedUser);
     }
 
+    /** Delete user
+     *
+     * @param userId Id of user
+     * @return UserDTO
+     * @throws NotFoundException throw when if of user not exits
+     */
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-    public ApiResponse deleteUser(@PathVariable long userId) {
-        try {
-            userRepository.deleteById(userId);
-            return new ApiResponse(Status.OK, null);
-        } catch (Exception e) {
-            return new ApiResponse(Status.ERROR,
-                new ApiError(999, e.getMessage()));
-        }
+    public UserDTO deleteUser(@PathVariable long userId) {
+
+        // Get user by id
+        User user = userRepository.findById(userId).orElse(null);
+
+        // Throw exception NOT_FOUND_USER if user not exist
+        if (user == null)
+            throw new NotFoundException(CustomError.NOT_FOUND_USER);
+
+        // Delete user
+        userRepository.deleteById(userId);
+
+        // Convert to UserDTO and return it
+        return new UserDTO(user);
     }
 
+    /**
+     * User PUT method via POST method to update user
+     *
+     * @param userId Id of user
+     * @param userDTO Request body
+     * @return UserDTO
+     */
     @RequestMapping(value = "/{userId}", method = RequestMethod.POST,
         headers = {"X-HTTP-Method-Override=PUT"})
     public UserDTO updateUserAsPost(@PathVariable("userId") long userId,
@@ -138,6 +152,5 @@ public class UserRestController {
         logger.info("Use PUT method via POST method");
         return updateUser(userId, userDTO);
     }
-
 
 }
