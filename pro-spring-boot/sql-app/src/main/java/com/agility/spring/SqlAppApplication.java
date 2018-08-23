@@ -21,26 +21,26 @@ public class SqlAppApplication {
 	@Bean
 	CommandLineRunner start(UserDAO dao) {
 		return args -> {
-			log.info(">>> Create User");
-			dao.save(new User("danhnguyen@gmail.com", "Nguyen Danh"));
-			dao.save(new User("tunguyen@gmail.com", "Nguyen Tu"));
-			dao.save(new User("anhtuan@gmail.com", "Nguyen Tuan Anh"));
-
-			log.info(">>> Delete User");
-			User userWithId1 = new User(1l);
-			dao.delete(userWithId1);
-
-			log.info(">>> Get user by email");
-			User userByEmail = dao.findByEmail("tunguyen@gmail.com");
-			log.info(">>> User by email: " + userByEmail);
-
-			log.info(">>> Update User");
-			userByEmail.setEmail("david@gmail.com");
-			userByEmail.setLastName("David Nguyen");
-			dao.save(userByEmail);
-
-			log.info(">>> Show all user: ");
-			dao.findAll().forEach(user -> System.out.println(user));
+//			log.info(">>> Create User");
+//			dao.save(new User("danhnguyen@gmail.com", "Nguyen Danh"));
+//			dao.save(new User("tunguyen@gmail.com", "Nguyen Tu"));
+//			dao.save(new User("anhtuan@gmail.com", "Nguyen Tuan Anh"));
+//
+//			log.info(">>> Delete User");
+//			User userWithId1 = new User(1l);
+//			dao.delete(userWithId1);
+//
+//			log.info(">>> Get user by email");
+//			User userByEmail = dao.findByEmail("tunguyen@gmail.com");
+//			log.info(">>> User by email: " + userByEmail);
+//
+//			log.info(">>> Update User");
+//			userByEmail.setEmail("david@gmail.com");
+//			userByEmail.setLastName("David Nguyen");
+//			dao.save(userByEmail);
+//
+//			log.info(">>> Show all user: ");
+//			dao.findAll().forEach(user -> System.out.println(user));
 
 		};
 	}
