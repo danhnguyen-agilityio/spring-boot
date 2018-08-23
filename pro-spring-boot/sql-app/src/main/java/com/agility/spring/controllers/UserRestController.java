@@ -95,7 +95,7 @@ public class UserRestController {
   }
 
   @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-  public ApiResponse deleteRoom(@PathVariable long userId) {
+  public ApiResponse deleteUser(@PathVariable long userId) {
     try {
       userRepository.deleteById(userId);
       return new ApiResponse(Status.OK, null);
@@ -103,6 +103,14 @@ public class UserRestController {
       return new ApiResponse(Status.ERROR,
           new ApiError(999, e.getMessage()));
     }
+  }
+
+  @RequestMapping(value = "/{userId}", method = RequestMethod.POST,
+  headers = {"X-HTTP-Method-Override=PUT"})
+  public ApiResponse updateUserAsPost(@PathVariable("userId") long userId,
+                                      @RequestBody UserDTO userDTO) {
+    logger.info("Use PUT method via POST method");
+    return updateUser(userId, userDTO);
   }
 
 
