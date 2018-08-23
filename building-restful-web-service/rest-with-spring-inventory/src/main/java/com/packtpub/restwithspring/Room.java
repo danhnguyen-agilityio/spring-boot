@@ -2,7 +2,7 @@ package com.packtpub.restwithspring;
 
 import javax.persistence.*;
 
-@Entity(name = "rooms")
+@Entity(name = "room")
 public class Room {
 
   @Id
@@ -10,7 +10,7 @@ public class Room {
   private long id;
 
   @ManyToOne
-  @JoinColumn(name = "categoryId")
+  @JoinColumn(name = "room_category_id")
   private RoomCategory roomCategory;
 
   @Column(name = "name", unique = true, nullable = false, length = 128)

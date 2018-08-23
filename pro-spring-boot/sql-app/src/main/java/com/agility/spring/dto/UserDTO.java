@@ -1,13 +1,22 @@
 package com.agility.spring.dto;
 
-import javax.validation.constraints.Email;
-import java.io.Serializable;
+import com.agility.spring.models.User;
 
-public class UserDTO implements Serializable {
+import javax.validation.constraints.Email;
+
+public class UserDTO {
   private long id;
-  @Email
   private String email;
   private String lastName;
+
+  public UserDTO() {
+  }
+
+  public UserDTO(User user) {
+    this.id = user.getId();
+    this.lastName = user.getLastName();
+    this.email = user.getEmail();
+  }
 
   public long getId() {
     return id;

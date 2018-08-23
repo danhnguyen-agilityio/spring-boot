@@ -33,8 +33,14 @@ public class User implements Serializable {
     this.lastName = name;
   }
 
+  public User(long id, String email, String lastName) {
+    this.id = id;
+    this.email = email;
+    this.lastName = lastName;
+  }
+
   public User(UserDTO userDTO) {
-    this(userDTO.getEmail(), userDTO.getLastName());
+    this(userDTO.getId(), userDTO.getEmail(), userDTO.getLastName());
   }
 
   public long getId() {

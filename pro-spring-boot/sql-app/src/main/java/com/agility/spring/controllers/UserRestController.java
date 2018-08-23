@@ -2,7 +2,8 @@ package com.agility.spring.controllers;
 
 import com.agility.spring.dto.UserDTO;
 import com.agility.spring.models.User;
-import com.agility.spring.models.UserDAO;
+import com.agility.spring.repositorys.UserRepository;
+import com.agility.spring.response.ApiError;
 import com.agility.spring.response.ApiResponse;
 import com.agility.spring.response.Status;
 import org.slf4j.Logger;
@@ -20,15 +21,15 @@ public class UserRestController {
   private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
   @Autowired
-  private UserDAO userDAO;
+  private UserRepository userRepository;
 
   @RequestMapping(value = "/create", method = RequestMethod.POST)
-  public User create(@RequestParam("email") String email,
+  public User createUser(@RequestParam("email") String email,
                        @RequestParam("name") String name) {
     User user;
     try {
       user = new User(email, name);
-      userDAO.save(user);
+      userRepository.save(user);
     } catch (Exception ex) {
       return null;
     }
@@ -38,7 +39,7 @@ public class UserRestController {
   @RequestMapping(value ="/{userId}", method = RequestMethod.GET)
   public User getUser(@PathVariable("userId") long id) {
     try {
-      User user = userDAO.findById(id).orElse(null);
+      User user = userRepository.findById(id).orElse(null);
       return user;
     } catch (Exception ex) {
       return null;
@@ -49,7 +50,7 @@ public class UserRestController {
   consumes = "application/json;version=2")
   public String getUserV2(@PathVariable("userId") long id) {
     try {
-      User user = userDAO.findById(id).orElse(null);
+      User user = userRepository.findById(id).orElse(null);
       return "User have email: " + user.getEmail();
     } catch (Exception ex) {
       return null;
@@ -65,7 +66,7 @@ public class UserRestController {
   @RequestMapping(value = "", method = RequestMethod.GET)
   public List<User> getAll() {
     List<User> users = new ArrayList<>();
-    userDAO.findAll().forEach(users::add);
+    userRepository.findAll().forEach(users::add);
     return users;
   }
 
@@ -74,8 +75,24 @@ public class UserRestController {
     logger.info("UserDTO: " + userDTO);
     User user = new User(userDTO);
     logger.info("User: " + user);
-    userDAO.save(user);
+    userRepository.save(user);
     return new ApiResponse(Status.OK, user);
   }
+
+  @RequestMapping(value = "/{userId}", method = RequestMethod.PUT)
+  public ApiResponse updateUser (@PathVariable long userId,
+                                @RequestBody UserDTO userDTO) {
+    try {
+      User user = new User(userDTO);
+      user.setId(userId);
+      logger.info("User: " + user);
+      User updatedUser = userRepository.save(user);
+      return new ApiResponse(Status.OK, new UserDTO(updatedUser));
+    } catch (Exception ex) {
+      return new ApiResponse(Status.ERROR, new ApiError(999,
+          "No user with ID " + userId));
+    }
+  }
+
 
 }

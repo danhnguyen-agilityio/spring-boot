@@ -3,14 +3,14 @@ package com.packtpub.restwithspring;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "category")
+@Entity(name = "room_category")
 public class RoomCategory {
 
   @Id
   @GeneratedValue
   private long id;
 
-  @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "roomCategory", fetch = FetchType.EAGER)
   @OrderBy("name asc")
   private List<Room> rooms;
 

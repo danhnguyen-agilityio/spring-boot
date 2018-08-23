@@ -1,7 +1,6 @@
 package com.agility.spring;
 
-import com.agility.spring.models.User;
-import com.agility.spring.models.UserDAO;
+import com.agility.spring.repositorys.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,7 +18,7 @@ public class SqlAppApplication {
 	}
 
 	@Bean
-	CommandLineRunner start(UserDAO dao) {
+	CommandLineRunner start(UserRepository dao) {
 		return args -> {
 //			log.info(">>> Create User");
 //			dao.save(new User("danhnguyen@gmail.com", "Nguyen Danh"));
