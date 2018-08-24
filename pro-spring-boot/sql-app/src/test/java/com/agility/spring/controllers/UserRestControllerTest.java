@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;
 
 /**
- * Test UserRestController
+ * This class used to test rest api for user
  */
 @RunWith(MockitoJUnitRunner.class)
 public class UserRestControllerTest {
@@ -58,6 +58,5 @@ public class UserRestControllerTest {
         exception.expect(NotFoundException.class);
         exception.expectMessage("User is not found");
         userRestController.getUser(200l);
-
     }
 }

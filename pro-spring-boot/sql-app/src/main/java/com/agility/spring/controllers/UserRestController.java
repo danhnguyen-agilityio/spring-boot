@@ -9,11 +9,17 @@ import com.agility.spring.repositorys.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The class create REST Api for user
+ *
+ * @author Danh Nguyen
+ */
 @RestController
 @RequestMapping("/users")
 public class UserRestController {
@@ -64,8 +70,8 @@ public class UserRestController {
      * Get user by id
      *
      * @param userId Id of user
-     * @return UserDTO
-     *
+     * @return Returns user info
+     * @throws NotFoundException if user not exist in database
      */
     @GetMapping(value = "/{userId}")
     public UserDTO getUser(@PathVariable("userId") long userId) {
@@ -85,9 +91,10 @@ public class UserRestController {
     /**
      * Add user
      *
-     * @param userDTO Request body
-     * @return UserDTO
+     * @param userDTO User info from request body
+     * @return Returns user info
      */
+    @PreAuthorize("hasRole('ADMIN)")
     @RequestMapping(method = RequestMethod.POST)
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
         User user = new User(userDTO);
@@ -99,10 +106,10 @@ public class UserRestController {
      * Update user by id
      *
      * @param userId  Id of user
-     * @param userDTO Request body
-     * @return UserDTO
-     * @throws NotFoundException   occur if id of user not exist
-     * @throws BadRequestException occur if not have info email
+     * @param userDTO User info from request body
+     * @return Returns user info
+     * @throws NotFoundException   if id of user not exist
+     * @throws BadRequestException if not have info email
      */
     @PutMapping(value = "/{userId}")
     public UserDTO updateUser(@PathVariable long userId,
@@ -112,11 +119,13 @@ public class UserRestController {
         // Find user from DB
         User user = userRepository.findById(userId).orElse(null);
 
-        // Throw exception NOT_FOUND_USER if user not exist
+        // Throw exception NOT_FOUND_USER
+        // if user not exist
         if (user == null)
             throw new NotFoundException(CustomError.NOT_FOUND_USER);
 
-        // Throw exception BAD_REQUEST if body request not have info email
+        // Throw exception BAD_REQUEST
+        // if body request not have info email
         if (userDTO.getEmail() == null)
             throw new BadRequestException(CustomError.BAD_REQUEST);
 
@@ -125,19 +134,21 @@ public class UserRestController {
         user.setEmail(userDTO.getEmail());
         user.setLastName(userDTO.getLastName());
 
-        // Save user to database and get user return
+        // Save user to database
         User updatedUser = userRepository.save(user);
 
         logger.debug("Response {}", updatedUser);
-        // Convert to UserDTO and return it
+        // Convert to UserDTO
+        // and return it
         return new UserDTO(updatedUser);
     }
 
-    /** Delete user
+    /**
+     * Delete user
      *
      * @param userId Id of user
-     * @return UserDTO
-     * @throws NotFoundException throw when if of user not exits
+     * @return Returns user info
+     * @throws NotFoundException if user with specify id not exist in database
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
     public UserDTO deleteUser(@PathVariable long userId) {
@@ -145,23 +156,25 @@ public class UserRestController {
         // Get user by id
         User user = userRepository.findById(userId).orElse(null);
 
-        // Throw exception NOT_FOUND_USER if user not exist
+        // Throw exception NOT_FOUND_USER
+        // if user not exist
         if (user == null)
             throw new NotFoundException(CustomError.NOT_FOUND_USER);
 
         // Delete user
         userRepository.deleteById(userId);
 
-        // Convert to UserDTO and return it
+        // Convert to UserDTO
+        // and return it
         return new UserDTO(user);
     }
 
     /**
      * User PUT method via POST method to update user
      *
-     * @param userId Id of user
+     * @param userId  Id of user
      * @param userDTO Request body
-     * @return UserDTO
+     * @return Returns user info
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.POST,
         headers = {"X-HTTP-Method-Override=PUT"})
