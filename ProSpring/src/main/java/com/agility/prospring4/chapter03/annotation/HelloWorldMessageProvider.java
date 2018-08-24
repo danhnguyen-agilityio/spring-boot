@@ -9,7 +9,7 @@ public class HelloWorldMessageProvider implements MessageProvider {
   private String message;
 
   @Autowired
-//  public HelloWorldMessageProvider(@Value("Annotation configuration") String message) {
+//  public HelloWorldMessageProvider(@Value("Annotation annotation") String message) {
   public HelloWorldMessageProvider(String message) {
     this.message = message;
   }
