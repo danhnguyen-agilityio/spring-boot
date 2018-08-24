@@ -40,7 +40,7 @@ public class User implements Serializable {
     }
 
     public User(UserDTO userDTO) {
-        this(userDTO.getId(), userDTO.getEmail(), userDTO.getLastName());
+        this(userDTO.getEmail(), userDTO.getLastName());
     }
 
     public long getId() {

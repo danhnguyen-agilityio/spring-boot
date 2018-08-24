@@ -5,7 +5,6 @@ import com.agility.spring.models.User;
 import javax.validation.constraints.Email;
 
 public class UserDTO {
-    private long id;
 
     @Email
     private String email;
@@ -15,18 +14,14 @@ public class UserDTO {
     public UserDTO() {
     }
 
+    public UserDTO(String email, String lastName) {
+        this.email = email;
+        this.lastName = lastName;
+    }
+
     public UserDTO(User user) {
-        this.id = user.getId();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getEmail() {
