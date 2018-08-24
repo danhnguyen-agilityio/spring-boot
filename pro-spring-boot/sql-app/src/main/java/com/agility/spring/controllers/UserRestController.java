@@ -36,16 +36,6 @@ public class UserRestController {
         return user;
     }
 
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    public User getUser(@PathVariable("userId") long id) {
-        try {
-            User user = userRepository.findById(id).orElse(null);
-            return user;
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
         consumes = "application/json;version=2")
     public String getUserV2(@PathVariable("userId") long id) {
@@ -70,6 +60,34 @@ public class UserRestController {
         return users;
     }
 
+    /**
+     * Get user by id
+     *
+     * @param userId Id of user
+     * @return UserDTO
+     *
+     */
+    @GetMapping(value = "/{userId}")
+    public UserDTO getUser(@PathVariable("userId") long userId) {
+
+        // Find user from database
+        User user = userRepository.findById(userId).orElse(null);
+
+        // Throw NotFoundException if user not exist
+        if (user == null) {
+            throw new NotFoundException(CustomError.NOT_FOUND_USER);
+        }
+
+        // Convert to UserDTO and return it
+        return new UserDTO(user);
+    }
+
+    /**
+     * Add user
+     *
+     * @param userDTO Request body
+     * @return UserDTO
+     */
     @RequestMapping(method = RequestMethod.POST)
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
         User user = new User(userDTO);
