@@ -1,4 +1,4 @@
-package com.agility.handlerexception.exception;
+package com.agility.handlerexception.controlleradvice;
 
 public class CustomConflictException extends RuntimeException {
 }

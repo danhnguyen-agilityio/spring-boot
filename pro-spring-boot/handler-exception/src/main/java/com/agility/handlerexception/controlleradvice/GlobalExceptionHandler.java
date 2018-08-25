@@ -1,4 +1,4 @@
-package com.agility.handlerexception.exception;
+package com.agility.handlerexception.controlleradvice;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

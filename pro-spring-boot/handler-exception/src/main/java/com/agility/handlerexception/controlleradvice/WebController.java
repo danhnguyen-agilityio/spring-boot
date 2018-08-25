@@ -1,9 +1,5 @@
-package com.agility.handlerexception;
+package com.agility.handlerexception.controlleradvice;
 
-import com.agility.handlerexception.exception.CustomConflictException;
-import com.agility.handlerexception.exception.CustomException;
-import com.agility.handlerexception.exception.CustomExceptionWithHttpStatusCode;
-import com.agility.handlerexception.exception.CustomGeneralException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,7 +21,7 @@ public class WebController {
 
     @ExceptionHandler(CustomException.class)
     public String runtimeException() {
-        return "exception";
+        return "controlleradvice";
     }
 
     @RequestMapping(value = "/conflictexception")
