@@ -1,0 +1,13 @@
+spring.profiles.active: prod
+
+logging:
+  level:
+    org.sprinframework.web.servlet: DEBUG
+
+app.name: Multi ENV
+welcome.message: Welcome to ${app.name}
+
+basic:
+  value: true
+  message: Dynamic Message
+  number: 100
