@@ -1,4 +1,4 @@
-package com.example.multienvironment;
+package com.agility.profiles;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MultiEnvironmentApplicationTests {
+public class MultiEvnApplicationTests {
 
 	@Test
 	public void contextLoads() {
