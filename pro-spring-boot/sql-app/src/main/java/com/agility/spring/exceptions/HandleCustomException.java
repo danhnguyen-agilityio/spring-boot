@@ -40,4 +40,14 @@ public class HandleCustomException extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(status.value(), String.join(", ", errorMessages));
         return new ResponseEntity<>(apiError, status);
     }
+
+    /**
+     * Handle exception when not have any method handle thrown exception
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleAllExceptions(Exception ex) {
+        ApiError response = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
