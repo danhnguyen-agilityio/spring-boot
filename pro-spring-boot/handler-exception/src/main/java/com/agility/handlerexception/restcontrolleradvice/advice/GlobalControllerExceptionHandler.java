@@ -7,14 +7,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
@@ -31,10 +33,16 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        List<String> errorMessages = new ArrayList<>();
+
+        for (ObjectError error : ex.getBindingResult().getFieldErrors()) {
+            errorMessages.add(error.getDefaultMessage());
+        }
+
         ApiErrorResponse response = ApiErrorResponse.ApiErrorResponseBuilder.anApiErrorResponse()
             .withStatus(status)
-            .withCode(status.BAD_REQUEST.value())
-            .withMessage(ex.getBindingResult().toString()).build();
+            .withCode(status.value())
+            .withMessage(String.join(", ", errorMessages)).build();
 
         logger.info("getAllErrors");
         ex.getBindingResult().getAllErrors().forEach(error -> {
@@ -69,13 +77,14 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
     }
 
     /**
-     * Default exception handler
+     * handleAllExceptions
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> defaultExceptionHandler(Exception ex) {
+    public ResponseEntity<ApiErrorResponse> handleAllExceptions(Exception ex) {
+        logger.info("handleAllExceptions");
         ApiErrorResponse response = new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
             ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(response, response.getStatus());
     }
 
 }

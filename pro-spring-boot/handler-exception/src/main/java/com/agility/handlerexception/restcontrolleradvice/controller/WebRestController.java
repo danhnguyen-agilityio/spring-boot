@@ -6,7 +6,6 @@ import com.agility.handlerexception.restcontrolleradvice.model.CustomError;
 import com.agility.handlerexception.restcontrolleradvice.model.Customer;
 import com.agility.handlerexception.restcontrolleradvice.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 

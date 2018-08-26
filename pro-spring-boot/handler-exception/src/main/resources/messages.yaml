@@ -1,0 +1,11 @@
+user:
+  firstName:
+    notNull: First name is a required field
+    size: First name cannot be longer than {max} characters
+
+  age:
+    min: Age must be greater than or equal {value}
+    max: Age must be less than or equal {value}
+
+  dateOfBirth:
+    adult: Users should be at least 18 years old
