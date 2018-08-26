@@ -3,12 +3,16 @@ package com.agility.spring.dto;
 import com.agility.spring.models.User;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class UserDTO {
 
-    @Email
+    @Email(message = "{user.email}")
     private String email;
 
+    @NotNull
+    @Size(min = 10, max = 30, message = "{user.lastName.size}")
     private String lastName;
 
     public UserDTO() {

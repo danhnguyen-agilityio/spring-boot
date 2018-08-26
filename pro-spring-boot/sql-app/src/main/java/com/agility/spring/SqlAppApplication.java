@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @SpringBootApplication
 public class SqlAppApplication {
@@ -42,5 +44,15 @@ public class SqlAppApplication {
 //			dao.findAll().forEach(user -> System.out.println(user));
 
         };
+    }
+
+    /**
+     * Define bean to load message from file messages.properties
+     */
+    @Bean
+    LocalValidatorFactoryBean validator(MessageSource messageSource) {
+        LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
+        validatorFactoryBean.setValidationMessageSource(messageSource);
+        return validatorFactoryBean;
     }
 }

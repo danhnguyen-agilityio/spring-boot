@@ -9,9 +9,9 @@ import com.agility.spring.repositorys.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +94,7 @@ public class UserRestController {
      * @param userDTO User info from request body
      * @return Returns user info
      */
-    @PreAuthorize("hasRole('ADMIN)")
+//    @PreAuthorize("hasRole('ADMIN)")
     @RequestMapping(method = RequestMethod.POST)
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
         User user = new User(userDTO);
@@ -113,7 +113,7 @@ public class UserRestController {
      */
     @PutMapping(value = "/{userId}")
     public UserDTO updateUser(@PathVariable long userId,
-                              @RequestBody UserDTO userDTO) {
+                              @Valid @RequestBody UserDTO userDTO) {
         logger.debug("PUT /v1/users/{}, body={}", userId, userDTO);
 
         // Find user from DB
