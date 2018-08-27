@@ -9,6 +9,7 @@ import com.agility.spring.repositorys.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -26,9 +27,9 @@ public class UserRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
+    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -77,6 +78,7 @@ public class UserRestController {
      * @return Returns user info
      * @throws NotFoundException if user not exist in database
      */
+    @PreAuthorize("hasRole('ROLE_ADMIN)")
     @GetMapping(value = "/{userId}")
     public UserDTO getUser(@PathVariable("userId") long userId) {
 
@@ -107,11 +109,11 @@ public class UserRestController {
     }
 
     /**
-     * Update user by id
+     * Updates user with the given identifier
      *
-     * @param userId  Id of user
+     * @param userId  The user id to update
      * @param userDTO User info from request body
-     * @return Returns user info
+     * @return the user with the given ID
      * @throws NotFoundException   if id of user not exist
      * @throws BadRequestException if not have info email
      */
