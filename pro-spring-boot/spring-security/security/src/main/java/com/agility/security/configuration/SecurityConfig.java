@@ -1,13 +1,11 @@
 package com.agility.security.configuration;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/students/**").hasRole("USER")
             .antMatchers("/manager/**").hasAnyRole("MANAGER", "ADMIN")
             .antMatchers("/admin/**").hasRole("ADMIN")
-            .anyRequest().authenticated() // same syntax antMatchers("/**")
+            .anyRequest().authenticated() // allow logged user, not allow anonymous user
+//            .anyRequest().permitAll() // allow anonymous user or logged user
             .and().csrf().disable().headers().frameOptions().disable();
     }
 }
