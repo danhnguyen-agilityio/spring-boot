@@ -2,6 +2,7 @@ package com.agility.security.services;
 
 import com.agility.security.models.Course;
 import com.agility.security.models.Student;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -39,6 +40,17 @@ public class StudentService {
     }
 
     public List<Course> retrieveCourses(String studentId) {
+        Student student = retrieveStudent(studentId);
+
+        if (student == null) {
+            return null;
+        }
+
+        return student.getCourses();
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER, ROLE_ADMIN')")
+    public List<Course> retrieveCoursesByRoleManagerAndAdmin(String studentId) {
         Student student = retrieveStudent(studentId);
 
         if (student == null) {
