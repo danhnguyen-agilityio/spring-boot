@@ -78,7 +78,7 @@ public class UserRestController {
      * @return Returns user info
      * @throws NotFoundException if user not exist in database
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN)")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/{userId}")
     public UserDTO getUser(@PathVariable("userId") long userId) {
 
