@@ -26,8 +26,12 @@ public class UserRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
 
-    @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public User createUser(@RequestParam("email") String email,

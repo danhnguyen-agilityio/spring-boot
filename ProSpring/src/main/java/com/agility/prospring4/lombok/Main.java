@@ -10,7 +10,12 @@ import java.util.HashMap;
 @Slf4j
 public class Main {
 
+
     public static void main(String[] args) {
+
+    }
+
+    public static void demo() {
 //        Student student = new Student("Danh", "12", new Date());
 //        student.setCode("20");
 //        System.out.println(student.toString());
@@ -24,33 +29,33 @@ public class Main {
 //        student2.setCode("bcd");
 //        System.out.println(student1.equals(student2));
 
-        Student student = Student.builder()
-            .name("Danh")
-            .code("12")
-            .dateOfBirth(new Date())
-            .build();
-        System.out.println(student);
-
-        // Use val
-        val example = new ArrayList<String>();
-        example.add("Danh");
-        example.add("David");
-        System.out.println(example.toString());
-
-        // Use val
-        val map = new HashMap<String, String>();
-        map.put("key1", "Danh");
-        map.put("key2", "David");
-        for (val entry : map.entrySet()) {
-            System.out.println(entry.getKey() + ", " + entry.getValue());
-        }
-
-        // Use @NonNull
-//        new NonNullExample(null);
-
-
-        // Use log
-        log.error("Something else is wrong here");
+//        Student student = Student.builder()
+//            .name("Danh")
+//            .code("12")
+//            .dateOfBirth(new Date())
+//            .build();
+//        System.out.println(student);
+//
+//        // Use val
+//        val example = new ArrayList<String>();
+//        example.add("Danh");
+//        example.add("David");
+//        System.out.println(example.toString());
+//
+//        // Use val
+//        val map = new HashMap<String, String>();
+//        map.put("key1", "Danh");
+//        map.put("key2", "David");
+//        for (val entry : map.entrySet()) {
+//            System.out.println(entry.getKey() + ", " + entry.getValue());
+//        }
+//
+//        // Use @NonNull
+////        new NonNullExample(null);
+//
+//
+//        // Use log
+//        log.error("Something else is wrong here");
     }
 
 }

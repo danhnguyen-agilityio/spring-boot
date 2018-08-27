@@ -4,6 +4,6 @@ import lombok.NonNull;
 
 public class NonNullExample {
     public NonNullExample(@NonNull Student student) {
-        student.getName();
+//        student.getName();
     }
 }
