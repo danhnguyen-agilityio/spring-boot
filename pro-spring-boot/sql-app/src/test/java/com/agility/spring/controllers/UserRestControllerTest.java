@@ -12,9 +12,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import static org.junit.Assert.*;
@@ -22,7 +26,9 @@ import static org.junit.Assert.*;
 /**
  * This class used to test rest api for user
  */
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class UserRestControllerTest {
 
     @InjectMocks
@@ -35,7 +41,24 @@ public class UserRestControllerTest {
     public final ExpectedException exception = ExpectedException.none();
 
     /**
-     * Test get user success
+     * Test get user only use Mockito
+     */
+    @Test
+    public void testGetUserUseMock() {
+        User mockUser = new User(200, "danh@gmail.com", "david");
+        UserRepository repository = mock(UserRepository.class);
+        when(repository.findById(200l)).thenReturn(Optional.of(mockUser));
+        UserRestController controller = new UserRestController();
+        controller.setUserRepository(repository);
+
+        UserDTO userDTO = controller.getUser(200l);
+
+        assertNotNull(userDTO);
+        assertEquals("david", userDTO.getLastName());
+    }
+
+    /**
+     * Test get user use Mockito with Spring
      */
     @Test
     public void testGetUserSuccess() {
