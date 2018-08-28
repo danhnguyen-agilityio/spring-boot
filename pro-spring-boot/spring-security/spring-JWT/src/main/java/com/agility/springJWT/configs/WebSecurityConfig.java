@@ -48,6 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/").permitAll()
             .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
             .antMatchers(HttpMethod.POST, "/login").permitAll()
+            .antMatchers("/admin").hasAuthority("ADMIN")
+            .antMatchers("/user").hasAuthority("USER")
             .anyRequest().authenticated()
             .and()
             // Handle requests before go to handler in controllers

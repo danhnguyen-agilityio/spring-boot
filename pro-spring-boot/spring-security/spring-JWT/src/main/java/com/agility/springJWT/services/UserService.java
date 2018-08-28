@@ -31,4 +31,5 @@ public class UserService {
         users.add(user);
         log.info("Add user: {}", user);
     }
+
 }
