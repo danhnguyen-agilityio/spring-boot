@@ -26,7 +26,7 @@ public class StudentController {
         return studentService.retrieveCourses(studentId);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/{studentId}/courses")
     public List<Course> retrieveCoursesForStudentByAdmin(@PathVariable String studentId) {
         return studentService.retrieveCourses(studentId);
