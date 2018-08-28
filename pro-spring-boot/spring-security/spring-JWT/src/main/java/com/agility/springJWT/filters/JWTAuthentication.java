@@ -15,15 +15,15 @@ import java.io.IOException;
 /**
  * Receive JWT from request to authenticate
  */
-public class JWTAuthenticationFilter extends GenericFilterBean {
+public class JWTAuthentication extends GenericFilterBean {
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+    public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
 
         Authentication authentication = TokenAuthenticationService.getAuthentication(
-            (HttpServletRequest) servletRequest);
+            (HttpServletRequest) request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(request, response);
     }
 }

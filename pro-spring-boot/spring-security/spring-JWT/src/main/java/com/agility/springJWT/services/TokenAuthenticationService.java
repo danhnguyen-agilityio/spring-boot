@@ -10,11 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Collections;
 import java.util.Date;
 
+import static com.agility.springJWT.constants.SecurityConstants.*;
+
 public class TokenAuthenticationService {
-    static final long EXPIRATION_TIME = 864_000_000; // 10 days
-    static final String SECRET = "ThisIsASecret";
-    static final String TOKEN_PREFIX = "Bearer";
-    static final String HEADER_STRING = "Authorization";
 
     /**
      * Write info of JWT to response and send to client side
@@ -34,7 +32,7 @@ public class TokenAuthenticationService {
      */
     public static Authentication getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
-        if (token != null) {
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
             String user = Jwts.parser()
                 .setSigningKey(SECRET)
                 .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))

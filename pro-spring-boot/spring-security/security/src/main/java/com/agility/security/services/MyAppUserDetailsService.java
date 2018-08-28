@@ -21,7 +21,7 @@ public class MyAppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         if (!username.equals("demo"))
-            return null;
+            throw new UsernameNotFoundException("user not found with the provided username");
 
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(2, "ADMIN"));

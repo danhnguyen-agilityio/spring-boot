@@ -2,6 +2,7 @@ package com.agility.springJWT.filters;
 
 import com.agility.springJWT.models.AccountCredentials;
 import com.agility.springJWT.services.TokenAuthenticationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,9 +35,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         HttpServletResponse response) throws AuthenticationException,
         IOException, ServletException {
 
-        AccountCredentials credentials = new AccountCredentials(
-            request.getParameter("username"),
-            request.getParameter("password"));
+        AccountCredentials credentials = new ObjectMapper()
+            .readValue(request.getInputStream(), AccountCredentials.class);
+
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(
                 credentials.getUsername(),
