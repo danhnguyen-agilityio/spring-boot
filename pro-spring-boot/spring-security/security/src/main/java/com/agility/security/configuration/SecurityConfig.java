@@ -2,7 +2,7 @@ package com.agility.security.configuration;
 
 import com.agility.security.services.MyAppUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.sql.DataSource;
 
@@ -18,6 +21,9 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
 //    @Autowired
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -60,18 +66,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic()
-            .and().authorizeRequests()
-            .antMatchers("/admin/**").hasAuthority("ADMIN")
+        http.authorizeRequests()
+            .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/manager/**").hasAnyAuthority("MANAGER", "ADMIN")
             .antMatchers("/students/**").hasAuthority("USER")
             .anyRequest().authenticated() // allow logged user, not allow anonymous user
 //            .anyRequest().permitAll() // allow anonymous user or logged user
+            .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint)
             .and()
             .formLogin()
-            .and()
-            .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-            .logoutSuccessUrl("/login")
+//            .and()
+//            .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+//            .logoutSuccessUrl("/login")
             .and().csrf().disable().headers().frameOptions().disable();
+    }
+
+    /**
+     * Handle Cross Origin requests
+     */
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE")
+                    .allowedOrigins("*")
+                    .allowedHeaders("*");
+            }
+        };
     }
 }

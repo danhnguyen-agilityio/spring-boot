@@ -2,12 +2,14 @@ package com.agility.security.services;
 
 import com.agility.security.models.Role;
 import com.agility.security.models.UserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -24,7 +26,7 @@ public class MyAppUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("user not found with the provided username");
 
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role(2, "ADMIN"));
+        roles.add(new Role(2, "ROLE_ADMIN"));
         roles.add(new Role(1, "USER"));
 
         UserInfo activeUserInfo = new UserInfo("demo", "password", roles);
