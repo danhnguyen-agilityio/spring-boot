@@ -3,6 +3,8 @@ package com.agility.springJWT.filters;
 import com.agility.springJWT.models.AccountCredentials;
 import com.agility.springJWT.services.TokenAuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,8 @@ import java.util.Collections;
  */
 public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
+    Logger log = LoggerFactory.getLogger(JWTLoginFilter.class);
+
     public JWTLoginFilter(String url, AuthenticationManager authManager) {
         super(new AntPathRequestMatcher(url));
         setAuthenticationManager(authManager);
@@ -38,6 +42,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         AccountCredentials credentials = new ObjectMapper()
             .readValue(request.getInputStream(), AccountCredentials.class);
 
+        log.info("attemptAuthentication {}", credentials);
+
         return getAuthenticationManager().authenticate(
             new UsernamePasswordAuthenticationToken(
                 credentials.getUsername(),
@@ -52,6 +58,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         HttpServletResponse response, FilterChain chain,
         Authentication authResult) throws IOException, ServletException {
 
-        TokenAuthenticationService.addAuthentication(response, authResult.getName());
+        log.info("Success Authentication with authorities {}", authResult.getAuthorities());
+
+        TokenAuthenticationService.addAuthentication(response, authResult);
     }
 }

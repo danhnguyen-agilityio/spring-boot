@@ -21,12 +21,19 @@ public class TokenAuthenticationService {
     /**
      * Write info of JWT to response and send to client side
      */
-    public static void addAuthentication(HttpServletResponse response, String username) {
+    public static void addAuthentication(HttpServletResponse response, Authentication authentication) {
 
-        Claims claims = Jwts.claims().setSubject(username);
+        Claims claims = Jwts.claims().setSubject(authentication.getName());
 
-        // FIXME: TODO get from database
-        claims.put("roles", "ADMIN");
+        List<String> roles = new ArrayList<>();
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            logger.info("Authority of User: " + authority.getAuthority());
+            roles.add(authority.getAuthority());
+        }
+
+        claims.put("roles", roles);
+
+        logger.info("addAuthentication {}", claims);
 
         String JWT = Jwts.builder()
             .setClaims(claims)
@@ -43,6 +50,9 @@ public class TokenAuthenticationService {
     public static Authentication getAuthentication(HttpServletRequest request) {
         String token = request.getHeader(HEADER_STRING);
         if (token != null && token.startsWith(TOKEN_PREFIX)) {
+
+            logger.info("Parse JWT");
+
             // Parse the token
             Claims claims = Jwts.parser()
                 .setSigningKey(SECRET)
@@ -51,15 +61,25 @@ public class TokenAuthenticationService {
 
             // Extract the Username
             String user = claims.getSubject();
+            logger.info("Claims: {}", claims);
 
             // Extract the Roles
-//            ArrayList<String> roles = (ArrayList<String>) claims.get("roles");
-            String roles = (String) claims.get("roles");
-            logger.info("Roles: {}", roles);
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(roles);
+            List<String> roles = (List<String>) claims.get("roles");
 
+            // Then convert Roles to GrantedAuthority Object for injecting
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            for (String role : roles) {
+                logger.info("Role of user after parse: " + role);
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+//            logger.info("Roles: {}", roles);
+            logger.info("authorities: {}", authorities);
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ADMIN");
+
+
+            // Return an Authenticated user with the list of Roles attached
             return (user != null) ?
-                new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(grantedAuthority)) :
+                new UsernamePasswordAuthenticationToken(user, null, authorities) :
                 null;
         }
         return null;

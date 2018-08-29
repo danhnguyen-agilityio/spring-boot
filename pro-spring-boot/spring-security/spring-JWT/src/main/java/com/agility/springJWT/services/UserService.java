@@ -32,4 +32,14 @@ public class UserService {
         log.info("Add user: {}", user);
     }
 
+    public List<String> getRoles(String username) {
+        List<String> roles = new ArrayList<>();
+        roles.add("USER");
+        if ("admin".equals(username)) {
+            roles.add("ADMIN");
+        }
+
+        return roles;
+    }
+
 }
