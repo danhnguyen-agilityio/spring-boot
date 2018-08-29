@@ -41,5 +41,5 @@ public class AppUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
             user.getUsername(), "password", Arrays.asList(grantedAuthority)
         );
-    }
+}
 }

@@ -6,6 +6,7 @@ import com.agility.spring.exceptions.CustomError;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The class create REST Api for user
+ * The class create REST Api for User
  *
  * @author Danh Nguyen
  */
+@Slf4j
 @RestController
 @RequestMapping("/users")
 public class UserRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRestController.class);
-
-    @Autowired
     private UserRepository userRepository;
 
     public void setUserRepository(UserRepository userRepository) {
@@ -120,7 +119,7 @@ public class UserRestController {
     @PutMapping(value = "/{userId}")
     public UserDTO updateUser(@PathVariable long userId,
                               @Valid @RequestBody UserDTO userDTO) {
-        logger.debug("PUT /v1/users/{}, body={}", userId, userDTO);
+        log.debug("PUT /v1/users/{}, body={}", userId, userDTO);
 
         // Find user from DB
         User user = userRepository.findById(userId).orElse(null);
@@ -143,7 +142,7 @@ public class UserRestController {
         // Save user to database
         User updatedUser = userRepository.save(user);
 
-        logger.debug("Response {}", updatedUser);
+        log.debug("Response {}", updatedUser);
         // Convert to UserDTO
         // and return it
         return new UserDTO(updatedUser);
@@ -186,7 +185,7 @@ public class UserRestController {
         headers = {"X-HTTP-Method-Override=PUT"})
     public UserDTO updateUserAsPost(@PathVariable("userId") long userId,
                                     @RequestBody UserDTO userDTO) {
-        logger.info("Use PUT method via POST method");
+        log.info("Use PUT method via POST method");
         return updateUser(userId, userDTO);
     }
 

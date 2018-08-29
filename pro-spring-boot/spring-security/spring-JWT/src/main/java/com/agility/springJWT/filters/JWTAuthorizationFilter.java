@@ -85,7 +85,6 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             List<String> groups = (List<String>) claims.get("groups");
             request.setAttribute("groups", groups);
 
-
             // Return an Authenticated user with the list of Roles attached
             return (user != null) ?
                 new UsernamePasswordAuthenticationToken(user, null, authorities) :
