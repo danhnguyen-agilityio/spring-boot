@@ -11,8 +11,6 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,10 +27,10 @@ import static org.junit.Assert.*;
 //@RunWith(MockitoJUnitRunner.class)
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserRestControllerTest {
+public class UserControllerTest {
 
     @InjectMocks
-    private UserRestController userRestController;
+    private UserController userController;
 
     @Mock
     private UserRepository userRepository;
@@ -48,8 +46,7 @@ public class UserRestControllerTest {
         User mockUser = new User(200, "danh@gmail.com", "david");
         UserRepository repository = mock(UserRepository.class);
         when(repository.findById(200l)).thenReturn(Optional.of(mockUser));
-        UserRestController controller = new UserRestController();
-        controller.setUserRepository(repository);
+        UserController controller = new UserController(repository);
 
         UserDTO userDTO = controller.getUser(200l);
 
@@ -65,7 +62,7 @@ public class UserRestControllerTest {
         User mockUser = new User(200, "danh@gmail.com", "david");
         when(userRepository.findById(200l)).
             thenReturn(Optional.of(mockUser));
-        UserDTO userDTO = userRestController.getUser(200l);
+        UserDTO userDTO = userController.getUser(200l);
 
         assertNotNull(userDTO);
         assertEquals("david", userDTO.getLastName());
@@ -80,6 +77,6 @@ public class UserRestControllerTest {
             .thenThrow(new NotFoundException(CustomError.NOT_FOUND_USER));
         exception.expect(NotFoundException.class);
         exception.expectMessage("User is not found");
-        userRestController.getUser(200l);
+        userController.getUser(200l);
     }
 }

@@ -26,7 +26,7 @@ public class SecurityTest {
     private UserRepository userRepository;
 
     @Autowired
-    private UserRestController userRestController;
+    private UserController userController;
 
     /**
      * Test get user not logged in
@@ -34,7 +34,7 @@ public class SecurityTest {
     @Ignore
     @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void testGetUserNotLoggedIn() {
-        userRestController.getUser(200);
+        userController.getUser(200);
     }
 
     /**
@@ -44,7 +44,7 @@ public class SecurityTest {
     @Test(expected = AccessDeniedException.class)
     @WithMockUser
     public void testGetUserNotAdmin() {
-        userRestController.getUser(200l);
+        userController.getUser(200l);
 
     }
 
@@ -58,6 +58,6 @@ public class SecurityTest {
         when(userRepository.findById(200l)).
             thenReturn(Optional.of(new User()));
 
-        assertNotNull(userRestController.getUser(200l));
+        assertNotNull(userController.getUser(200l));
     }
 }

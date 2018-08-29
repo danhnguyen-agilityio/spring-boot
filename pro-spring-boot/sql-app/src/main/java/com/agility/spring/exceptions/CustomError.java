@@ -7,7 +7,8 @@ public enum CustomError {
 
     NOT_FOUND(400, "Resource not found"),
     NOT_FOUND_USER(401, "User is not found"),
-    BAD_REQUEST(402, "Invalid request");
+    BAD_REQUEST(402, "Invalid request"),
+    EXIST_EMAIL(403, "Email exist in system");
 
     private int code;
     private String message;

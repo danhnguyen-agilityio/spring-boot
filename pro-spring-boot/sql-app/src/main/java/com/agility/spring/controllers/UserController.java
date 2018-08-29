@@ -6,6 +6,7 @@ import com.agility.spring.exceptions.CustomError;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,45 +26,22 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/users")
-public class UserRestController {
-
+public class UserController {
     private UserRepository userRepository;
 
-    public void setUserRepository(UserRepository userRepository) {
+    /**
+     * Constructor with user repository
+     */
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public User createUser(@RequestParam("email") String email,
-                           @RequestParam("name") String name) {
-        User user;
-        try {
-            user = new User(email, name);
-            userRepository.save(user);
-        } catch (Exception ex) {
-            return null;
-        }
-        return user;
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET,
-        consumes = "application/json;version=2")
-    public String getUserV2(@PathVariable("userId") long id) {
-        try {
-            User user = userRepository.findById(id).orElse(null);
-            return "User have email: " + user.getEmail();
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET,
-        headers = {"X-API-Version=3"})
-    public String getUserV3(@PathVariable("userId") long id) {
-        return "This is api version 3 get user by id ";
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
+    /**
+     * Get all user
+     *
+     * @return List user in database
+     */
+    @GetMapping
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
@@ -71,13 +49,38 @@ public class UserRestController {
     }
 
     /**
-     * Get user by id
+     * Get all user use specific header on request
+     * Header with key = X-API-Version, value = 3
+     *
+     * @return List user in database
+     */
+    @GetMapping(value = "v1", headers = {"X-API-Version=3"})
+    public List<User> getAllUserUseHeaderV1() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return users;
+    }
+
+    /**
+     * Get all user use specific header on request
+     * Header with key = consumes, value = application/json;version=2
+     *
+     * @return List user in database
+     */
+    @GetMapping(value = "/v2", consumes = "application/json;version=2")
+    public List<User> getAllUserUseHeaderV2() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return users;
+    }
+
+    /**
+     * Get user by given identify
      *
      * @param userId Id of user
-     * @return Returns user info
+     * @return User info with given identify
      * @throws NotFoundException if user not exist in database
      */
-//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(value = "/{userId}")
     public UserDTO getUser(@PathVariable("userId") long userId) {
 
@@ -94,17 +97,31 @@ public class UserRestController {
     }
 
     /**
-     * Add user
+     * Create user with email and name
      *
-     * @param userDTO User info from request body
-     * @return Returns user info
+     * @param email Email of user
+     * @param name  Name of user
+     * @throws BadRequestException if email exist in system
+     * @return
      */
-//    @PreAuthorize("hasRole('ADMIN)")
-    @RequestMapping(method = RequestMethod.POST)
-    public UserDTO addUser(@RequestBody UserDTO userDTO) {
-        User user = new User(userDTO);
-        userRepository.save(user);
-        return new UserDTO(user);
+    @PostMapping("/create")
+    public UserDTO createUser(@RequestParam("email") String email,
+                           @RequestParam("name") String name) {
+        log.debug("POST /create");
+
+        User userResponse;
+        User user = userRepository.findByEmail(email);
+
+        if (user == null) {
+            User userRequest = new User(email, name);
+            userResponse = userRepository.save(userRequest);
+        } else {
+            throw new BadRequestException(CustomError.EXIST_EMAIL);
+        }
+
+        log.debug("Created user: {}", userResponse);
+
+        return new UserDTO(userResponse);
     }
 
     /**
@@ -119,7 +136,7 @@ public class UserRestController {
     @PutMapping(value = "/{userId}")
     public UserDTO updateUser(@PathVariable long userId,
                               @Valid @RequestBody UserDTO userDTO) {
-        log.debug("PUT /v1/users/{}, body={}", userId, userDTO);
+        log.debug("PUT /users/{}, body={}", userId, userDTO);
 
         // Find user from DB
         User user = userRepository.findById(userId).orElse(null);
@@ -185,7 +202,7 @@ public class UserRestController {
         headers = {"X-HTTP-Method-Override=PUT"})
     public UserDTO updateUserAsPost(@PathVariable("userId") long userId,
                                     @RequestBody UserDTO userDTO) {
-        log.info("Use PUT method via POST method");
+        log.debug("Use PUT method via POST method");
         return updateUser(userId, userDTO);
     }
 

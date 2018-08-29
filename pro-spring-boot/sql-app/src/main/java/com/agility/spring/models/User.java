@@ -2,12 +2,20 @@ package com.agility.spring.models;
 
 import com.agility.spring.dto.UserDTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@ToString
+@Builder
 //@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class User implements Serializable {
 
@@ -16,59 +24,18 @@ public class User implements Serializable {
     private long id;
 
     @JsonProperty("customEmail")
+    @Email
     private String email;
 
     @Column(name = "lastName")
     private String lastName;
-
-    public User() {
-    }
-
-    public User(long id) {
-        this.id = id;
-    }
 
     public User(String email, String name) {
         this.email = email;
         this.lastName = name;
     }
 
-    public User(long id, String email, String lastName) {
-        this.id = id;
-        this.email = email;
-        this.lastName = lastName;
-    }
-
     public User(UserDTO userDTO) {
         this(userDTO.getEmail(), userDTO.getLastName());
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    @Override
-    public String toString() {
-        return "Id: " + this.id + ", " + "Name: " + this.lastName + ", " + "Email: " + this.email;
     }
 }
