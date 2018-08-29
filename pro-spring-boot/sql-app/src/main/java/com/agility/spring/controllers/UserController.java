@@ -8,6 +8,7 @@ import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class UserController {
      */
     @GetMapping
     public List<User> getAll() {
-        List<User> users = new ArrayList<>();
+        val users = new ArrayList<User>();
         userRepository.findAll().forEach(users::add);
         return users;
     }
