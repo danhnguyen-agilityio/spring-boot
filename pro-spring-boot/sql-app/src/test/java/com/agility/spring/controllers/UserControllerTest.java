@@ -1,6 +1,15 @@
+// NOTE Dependency
+// Hamcrest (hamcrest-all): Write assertions for the response
+//Mockito: Mocking library
+// JsonPath (Json-path and json-path-assert): Write assertions for JSON
+// documents return by our REST API
+// Junit
+// Spring Test
+
 package com.agility.spring.controllers;
 
 import com.agility.spring.dto.UserDTO;
+import com.agility.spring.exceptions.BadRequestException;
 import com.agility.spring.exceptions.CustomError;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
@@ -15,6 +24,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,16 +46,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * This class used to test rest api for user
  */
-@RunWith(MockitoJUnitRunner.class)
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+//@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 @Slf4j
 public class UserControllerTest {
 
@@ -65,6 +74,7 @@ public class UserControllerTest {
 
     @Before
     public void setUp() {
+        Mockito.reset(userRepository);
         // Initializes fields annotated with Mockito annotations
         MockitoAnnotations.initMocks(this);
         // Build a MockMvc instance by registering one or more controller instance
@@ -86,10 +96,9 @@ public class UserControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].id", is(200)));
-        // FIXME: Find solution
-        // .andExpect(jsonPath("$.content[0].email").value("danh@gmail.com"))
-        // .andExpect(jsonPath("$[0].lastName", is("david")));
+            .andExpect(jsonPath("$[0].id", is(200)))
+         .andExpect(jsonPath("$[0].customEmail").value("danh@gmail.com"))
+         .andExpect(jsonPath("$[0].lastName", is("david")));
 
         // Verify that the findAll() method of the UserRepository is invoked exactly once
         verify(userRepository, times(1)).findAll();
@@ -100,11 +109,11 @@ public class UserControllerTest {
     /**
      * Test create user fail
      */
-    @Test
+    @Test(expected = BadRequestException.class)
     public void test_create_user_fail_bad_request() throws Exception {
         User user = new User(200, "danh@gmail.com", "David");
         UserDTO userDTO = new UserDTO(user);
-        when(userRepository.findByEmail("danh@gmail.com")).thenReturn(user);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
 
         mockMvc.perform(
             post("/users").
@@ -113,7 +122,7 @@ public class UserControllerTest {
         // FIXME: How to catch status BadRequest
         // .andExpect(status().isBadRequest());
 
-        verify(userRepository, times(1)).findByEmail("danh@gmail.com");
+        verify(userRepository, times(1)).findByEmail(user.getEmail());
         verifyNoMoreInteractions(userRepository);
     }
 
@@ -230,6 +239,15 @@ public class UserControllerTest {
         verify(userRepository, times(1)).findById(user.getId());
         verify(userRepository, times(1)).deleteById(user.getId());
         verifyNoMoreInteractions(userRepository);
+    }
+
+    /**
+     *  Test headers get all user
+     */
+    @Test
+    public void test_headers_get_all_user() throws Exception {
+        mockMvc.perform(get("/users"))
+            .andExpect(header().string("content-type", "application/json;charset=UTF-8"));
     }
 
     /**
