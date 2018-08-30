@@ -2,9 +2,11 @@ package com.agility.spring.exceptions;
 
 import com.agility.spring.response.ApiError;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +15,9 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * HandleCustomException class handles custom exception
@@ -34,15 +38,15 @@ public class HandleCustomException extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-//        List<String> errorMessages = new ArrayList<>();
-//
-//        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-//            errorMessages.add(error.getDefaultMessage());
-//        }
-//
-//        ApiError apiError = new ApiError(status.value(), String.join(", ", errorMessages));
+        val errorMessages = new HashMap<String, String>();
+
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errorMessages.put(error.getField(), error.getDefaultMessage());
+        }
+
         ApiError apiError = new ApiError(CustomError.BAD_REQUEST.code(),
-            CustomError.BAD_REQUEST.message());
+            CustomError.BAD_REQUEST.message(),
+            errorMessages);
         return new ResponseEntity<>(apiError, status);
     }
 

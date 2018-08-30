@@ -14,7 +14,6 @@ package com.agility.spring.controllers;
 
 import com.agility.spring.dto.UserDTO;
 import com.agility.spring.exceptions.CustomError;
-import com.agility.spring.exceptions.HandleCustomException;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
@@ -203,7 +202,7 @@ public class UserControllerTest {
      */
     @Test
     public void testUpdateUserWithShortNameFailMethodArgument() throws Exception {
-        User user = new User(200,"danh@gmail.com", "David");
+        User user = new User(200,"danh", "David");
         UserDTO userDTO = new UserDTO(user);
 
         mockMvc.perform(
@@ -213,9 +212,10 @@ public class UserControllerTest {
             .andExpect(status().isBadRequest())
             .andDo(MockMvcResultHandlers.print())
             .andExpect(jsonPath("$.code", is(CustomError.BAD_REQUEST.code())))
-            .andExpect(jsonPath("$.message", is(CustomError.BAD_REQUEST.message())));
-            // FIXME: Get message from application.properties
-            // .andExpect(jsonPath("$.message", is(CustomError.NOT_FOUND_USER.message())));
+            .andExpect(jsonPath("$.message", is(CustomError.BAD_REQUEST.message())))
+            // FIXME: Get message from application.yml
+            .andExpect(jsonPath("$.errors.email").exists())
+            .andExpect(jsonPath("$.errors.lastName").exists());
     }
 
     /**
