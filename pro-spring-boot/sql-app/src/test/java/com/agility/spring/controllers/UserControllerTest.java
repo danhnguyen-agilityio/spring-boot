@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -35,6 +36,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -42,9 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * This class used to test rest api for user
  */
-//@RunWith(MockitoJUnitRunner.class)
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
 @Slf4j
 public class UserControllerTest {
 
@@ -87,9 +89,9 @@ public class UserControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
             .andExpect(jsonPath("$", hasSize(2)))
             .andExpect(jsonPath("$[0].id", is(200)));
-            // FIXME: Find solution
-            // .andExpect(jsonPath("$.content[0].email").value("danh@gmail.com"))
-            // .andExpect(jsonPath("$[0].lastName", is("david")));
+        // FIXME: Find solution
+        // .andExpect(jsonPath("$.content[0].email").value("danh@gmail.com"))
+        // .andExpect(jsonPath("$[0].lastName", is("david")));
 
         // Verify that the findAll() method of the UserRepository is invoked exactly once
         verify(userRepository, times(1)).findAll();
@@ -110,8 +112,8 @@ public class UserControllerTest {
             post("/users").
                 contentType(MediaType.APPLICATION_JSON).
                 content(asJsonString(userDTO)));
-            // FIXME: How to catch status BadRequest
-            // .andExpect(status().isBadRequest());
+        // FIXME: How to catch status BadRequest
+        // .andExpect(status().isBadRequest());
 
         verify(userRepository, times(1)).findByEmail("danh@gmail.com");
         verifyNoMoreInteractions(userRepository);
@@ -142,7 +144,7 @@ public class UserControllerTest {
     @Test
     public void test_create_user_success() throws Exception {
         log.debug("Test create user success API /user");
-        User user = new User(200, "danh@gmail.com", "David");
+        User user = new User(200, "danh@gmail.com", "David Nguyen");
         UserDTO userDTO = new UserDTO(user);
         when(userRepository.findByEmail("danh@gmail.com")).thenReturn(null);
         // Can not pass object user to method, must use Class to represent
@@ -159,6 +161,59 @@ public class UserControllerTest {
         verify(userRepository, times(1)).findByEmail("danh@gmail.com");
         verify(userRepository, times(1)).save(any(User.class));
         verifyNoMoreInteractions(userRepository);
+    }
+
+    /**
+     * Test update user success
+     * API: /user{id}
+     */
+    @Test
+    public void test_update_user_success() throws Exception {
+        User user = new User(200, "danh@gmail.com", "David Nguyen");
+        UserDTO userDTO = new UserDTO(user);
+        when(userRepository.findById(200l)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(
+            put("/users/{id}", user.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userDTO)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email", is(user.getEmail())))
+            .andExpect(jsonPath("$.lastName", is(user.getLastName())));
+
+        verify(userRepository, times(1)).findById(200l);
+        verify(userRepository, times(1)).save(any(User.class));
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    // FIXME: Test for Method Argument not valid
+    /**
+     * Test update user fail method argument not valid
+     */
+    @Test
+    public void test_update_user_fail_method_argument() {
+
+    }
+
+    // FIXME: Test for user not found to update
+    /**
+     * Test update user fail user not found
+     */
+    @Test
+    public void test_update_user_fail_user_not_found() {
+
+    }
+
+    
+
+    // FIXME: email empty
+    /**
+     * Test update user fail bad request by empty email
+     */
+    @Test
+    public void test_update_user_fail_bad_request() {
+
     }
 
     /**
@@ -204,7 +259,7 @@ public class UserControllerTest {
     }
 
     /**
-     *  Write an object into JSON representation
+     * Write an object into JSON representation
      */
     public static String asJsonString(final Object object) {
         try {
