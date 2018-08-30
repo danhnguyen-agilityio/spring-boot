@@ -1,6 +1,7 @@
 package com.agility.spring.exceptions;
 
 import com.agility.spring.response.ApiError;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +19,12 @@ import java.util.List;
  * HandleCustomException class handles custom exception
  */
 @ControllerAdvice
+@Slf4j
 public class HandleCustomException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BaseCustomException.class)
     public ResponseEntity handleIOException(BaseCustomException e) {
+        log.debug("BaseCustomException");
         ApiError apiError = new ApiError(e.getCode(), e.getMessage());
         return new ResponseEntity<>(apiError, e.getHttpStatus());
     }
@@ -31,23 +34,25 @@ public class HandleCustomException extends ResponseEntityExceptionHandler {
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<String> errorMessages = new ArrayList<>();
-
-        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-            errorMessages.add(error.getDefaultMessage());
-        }
-
-        ApiError apiError = new ApiError(status.value(), String.join(", ", errorMessages));
+//        List<String> errorMessages = new ArrayList<>();
+//
+//        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+//            errorMessages.add(error.getDefaultMessage());
+//        }
+//
+//        ApiError apiError = new ApiError(status.value(), String.join(", ", errorMessages));
+        ApiError apiError = new ApiError(CustomError.BAD_REQUEST.code(),
+            CustomError.BAD_REQUEST.message());
         return new ResponseEntity<>(apiError, status);
     }
 
     /**
      * Handle exception when not have any method handle thrown exception
      */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleAllExceptions(Exception ex) {
-        ApiError response = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ApiError> handleAllExceptions(Exception ex) {
+//        ApiError response = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+//            ex.getMessage());
+//        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 }

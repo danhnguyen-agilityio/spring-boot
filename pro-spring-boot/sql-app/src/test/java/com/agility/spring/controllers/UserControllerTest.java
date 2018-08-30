@@ -1,16 +1,20 @@
 // NOTE Dependency
-// Hamcrest (hamcrest-all): Write assertions for the response
-//Mockito: Mocking library
-// JsonPath (Json-path and json-path-assert): Write assertions for JSON
-// documents return by our REST API
-// Junit
-// Spring Test
+    // Hamcrest (hamcrest-all): Write assertions for the response
+    //Mockito: Mocking library
+    // JsonPath (Json-path and json-path-assert): Write assertions for JSON documents return by our REST API
+    // Junit
+    // Spring Test
+// Targets
+    // Learned to write unit tests for controller methods which read information from the database
+    // Learned  to write unit tests for controller method which add information to the database
+    // Learned how we can transform DTO objects in to JSON bytes and send the result of the transformation in the body of the request
+    // Learned how we can write assertions for JSON documents by using JsonPath expressions
 
 package com.agility.spring.controllers;
 
 import com.agility.spring.dto.UserDTO;
-import com.agility.spring.exceptions.BadRequestException;
 import com.agility.spring.exceptions.CustomError;
+import com.agility.spring.exceptions.HandleCustomException;
 import com.agility.spring.exceptions.NotFoundException;
 import com.agility.spring.models.User;
 import com.agility.spring.repositorys.UserRepository;
@@ -26,15 +30,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,14 +81,16 @@ public class UserControllerTest {
         // Initializes fields annotated with Mockito annotations
         MockitoAnnotations.initMocks(this);
         // Build a MockMvc instance by registering one or more controller instance
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+            .setControllerAdvice(new HandleCustomException())
+            .build();
     }
 
     /**
      * Test get all user
      */
     @Test
-    public void test_get_all_success() throws Exception {
+    public void tetGetAllUserSuccess() throws Exception {
         List<User> users = Arrays.asList(
             new User(200, "danh@gmail.com", "david"),
             new User(300, "tu@gmail.com", "tu")
@@ -109,8 +114,8 @@ public class UserControllerTest {
     /**
      * Test create user fail
      */
-    @Test(expected = BadRequestException.class)
-    public void test_create_user_fail_bad_request() throws Exception {
+    @Test
+    public void testCreateUserFailBadRequest() throws Exception {
         User user = new User(200, "danh@gmail.com", "David");
         UserDTO userDTO = new UserDTO(user);
         when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
@@ -118,9 +123,8 @@ public class UserControllerTest {
         mockMvc.perform(
             post("/users").
                 contentType(MediaType.APPLICATION_JSON).
-                content(asJsonString(userDTO)));
-        // FIXME: How to catch status BadRequest
-        // .andExpect(status().isBadRequest());
+                content(asJsonString(userDTO)))
+            .andExpect(status().isBadRequest());
 
         verify(userRepository, times(1)).findByEmail(user.getEmail());
         verifyNoMoreInteractions(userRepository);
@@ -130,7 +134,7 @@ public class UserControllerTest {
      * Test get user by id success
      */
     @Test
-    public void test_get_by_id_success() throws Exception {
+    public void testGetByIdSuccess() throws Exception {
         User user = new User(200, "danh@gmail.com", "David");
         when(userRepository.findById(200l)).thenReturn(Optional.of(user));
 
@@ -149,7 +153,7 @@ public class UserControllerTest {
      * API: POST /users
      */
     @Test
-    public void test_create_user_success() throws Exception {
+    public void testCreateUserSuccess() throws Exception {
         log.debug("Test create user success API /user");
         User user = new User(200, "danh@gmail.com", "David Nguyen");
         UserDTO userDTO = new UserDTO(user);
@@ -175,7 +179,7 @@ public class UserControllerTest {
      * API: /user{id}
      */
     @Test
-    public void test_update_user_success() throws Exception {
+    public void testUpdateUserSuccess() throws Exception {
         User user = new User(200, "danh@gmail.com", "David Nguyen");
         UserDTO userDTO = new UserDTO(user);
         when(userRepository.findById(200l)).thenReturn(Optional.of(user));
@@ -194,38 +198,50 @@ public class UserControllerTest {
         verifyNoMoreInteractions(userRepository);
     }
 
-    // FIXME: Test for Method Argument not valid
     /**
      * Test update user fail method argument not valid
      */
     @Test
-    public void test_update_user_fail_method_argument() {
+    public void testUpdateUserWithShortNameFailMethodArgument() throws Exception {
+        User user = new User(200,"danh@gmail.com", "David");
+        UserDTO userDTO = new UserDTO(user);
 
+        mockMvc.perform(
+            put("/users/{id}", user.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userDTO)))
+            .andExpect(status().isBadRequest())
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(jsonPath("$.code", is(CustomError.BAD_REQUEST.code())))
+            .andExpect(jsonPath("$.message", is(CustomError.BAD_REQUEST.message())));
+            // FIXME: Get message from application.properties
+            // .andExpect(jsonPath("$.message", is(CustomError.NOT_FOUND_USER.message())));
     }
 
-    // FIXME: Test for user not found to update
     /**
      * Test update user fail user not found
      */
     @Test
-    public void test_update_user_fail_user_not_found() {
+    public void testUpdateUserFailUserNotFound() throws Exception {
+        User user = new User(200,"danh@gmail.com", "David Nguyen");
+        when(userRepository.findById(user.getId())).thenReturn(Optional.ofNullable(null));
+        UserDTO userDTO = new UserDTO(user);
 
-    }
-
-    // FIXME: email empty
-    /**
-     * Test update user fail bad request by empty email
-     */
-    @Test
-    public void test_update_user_fail_bad_request() {
-
+        mockMvc.perform(
+            put("/users/{id}", user.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userDTO)))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(CustomError.NOT_FOUND_USER.code())))
+            .andExpect(jsonPath("$.message", is(CustomError.NOT_FOUND_USER.message())));
     }
 
     /**
      * Test delete user success
      */
     @Test
-    public void test_delete_user_success() throws Exception {
+    public void testDeleteUserSuccess() throws Exception {
         User user = new User(200, "danh@gmail.com", "David Nguyen");
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         doNothing().when(userRepository).deleteById(user.getId());
@@ -245,7 +261,7 @@ public class UserControllerTest {
      *  Test headers get all user
      */
     @Test
-    public void test_headers_get_all_user() throws Exception {
+    public void testHeaderResponseGetAllUser() throws Exception {
         mockMvc.perform(get("/users"))
             .andExpect(header().string("content-type", "application/json;charset=UTF-8"));
     }
