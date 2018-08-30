@@ -100,6 +100,33 @@ public class UserController {
     /**
      * Create user with email and name
      *
+     * @param userDTO
+     * @throws BadRequestException if email exist in system
+     * @return
+     */
+    @PostMapping
+    public UserDTO create(@RequestBody UserDTO userDTO) {
+        log.debug("Create User: POST /users");
+
+        User userResponse;
+        User user = userRepository.findByEmail(userDTO.getEmail());
+
+        if (user == null) {
+            User userRequest = new User(userDTO);
+            log.debug("UserRequest: {}", userRequest);
+            userResponse = userRepository.save(userRequest);
+        } else {
+            throw new BadRequestException(CustomError.EXIST_EMAIL);
+        }
+
+        log.debug("Created user: {}", userResponse);
+
+        return new UserDTO(userResponse);
+    }
+
+    /**
+     * Create user with email and name
+     *
      * @param email Email of user
      * @param name  Name of user
      * @throws BadRequestException if email exist in system
