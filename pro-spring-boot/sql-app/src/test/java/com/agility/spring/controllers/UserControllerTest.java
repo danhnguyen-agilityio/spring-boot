@@ -34,9 +34,7 @@ import static org.hamcrest.Matchers.is;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -205,8 +203,6 @@ public class UserControllerTest {
 
     }
 
-    
-
     // FIXME: email empty
     /**
      * Test update user fail bad request by empty email
@@ -214,6 +210,26 @@ public class UserControllerTest {
     @Test
     public void test_update_user_fail_bad_request() {
 
+    }
+
+    /**
+     * Test delete user success
+     */
+    @Test
+    public void test_delete_user_success() throws Exception {
+        User user = new User(200, "danh@gmail.com", "David Nguyen");
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        doNothing().when(userRepository).deleteById(user.getId());
+
+        mockMvc.perform(
+            delete("/users/{id}", user.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.email", is(user.getEmail())))
+            .andExpect(jsonPath("$.lastName", is(user.getLastName())));
+
+        verify(userRepository, times(1)).findById(user.getId());
+        verify(userRepository, times(1)).deleteById(user.getId());
+        verifyNoMoreInteractions(userRepository);
     }
 
     /**

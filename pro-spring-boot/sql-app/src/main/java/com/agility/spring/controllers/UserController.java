@@ -200,7 +200,7 @@ public class UserController {
      * @return Returns user info
      * @throws NotFoundException if user with specify id not exist in database
      */
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/{userId}")
     public UserDTO deleteUser(@PathVariable long userId) {
 
         // Get user by id
