@@ -62,27 +62,27 @@ public class UserControllerTest {
 
     private MockMvc mockMvc;
 
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
     @InjectMocks
+    @Autowired
     private UserController userController;
 
-
+    // Can use MockBean to replace Mock + InjectMock
     @Mock
     private UserRepository userRepository;
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
     @Before
     public void setUp() {
         Mockito.reset(userRepository);
         // Initializes fields annotated with Mockito annotations
         MockitoAnnotations.initMocks(this);
-        // Build a MockMvc instance by registering one or more controller instance
-        mockMvc = MockMvcBuilders.standaloneSetup(userController)
-            .setControllerAdvice(new HandleCustomException())
+        mockMvc = MockMvcBuilders
+            .webAppContextSetup(webApplicationContext)
             .build();
     }
 
@@ -277,20 +277,6 @@ public class UserControllerTest {
         UserController controller = new UserController(repository);
 
         UserDTO userDTO = controller.getUser(200l);
-
-        assertNotNull(userDTO);
-        assertEquals("david", userDTO.getLastName());
-    }
-
-    /**
-     * Test get user use Mockito with Spring
-     */
-    @Test
-    public void testGetUserSuccess() {
-        User mockUser = new User(200, "danh@gmail.com", "david");
-        when(userRepository.findById(200l)).
-            thenReturn(Optional.of(mockUser));
-        UserDTO userDTO = userController.getUser(200l);
 
         assertNotNull(userDTO);
         assertEquals("david", userDTO.getLastName());
