@@ -44,9 +44,7 @@ public class UserController {
      */
     @GetMapping
     public List<User> getAll() {
-        val users = new ArrayList<User>();
-        userRepository.findAll().forEach(users::add);
-        return users;
+        return userRepository.findAll();
     }
 
     /**
