@@ -2,7 +2,7 @@ package com.agility.springJWT.configs;
 
 import com.agility.springJWT.filters.JWTAuthenticationFilter;
 import com.agility.springJWT.filters.JWTAuthorizationFilter;
-import com.agility.springJWT.services.AppUserDetailsService;
+import com.agility.springJWT.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,23 +19,20 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    AppUserDetailsService appUserDetailsService;
+    UserService userService;
 
     /**
      * Authentication: User => Roles
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        String userQuery = "select username, password, enabled from \"user\" where  username=?";
-//        String roleQuery = "select username, role from \"user\" where username=?";
-
-//        auth.inMemoryAuthentication()
-//            .withUser("admin").password("password").roles("ADMIN");
+        auth.inMemoryAuthentication()
+            .withUser("demo").password("demo").authorities("ADMIN");
 //        auth.jdbcAuthentication().dataSource(dataSource)
 //            .usersByUsernameQuery(userQuery)
 //            .authoritiesByUsernameQuery(roleQuery);
 
-        auth.userDetailsService(appUserDetailsService);
+        auth.userDetailsService(userService);
     }
 
     /**
@@ -58,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //            .addFilterBefore(new JWTAuthentication(),
 //                UsernamePasswordAuthenticationFilter.class);
             // The authentication filter
-            .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+            .addFilter(new JWTAuthenticationFilter(authenticationManager(), userService))
             // The authorization filter
             .addFilter(new JWTAuthorizationFilter(authenticationManager()))
             // disables session creation on Spring Security

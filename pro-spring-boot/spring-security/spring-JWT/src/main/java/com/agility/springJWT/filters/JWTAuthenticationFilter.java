@@ -1,18 +1,16 @@
 package com.agility.springJWT.filters;
 
-import com.agility.springJWT.configs.WebSecurityConfig;
 import com.agility.springJWT.models.AccountCredentials;
+import com.agility.springJWT.services.TokenAuthenticationService;
 import com.agility.springJWT.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -22,8 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.Collection;
+import java.util.List;
 
 import static com.agility.springJWT.constants.SecurityConstants.*;
 
@@ -34,12 +32,14 @@ import static com.agility.springJWT.constants.SecurityConstants.*;
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+
     private AuthenticationManager authenticationManager;
     private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
-        this.userService = new UserService();
+        this.userService = userService;
     }
 
     /**
@@ -49,6 +49,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
         HttpServletResponse response) throws AuthenticationException {
+
+        logger.info("Authentication Process");
 
         AccountCredentials credentials = null;
         try {
@@ -60,6 +62,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         // Return something that will be invalid if null
         if (credentials == null) {
+            logger.info("AccountCredentials: {}", credentials);
             return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     null,
@@ -68,6 +71,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 )
             );
         } else {
+            logger.info("Username: {}", credentials.getUsername());
+            logger.info("Username: {}", credentials.getPassword());
             return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(),
@@ -89,22 +94,11 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Authentication authResult) throws IOException, ServletException {
 
         String username = ((UserDetails)authResult.getPrincipal()).getUsername();
-        Claims claims = Jwts.claims().setSubject(username);
 
-        if (username != null && username.length() > 0) {
-            // To extract the roles and the groups
-            claims.put("roles", userService.getRoles(username));
-            claims.put("groups", Arrays.asList("Beginner", "Advance"));
-        }
+        String token = TokenAuthenticationService.createToken(username,
+            userService.getRoles(username));
 
-        // Generate the token
-        String token = Jwts.builder()
-            .setClaims(claims)
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(SignatureAlgorithm.HS512, SECRET)
-            .compact();
-
-        response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + token);
+        response.addHeader(HEADER_STRING, token);
 
     }
 }

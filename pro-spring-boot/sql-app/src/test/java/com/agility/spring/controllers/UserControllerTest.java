@@ -48,6 +48,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -188,6 +189,7 @@ public class UserControllerTest {
             put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userDTO)))
+            .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email", is(user.getEmail())))
             .andExpect(jsonPath("$.lastName", is(user.getLastName())));
@@ -210,7 +212,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userDTO)))
             .andExpect(status().isBadRequest())
-            .andDo(MockMvcResultHandlers.print())
+            .andDo(print())
             .andExpect(jsonPath("$.code", is(CustomError.BAD_REQUEST.code())))
             .andExpect(jsonPath("$.message", is(CustomError.BAD_REQUEST.message())))
             // FIXME: Get message from application.yml
@@ -231,7 +233,7 @@ public class UserControllerTest {
             put("/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userDTO)))
-            .andDo(MockMvcResultHandlers.print())
+            .andDo(print())
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.code", is(CustomError.NOT_FOUND_USER.code())))
             .andExpect(jsonPath("$.message", is(CustomError.NOT_FOUND_USER.message())));

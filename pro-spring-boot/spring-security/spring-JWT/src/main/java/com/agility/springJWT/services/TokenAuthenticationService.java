@@ -44,6 +44,25 @@ public class TokenAuthenticationService {
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
     }
 
+    public static String createToken(String username, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(username);
+
+        if (username != null && username.length() > 0) {
+            // To extract the roles and the groups
+            claims.put("roles", roles);
+            claims.put("groups", Arrays.asList("Beginner", "Advance"));
+        }
+
+        // Generate the token
+        String token = Jwts.builder()
+            .setClaims(claims)
+            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .signWith(SignatureAlgorithm.HS512, SECRET)
+            .compact();
+
+        return TOKEN_PREFIX  + token;
+    }
+
     /**
      * Read info from request to get token, then get Authentication from token
      */
@@ -72,7 +91,7 @@ public class TokenAuthenticationService {
                 logger.info("Role of user after parse: " + role);
                 authorities.add(new SimpleGrantedAuthority(role));
             }
-//            logger.info("Roles: {}", roles);
+//            log.info("Roles: {}", roles);
             logger.info("authorities: {}", authorities);
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ADMIN");
 
