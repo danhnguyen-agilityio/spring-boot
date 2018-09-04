@@ -1,0 +1,45 @@
+spring:
+    # DATASOURCE
+    # Set here configurations for the database connection
+    datasource:
+        # Connection url for the database "shopping_cart"
+        url: jdbc:mysql://localhost:3306/shopping_cart
+
+        # MySQL username and password
+        username: root
+        password: 123456
+
+        # Keep the connection alive if idle for a long time (needed in production)
+        test-while-idle: true
+        validation-query: SELECT 1
+
+    # JPA / HIBERNATE
+    # Use spring.jpa.properties.* for Hibernate native properties
+    jpa:
+        # Show or not log for each sql query
+        show-sql: true
+
+        hibernate:
+            # Hibernate ddl auto (create, create-drop, update): with "update" the database
+            # schema will be automatically updated accordingly to java entities found in
+            # the project
+            ddl-auto: update
+
+        # Automatically generate table from java entities if need
+        generate-ddl: true
+
+        properties:
+            hibernate:
+                # Allows Hibernate to generate SQL optimized for a particular DBMS
+                dialect: org.hibernate.dialect.MySQL5Dialect
+
+# LEVEL LOGGING
+logging:
+    level:
+        com.agility.shopping.cart: DEBUG
+
+# DEV TOOLS
+devtools:
+    restart:
+        # Does not trigger a restart on /static and /public directory
+        exclude: static/**, public/**
