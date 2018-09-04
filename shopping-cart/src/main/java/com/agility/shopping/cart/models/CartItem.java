@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,33 +11,33 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 /**
- * Product entity class
+ * CartItem entity class save cart item info in shopping cart
  */
-@Entity
-@Table(name = "product")
+@Entity(name = "cart_item")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product implements Serializable {
+public class CartItem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
     private int id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "cart_id")
+    private ShoppingCart shoppingCart;
 
-    @URL
-    private String url;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    @Column(name = "price", nullable = false)
-    @Min(0)
-    private long price;
+    @Column(name = "quantity", nullable = false)
+    @Min(1)
+    private int quantity;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,6 +49,4 @@ public class Product implements Serializable {
     @LastModifiedDate
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<CartItem> cartItems;
 }
