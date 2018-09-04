@@ -1,0 +1,10 @@
+# Define role
+role:
+    user: ROLE_USER
+    admin: ROLE_ADMIN
+
+# Define cart status
+cart:
+    status:
+        inprogress: INPROGRESS
+        done: DONE
