@@ -1,8 +1,8 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.models.AccountCredential;
-import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.services.UserService;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,11 +19,14 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashSet;
 
+import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
+import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -74,7 +77,9 @@ public class UserControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(credential)))
             .andDo(print())
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(header().string(HEADER_STRING,
+                CoreMatchers.containsString(TOKEN_PREFIX));
     }
 
     /**
