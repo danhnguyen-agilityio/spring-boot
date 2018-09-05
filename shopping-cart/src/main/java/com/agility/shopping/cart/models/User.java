@@ -22,10 +22,10 @@ import java.util.Set;
 public class User implements Serializable {
 
     /**
-     * Constructor with give email and password
+     * Constructor with give username and password
      */
-    public User(String email, String password) {
-        this.email = email;
+    public User(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
@@ -34,9 +34,8 @@ public class User implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
-    @Email
-    private String email;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
