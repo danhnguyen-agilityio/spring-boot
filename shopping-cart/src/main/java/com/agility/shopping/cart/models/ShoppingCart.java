@@ -13,7 +13,8 @@ import java.util.Set;
 /**
  * ShoppingCart entity class save info shopping carts of user
  */
-@Entity(name = "shopping_cart")
+@Entity
+@Table(name = "shopping_cart")
 @Getter
 @Setter
 @NoArgsConstructor

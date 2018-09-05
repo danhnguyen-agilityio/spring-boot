@@ -15,7 +15,8 @@ import java.time.Instant;
 /**
  * CartItem entity class save cart item info in shopping cart
  */
-@Entity(name = "cart_item")
+@Entity
+@Table(name = "cart_item")
 @Getter
 @Setter
 @NoArgsConstructor
