@@ -79,7 +79,7 @@ public class UserControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX));
+                CoreMatchers.containsString(TOKEN_PREFIX)));
     }
 
     /**
