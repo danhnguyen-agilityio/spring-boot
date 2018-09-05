@@ -20,6 +20,13 @@ import java.util.Set;
 @AllArgsConstructor
 public class Role implements Serializable {
 
+    /**
+     * Constructor with given name
+     */
+    public Role(String name) {
+        this.name = name;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)

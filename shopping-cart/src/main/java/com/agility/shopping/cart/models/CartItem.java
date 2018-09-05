@@ -40,12 +40,10 @@ public class CartItem implements Serializable {
     private Long quantity;
 
     @Column(name = "created_at", updatable = false, nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate
     private Instant createdAt;
 
     @Column(name = "updated_at", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Instant updatedAt;
 

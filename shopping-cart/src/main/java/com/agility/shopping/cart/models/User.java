@@ -21,6 +21,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class User implements Serializable {
 
+    /**
+     * Constructor with give email and password
+     */
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -33,7 +41,7 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
         name = "user_role",
         joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
