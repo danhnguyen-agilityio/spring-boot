@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * This class implement api that relate to Product data
@@ -54,4 +55,16 @@ public class ProductController {
         // Convert to ProductResponse and return
         return productMapper.toProductResponse(product);
     }
+
+    /**
+     * Get all product
+     *
+     * @return List product
+     */
+    @GetMapping
+    public List<ProductResponse> findAll() {
+        List<Product> products = productRepository.findAll();
+        return productMapper.toProductResponse(products);
+    }
+
 }

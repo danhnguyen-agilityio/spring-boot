@@ -29,7 +29,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
@@ -37,6 +39,7 @@ import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -173,6 +176,62 @@ public class ProductControllerTest {
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.code",
                 is(CustomError.PRODUCT_EXIST.code())));
+    }
+
+    /**
+     * Test find all product
+     */
+    public void testFindAllProduct()
+        throws Exception {
+
+        String username = "admin";
+        String password = "admin";
+        AccountCredential credential = new AccountCredential();
+        credential.setUsername(username);
+        credential.setPassword(password);
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        Product product1 = Product.builder()
+            .id(1l)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000l)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        Product product2 = Product.builder()
+            .id(1l)
+            .name("dish")
+            .url("localhost://url.com")
+            .price(1000000l)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        List<Product> products = Arrays.asList(product1, product2);
+
+        when(userService.loadUserByUsername(credential.getUsername()))
+            .thenReturn(new org.springframework.security.core.userdetails.User(
+                username, passwordEncoder.encode(password), new HashSet<>()
+            ));
+        when(userService.getNameRolesByUsername(username))
+            .thenReturn(roles);
+        when(productRepository.findAll()).thenReturn(products);
+
+        String token = mockMvc.perform(post("/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(credential)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(header().string(HEADER_STRING,
+                CoreMatchers.containsString(TOKEN_PREFIX)))
+            .andReturn().getResponse().getHeader(HEADER_STRING);
+
+        mockMvc.perform(get("/products")
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name",
+                is(product1.getName())))
+            .andExpect(jsonPath("$[1].name",
+                is(product2.getName())));
     }
 
 }
