@@ -23,6 +23,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Product implements Serializable {
 
