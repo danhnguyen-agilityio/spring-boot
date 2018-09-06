@@ -4,12 +4,11 @@ import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.mappers.ProductMapper;
-import com.agility.shopping.cart.models.AccountCredential;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.repositories.ProductRepository;
+import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.services.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.CoreMatchers;
 
 import static org.hamcrest.Matchers.is;
 
@@ -30,19 +29,15 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,39 +82,25 @@ public class ProductControllerTest {
      */
     @Test
     public void testCreateProductSuccess() throws Exception {
-        String username = "admin";
-        String password = "admin";
-        AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        // Mock product
         Product product = Product.builder()
-            .id(1l)
+            .id(1L)
             .name("clothes")
             .url("localhost://url.com")
-            .price(1000000l)
+            .price(1000000L)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
-        when(userService.loadUserByUsername(credential.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
-            ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(roles);
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
         when(productRepository.findByName("clothes")).thenReturn(null);
         when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        String token = mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(credential)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
 
         mockMvc.perform(post("/products")
             .header(HEADER_STRING, token)
@@ -132,42 +113,29 @@ public class ProductControllerTest {
     /**
      * Test create product fail resource exists exception when name product exists
      */
+    @Test
     public void testCreateProductFailResourceExistsWhenNameProductExists()
         throws Exception {
 
+        // Generate token have role admin
         String username = "admin";
-        String password = "admin";
-        AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock product
         Product product = Product.builder()
-            .id(1l)
+            .id(1L)
             .name("clothes")
             .url("localhost://url.com")
-            .price(1000000l)
+            .price(1000000L)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
-        when(userService.loadUserByUsername(credential.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
-            ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(roles);
+        // Mock method
         when(productRepository.findByName("clothes")).thenReturn(product);
         when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        String token = mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(credential)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
 
         mockMvc.perform(post("/products")
             .header(HEADER_STRING, token)
@@ -181,49 +149,36 @@ public class ProductControllerTest {
     /**
      * Test find all product
      */
+    @Test
     public void testFindAllProduct()
         throws Exception {
 
+        // Generate token have role admin
         String username = "admin";
-        String password = "admin";
-        AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock list product
         Product product1 = Product.builder()
-            .id(1l)
+            .id(1L)
             .name("clothes")
             .url("localhost://url.com")
-            .price(1000000l)
+            .price(1000000L)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .build();
         Product product2 = Product.builder()
-            .id(1l)
+            .id(1L)
             .name("dish")
             .url("localhost://url.com")
-            .price(1000000l)
+            .price(1000000L)
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .build();
         List<Product> products = Arrays.asList(product1, product2);
 
-        when(userService.loadUserByUsername(credential.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
-            ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(roles);
+        // Mock method
         when(productRepository.findAll()).thenReturn(products);
-
-        String token = mockMvc.perform(post("/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(credential)))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
 
         mockMvc.perform(get("/products")
             .header(HEADER_STRING, token))
