@@ -2,6 +2,8 @@ package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
+import com.agility.shopping.cart.exceptions.CustomError;
+import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.repositories.ProductRepository;
@@ -26,30 +28,24 @@ public class ProductController {
     private ProductRepository productRepository;
 
     /**
-     * Get list all product
+     * Create product
+     *
+     * @param request Product request
+     * @return created product info
+     * @throws ResourceAlreadyExistsException if product is already exists
      */
-    @GetMapping
-    public String find() {
-        return "This is all product";
-    }
-
-    @GetMapping("/{id}")
-    public String findOne(@PathVariable long id) {
-        return "This is product detail" + id;
-    }
-
     @PostMapping
     public ProductResponse create(@Valid @RequestBody ProductRequest request) {
         log.debug("POST /products, body={}", request);
 
-//        Product product = productRepository.findByName(request.getName());
-//
-//        if (product != null) {
-//            throw
-//        }
+        Product product = productRepository.findByName(request.getName());
+
+        if (product != null) {
+            throw new ResourceAlreadyExistsException(CustomError.PRODUCT_EXIST);
+        }
 
         // Convert to ProductRequest to Product
-        Product product = productMapper.toProduct(request);
+        product = productMapper.toProduct(request);
 
         // Create product
         product = productRepository.save(product);
