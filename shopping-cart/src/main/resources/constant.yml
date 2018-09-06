@@ -1,6 +1,6 @@
 # Define role
 role:
-    user: ROLE_USER
+    member: ROLE_MEMBER
     admin: ROLE_ADMIN
 
 # Define cart status

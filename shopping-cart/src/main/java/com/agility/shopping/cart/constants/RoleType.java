@@ -5,7 +5,7 @@ package com.agility.shopping.cart.constants;
  */
 public enum RoleType {
     ADMIN("ROLE_ADMIN"),
-    USER("ROLE_USER");
+    MEMBER("ROLE_MEMBER");
 
     private String name;
 

@@ -31,7 +31,7 @@ public class DataSeedingListener implements ApplicationListener<ContextRefreshed
     }
 
     /**
-     * Create ROLE_ADMIN and ROLE_USER if 2 roles not exist in database
+     * Create ROLE_ADMIN and ROLE_MEMBER if 2 roles not exist in database
      * This method is called when Spring Context start or refresh
      */
     @Override
@@ -40,8 +40,8 @@ public class DataSeedingListener implements ApplicationListener<ContextRefreshed
         if (roleRepository.findByName(RoleType.ADMIN.getName()) == null) {
             roleRepository.save(new Role(RoleType.ADMIN.getName()));
         }
-        if (roleRepository.findByName(RoleType.USER.getName()) == null) {
-            roleRepository.save(new Role(RoleType.USER.getName()));
+        if (roleRepository.findByName(RoleType.MEMBER.getName()) == null) {
+            roleRepository.save(new Role(RoleType.MEMBER.getName()));
         }
 
         // Admin account
@@ -59,7 +59,7 @@ public class DataSeedingListener implements ApplicationListener<ContextRefreshed
             User user = new User("user",
                 passwordEncoder.encode("123456"));
             Set<Role> roles = new HashSet<>();
-            roles.add(roleRepository.findByName(RoleType.USER.getName()));
+            roles.add(roleRepository.findByName(RoleType.MEMBER.getName()));
             user.setRoles(roles);
             userRepository.save(user);
         }
