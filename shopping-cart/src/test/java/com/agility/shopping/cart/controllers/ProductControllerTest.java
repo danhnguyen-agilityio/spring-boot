@@ -189,4 +189,56 @@ public class ProductControllerTest {
                 is(product2.getName())));
     }
 
+    /**
+     * Test find product success
+     */
+    @Test
+    public void testFindProductSuccess() throws Exception {
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        ProductRequest request = productMapper.toProductRequest(product);
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findOne(product.getId())).thenReturn(product);
+
+        mockMvc.perform(get("/products/{id}", product.getId())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is(product.getName())));
+    }
+
+    /**
+     * Test find product fail not found exception when product id not exist
+     */
+    @Test
+    public void testFindProductFailNotFoundWhenProductIdNotExist() throws Exception {
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock id of product
+        long productId = 1L;
+
+        // Mock method
+        when(productRepository.findOne(productId)).thenReturn(null);
+
+        mockMvc.perform(get("/products/{id}", productId)
+            .header(HEADER_STRING, token))
+            .andExpect(status().isNotFound());
+    }
+
 }

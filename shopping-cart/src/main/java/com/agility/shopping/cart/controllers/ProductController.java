@@ -4,6 +4,7 @@ import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
+import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.repositories.ProductRepository;
@@ -67,4 +68,22 @@ public class ProductController {
         return productMapper.toProductResponse(products);
     }
 
+    /**
+     * Get product by id
+     *
+     * @param id Id of product
+     * @return Product with given id
+     * @throws ResourceNotFoundException if product doesn't exist with given id
+     */
+    @GetMapping(value = "/{id}")
+    public ProductResponse findOne(@PathVariable long id) {
+        Product product = productRepository.findOne(id);
+
+        // Throw exception when null product
+        if (product == null) {
+            throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
+        }
+
+        return productMapper.toProductResponse(product);
+    }
 }
