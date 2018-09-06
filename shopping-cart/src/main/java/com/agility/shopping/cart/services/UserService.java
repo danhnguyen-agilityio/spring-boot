@@ -30,6 +30,7 @@ public class UserService implements UserDetailsService {
 
         if (user == null) {
             throw new UsernameNotFoundException(name);
+            // FIXME:: Return error code to client when invalid username or password
         }
 
         return new org.springframework.security.core.userdetails.User(

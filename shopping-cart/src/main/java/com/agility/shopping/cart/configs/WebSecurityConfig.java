@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.configs;
 
 import com.agility.shopping.cart.filters.JWTAuthenticationFilter;
+import com.agility.shopping.cart.filters.JWTAuthorizationFilter;
 import com.agility.shopping.cart.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -50,7 +52,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             // The authentication filter
             .addFilter(new JWTAuthenticationFilter(authenticationManager(),
-                userService));
+                userService))
+            // The authorization filter
+            .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+            // Disables session creation on spring security
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
     }
 }

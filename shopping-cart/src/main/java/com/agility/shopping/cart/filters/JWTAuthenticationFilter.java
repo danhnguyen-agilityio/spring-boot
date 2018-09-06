@@ -17,7 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 
@@ -61,14 +61,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 new UsernamePasswordAuthenticationToken(
                     null,
                     null,
-                    new ArrayList<>())
+                    new HashSet<>())
             );
         } else {
             return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     credential.getUsername(),
                     credential.getPassword(),
-                    new ArrayList<>()
+                    new HashSet<>()
                 )
             );
         }
