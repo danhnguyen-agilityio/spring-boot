@@ -69,7 +69,7 @@ public class ProductController {
     }
 
     /**
-     * Get product by id
+     * Get product by given id
      *
      * @param id Id of product
      * @return Product with given id
@@ -83,6 +83,28 @@ public class ProductController {
         if (product == null) {
             throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
         }
+
+        return productMapper.toProductResponse(product);
+    }
+
+    /**
+     * Delete product by given id
+     *
+     * @param id Id of product
+     * @return Deleted product with given id
+     * @throws ResourceNotFoundException if product doesn't exist with given id
+     */
+    @DeleteMapping(value = "/{id}")
+    public ProductResponse delete(@PathVariable long id) {
+        Product product = productRepository.findOne(id);
+
+        // Throw exception when null product
+        if (product == null) {
+            throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
+        }
+
+        // Delete product
+        productRepository.delete(id);
 
         return productMapper.toProductResponse(product);
     }

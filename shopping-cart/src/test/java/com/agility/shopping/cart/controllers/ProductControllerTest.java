@@ -35,7 +35,9 @@ import java.util.Set;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -203,7 +205,6 @@ public class ProductControllerTest {
             .createdAt(Instant.now())
             .updatedAt(Instant.now())
             .build();
-        ProductRequest request = productMapper.toProductRequest(product);
 
         // Generate token have role admin
         String username = "admin";
@@ -237,6 +238,65 @@ public class ProductControllerTest {
         when(productRepository.findOne(productId)).thenReturn(null);
 
         mockMvc.perform(get("/products/{id}", productId)
+            .header(HEADER_STRING, token))
+            .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Test delete product success
+     */
+    @Test
+    public void testDeleteProductSuccess() throws Exception {
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findOne(product.getId())).thenReturn(product);
+        doNothing().when(productRepository).delete(product.getId());
+
+        mockMvc.perform(delete("/products/{id}", product.getId())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is(product.getName())));
+    }
+
+    /**
+     * Test delete product fail resource not found exception
+     * when product id not exist
+     */
+    @Test
+    public void testDeleteProductFailNotFoundWhenProductIdNotExist() throws Exception {
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findOne(product.getId())).thenReturn(null);
+
+        mockMvc.perform(delete("/products/{id}", product.getId())
             .header(HEADER_STRING, token))
             .andExpect(status().isNotFound());
     }
