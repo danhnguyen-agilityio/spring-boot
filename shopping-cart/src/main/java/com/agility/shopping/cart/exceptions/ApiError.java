@@ -1,7 +1,7 @@
 package com.agility.shopping.cart.exceptions;
 
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +10,10 @@ import java.util.List;
  * This class implement a simple structure for sending errors
  */
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 public class ApiError {
 
     private int code;

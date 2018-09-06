@@ -22,6 +22,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(BaseCustomException.class)
     public ResponseEntity<ApiError> handleCustomException(BaseCustomException ex) {
         ApiError apiError = new ApiError(ex.getCode(), ex.getMessage());
+        log.debug("Catch Exception: {}", apiError);
         return new ResponseEntity<>(apiError, ex.getHttpStatus());
     }
 
