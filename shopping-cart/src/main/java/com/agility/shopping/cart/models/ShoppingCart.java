@@ -1,9 +1,7 @@
 package com.agility.shopping.cart.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.agility.shopping.cart.constants.ShoppingCartStatus;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -19,6 +17,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ShoppingCart implements Serializable {
 
     @Id
@@ -35,7 +34,7 @@ public class ShoppingCart implements Serializable {
     private User user;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private String status = ShoppingCartStatus.EMPTY.getName();
 
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<CartItem> cartItems;

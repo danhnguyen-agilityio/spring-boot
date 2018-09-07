@@ -4,7 +4,7 @@ import com.agility.shopping.cart.models.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * RoleRepository class implement CRUD for role table
+ * RoleRepository interface implement CRUD for role table
  */
 public interface RoleRepository extends JpaRepository<Role, Long> {
 

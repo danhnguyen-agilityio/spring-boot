@@ -1,15 +1,16 @@
 package com.agility.shopping.cart.constants;
 
 /**
- * StatusCartType enum defines value of each status type
+ * ShoppingCartStatus enum defines value of each status type
  */
-public enum StatusCartType {
+public enum ShoppingCartStatus {
+    EMPTY("EMPTY"),
     INPROGRESS("INPROGRESS"),
     DONE("DONE");
 
     private String name;
 
-    StatusCartType(String name) {
+    ShoppingCartStatus(String name) {
         this.name = name;
     }
 

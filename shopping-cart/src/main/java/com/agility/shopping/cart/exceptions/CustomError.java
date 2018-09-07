@@ -8,7 +8,9 @@ import lombok.Getter;
 public enum CustomError {
 
     PRODUCT_EXIST(410, "Product is already existed"),
-    PRODUCT_NOT_FOUND(411, "Product not found");
+    PRODUCT_NOT_FOUND(411, "Product not found"),
+    USER_NOT_FOUND(420, "User not found"),
+    SHOPPING_CART_EXIST(430, "Shopping cart is already existed");
 
     private int code;
     private String message;
