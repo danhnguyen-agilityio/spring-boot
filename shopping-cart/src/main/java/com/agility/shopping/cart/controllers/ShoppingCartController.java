@@ -2,7 +2,6 @@ package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.dto.ShoppingCartResponse;
-import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
@@ -13,13 +12,11 @@ import com.agility.shopping.cart.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_EXIST;
 import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
@@ -62,8 +59,9 @@ public class ShoppingCartController {
         }
 
         // Get username from request
-        String username =
-            SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getName();
         log.debug("Username request: {}", username);
 
         // Get user by username
@@ -77,17 +75,35 @@ public class ShoppingCartController {
         }
 
         // Convert to shopping cart
-        ShoppingCart shoppingCart =
-            shoppingCartMapper.toShoppingCart(request);
+        ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
 
         // Set user info for shopping cart
         shoppingCart.setUser(user);
 
         // Save database
         shoppingCart = shoppingCartRepository.save(shoppingCart);
-        log.debug("Shopping cart response: {}",
-            shoppingCartMapper.toShoppingCartResponse(shoppingCart));
 
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
     }
+
+    /**
+     * Find all shopping cart of current request user request
+     *
+     * @return List shopping cart response of request user
+     */
+    @GetMapping
+    public List<ShoppingCartResponse> findAll() {
+
+        // Get username from request
+        String username = SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getName();
+
+        // Get list shopping cart
+        List<ShoppingCart> shoppingCarts =
+            shoppingCartRepository.findAllByUsername(username);
+
+        return shoppingCartMapper.toShoppingCartResponse(shoppingCarts);
+    }
+
 }

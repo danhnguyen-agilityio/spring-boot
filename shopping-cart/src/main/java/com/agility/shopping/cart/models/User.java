@@ -1,7 +1,6 @@
 package com.agility.shopping.cart.models;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -24,14 +24,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
+import static com.agility.shopping.cart.utils.FakerUtil.fakeShoppingCart;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,9 +85,9 @@ public class ShoppingCartControllerTest {
         ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
         ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
 
-        // Generate token have role user
+        // Generate token have role member
         String username = "user";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
         String token = TokenAuthenticationService.createToken(username, roles);
 
         // Mock method
@@ -120,9 +124,9 @@ public class ShoppingCartControllerTest {
         // Mock shopping cart
         ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
 
-        // Generate token have role user
+        // Generate token have role member
         String username = "user";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
         String token = TokenAuthenticationService.createToken(username, roles);
 
         // Mock method
@@ -152,9 +156,9 @@ public class ShoppingCartControllerTest {
         ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
         ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
 
-        // Generate token have role user
+        // Generate token have role member
         String username = "user";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
         String token = TokenAuthenticationService.createToken(username, roles);
 
         // Mock method
@@ -175,4 +179,52 @@ public class ShoppingCartControllerTest {
         verifyNoMoreInteractions(shoppingCartRepository);
         verifyNoMoreInteractions(userRepository);
     }
+
+    /**
+     * Test find all shopping cart success
+     */
+    @Test
+    public void testFindAllShoppingCartSuccess() throws Exception {
+        // Mock list shopping cart
+        List<ShoppingCart> shoppingCarts = Arrays.asList(fakeShoppingCart(),
+            fakeShoppingCart());
+
+        // Generate token have role member
+        String username = "user";
+        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(shoppingCartRepository.findAllByUsername(username))
+            .thenReturn(shoppingCarts);
+
+        mockMvc.perform(get("/shopping-carts")
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name",
+                is(shoppingCarts.get(0).getName())))
+            .andExpect(jsonPath("$[1].name",
+                is(shoppingCarts.get(0).getName())));
+
+        verify(shoppingCartRepository.findAllByUsername(username),
+            times(1));
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test find all shopping cart fail forbidden
+     */
+    @Test
+    public void testFindAllShoppingCartFailForbidden() throws Exception {
+        // Generate token have role member
+        String username = "user";
+        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        mockMvc.perform(get("/shopping-carts")
+            .header(HEADER_STRING, token))
+            .andExpect(status().isForbidden());
+    }
+
+
 }
