@@ -82,7 +82,8 @@ public class ShoppingCartControllerTest {
     @Test
     public void testCreateShoppingCartSuccess() throws Exception {
         // Mock shopping cart
-        ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
+        ShoppingCartRequest request = new ShoppingCartRequest();
+        request.setName("poor cart");
         ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
 
         // Generate token have role member
@@ -122,7 +123,8 @@ public class ShoppingCartControllerTest {
         throws Exception {
 
         // Mock shopping cart
-        ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
+        ShoppingCartRequest request = new ShoppingCartRequest();
+        request.setName("poor cart");
 
         // Generate token have role member
         String username = "user";
@@ -153,7 +155,8 @@ public class ShoppingCartControllerTest {
         throws Exception {
 
         // Mock shopping cart
-        ShoppingCartRequest request = new ShoppingCartRequest("poor cart");
+        ShoppingCartRequest request = new ShoppingCartRequest();
+        request.setName("poor cart");
         ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
 
         // Generate token have role member
