@@ -40,14 +40,14 @@ public class ProductController {
     public ProductResponse create(@Valid @RequestBody ProductRequest request) {
         log.debug("POST /products, body={}", request);
 
-        Product product = productRepository.findByName(request.getName());
+        boolean existedName = productRepository.existsByName(request.getName());
 
-        if (product != null) {
+        if (existedName) {
             throw new ResourceAlreadyExistsException(CustomError.PRODUCT_EXIST);
         }
 
         // Convert to ProductRequest to Product
-        product = productMapper.toProduct(request);
+        Product product = productMapper.toProduct(request);
 
         // Create product
         product = productRepository.save(product);
@@ -86,6 +86,47 @@ public class ProductController {
 
         return productMapper.toProductResponse(product);
     }
+
+    /**
+     * Update product by given id
+     *
+     * @param id Product id
+     * @param request Product request
+     * @return Product response
+     * @throws ResourceNotFoundException if product with given id not exist
+     * @throws ResourceAlreadyExistsException if product with given name data
+     *          of request not match with given id
+     */
+    // FIXME:: Refactor business code here
+    @PutMapping(value = "/{id}")
+    public ProductResponse update(@PathVariable long id,
+        @Valid @RequestBody ProductRequest request) {
+
+        // Get product by name
+        Product product = productRepository.findByName(request.getName());
+
+        if (product == null) {
+            boolean existedId = productRepository.exists(id);
+
+            // Update product if product name not exist and product id exists
+            if (existedId) {
+                product = productRepository.save(productMapper.toProduct(request));
+            } else {
+                throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
+            }
+        } else {
+            // Update product if product name exists
+            // and product id match given id
+            if (product.getId() == id) {
+                product = productRepository.save(productMapper.toProduct(request));
+            } else {
+                throw new ResourceAlreadyExistsException((CustomError.PRODUCT_EXIST));
+            }
+        }
+
+        return productMapper.toProductResponse(product);
+    }
+
 
     /**
      * Delete product by given id

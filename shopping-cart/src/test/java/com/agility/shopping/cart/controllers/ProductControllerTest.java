@@ -35,11 +35,8 @@ import java.util.Set;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -101,7 +98,7 @@ public class ProductControllerTest {
         String token = TokenAuthenticationService.createToken(username, roles);
 
         // Mock method
-        when(productRepository.findByName("clothes")).thenReturn(null);
+        when(productRepository.existsByName(product.getName())).thenReturn(false);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(post("/products")
@@ -109,7 +106,7 @@ public class ProductControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is("clothes")));
+            .andExpect(jsonPath("$.name", is(product.getName())));
     }
 
     /**
@@ -136,7 +133,7 @@ public class ProductControllerTest {
         ProductRequest request = productMapper.toProductRequest(product);
 
         // Mock method
-        when(productRepository.findByName("clothes")).thenReturn(product);
+        when(productRepository.existsByName(product.getName())).thenReturn(true);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(post("/products")
@@ -240,6 +237,165 @@ public class ProductControllerTest {
         mockMvc.perform(get("/products/{id}", productId)
             .header(HEADER_STRING, token))
             .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Test update product success when product with given name have id match given id
+     */
+    @Test
+    public void testUpdateProductSuccessWhenProductWithGivenNameHaveIdMatchGivenId() throws Exception {
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        ProductRequest request = productMapper.toProductRequest(product);
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findByName(product.getName())).thenReturn(product);
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
+        mockMvc.perform(put("/products/{id}", product.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is(product.getName())));
+
+        verify(productRepository, times(1))
+            .findByName(product.getName());
+        verify(productRepository, times(1))
+            .save(any(Product.class));
+        verifyNoMoreInteractions(productRepository);
+    }
+
+    /**
+     * Test update product success when no have any product with given name
+     * but have product with given id
+     */
+    @Test
+    public void testUpdateProductSuccessWhenProductNameNotExistButProductIdExist()
+        throws Exception {
+
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        ProductRequest request = productMapper.toProductRequest(product);
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findByName(product.getName())).thenReturn(null);
+        when(productRepository.exists(product.getId())).thenReturn(true);
+        when(productRepository.save(any(Product.class))).thenReturn(product);
+
+        mockMvc.perform(put("/products/{id}", product.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is(product.getName())));
+
+        verify(productRepository, times(1))
+            .findByName(product.getName());
+        verify(productRepository, times(1))
+            .exists(product.getId());
+        verify(productRepository, times(1))
+            .save(any(Product.class));
+        verifyNoMoreInteractions(productRepository);
+    }
+
+    /**
+     * Test update product fail not found when product id not exist
+     */
+    @Test
+    public void testUpdateProductFailNotFoundWhenProductIdNotExist() throws Exception {
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        ProductRequest request = productMapper.toProductRequest(product);
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findByName(product.getName())).thenReturn(null);
+        when(productRepository.exists(product.getId())).thenReturn(false);
+
+        mockMvc.perform(put("/products/{id}", product.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isNotFound());
+
+        verify(productRepository, times(1))
+            .findByName(product.getName());
+        verify(productRepository, times(1))
+            .exists(product.getId());
+        verifyNoMoreInteractions(productRepository);
+    }
+
+    /**
+     * Test update product fail resource exists when product with given name
+     * does not have id match given id
+     */
+    @Test
+    public void testUpdateProductFailNotFoundWhenProductNameExistButProductIdNotMatch()
+        throws Exception {
+
+        // Mock product
+        Product product = Product.builder()
+            .id(1L)
+            .name("clothes")
+            .url("localhost://url.com")
+            .price(1000000L)
+            .createdAt(Instant.now())
+            .updatedAt(Instant.now())
+            .build();
+        ProductRequest request = productMapper.toProductRequest(product);
+
+        // Generate token have role admin
+        String username = "admin";
+        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        String token = TokenAuthenticationService.createToken(username, roles);
+
+        // Mock method
+        when(productRepository.findByName(product.getName())).thenReturn(product);
+
+        mockMvc.perform(put("/products/{id}", 2L)
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isConflict());
+
+        verify(productRepository, times(1))
+            .findByName(product.getName());
     }
 
     /**
