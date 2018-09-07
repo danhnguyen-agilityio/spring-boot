@@ -3,6 +3,7 @@ package com.agility.shopping.cart.controllers;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.dto.ShoppingCartResponse;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
+import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
 import com.agility.shopping.cart.models.ShoppingCart;
@@ -18,8 +19,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_EXIST;
-import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
+import static com.agility.shopping.cart.exceptions.CustomError.*;
 
 /**
  * This class implement api that relate to Shopping cart data
@@ -105,5 +105,46 @@ public class ShoppingCartController {
 
         return shoppingCartMapper.toShoppingCartResponse(shoppingCarts);
     }
+
+    /**
+     * Update shopping cart with given id
+     *
+     * @param id      Shopping cart id
+     * @param request Shopping cart request
+     * @return Shopping cart response
+     * @throws ResourceNotFoundException      if shopping cart id does not exist
+     * @throws ResourceForbiddenException     if authenticated user not own shopping cart with given id
+     * @throws ResourceAlreadyExistsException if shopping cart name belong to other shopping cart (not contain given id)
+     */
+    @PutMapping("/{id}")
+    public ShoppingCartResponse update(@PathVariable long id, @Valid @RequestBody ShoppingCartRequest request) {
+
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id);
+
+        // Throw not found exception when shopping cart id does not exist
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get authenticated username
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Throw forbidden exception when authenticated user not own shopping cart with given id
+        if (!username.equals(shoppingCart.getUser().getUsername())) {
+            throw new ResourceForbiddenException(SHOPPING_CART_FORBIDDEN);
+        }
+
+        // Throw resource exists exception when shopping cart name belong to other shopping cart (not contain given id)
+        if (!shoppingCart.getName().equals(request.getName())
+            && shoppingCartRepository.existsByName(request.getName())) {
+            throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
+        }
+
+        // Update shopping cart
+        shoppingCart = shoppingCartMapper.toShoppingCart(request);
+        shoppingCart = shoppingCartRepository.save(shoppingCart);
+        return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
+    }
+
 
 }

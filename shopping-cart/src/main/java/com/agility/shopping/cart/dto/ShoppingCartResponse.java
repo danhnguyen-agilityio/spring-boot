@@ -1,6 +1,5 @@
 package com.agility.shopping.cart.dto;
 
-import com.agility.shopping.cart.models.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +12,7 @@ public class ShoppingCartResponse {
 
     private Long id;
     private String name;
+    private String description;
     private UserResponse user;
     private String status;
 }

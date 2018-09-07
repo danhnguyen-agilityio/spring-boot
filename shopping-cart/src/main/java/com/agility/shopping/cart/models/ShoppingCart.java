@@ -4,6 +4,7 @@ import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Set;
@@ -25,9 +26,14 @@ public class ShoppingCart implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", unique = true)
+    @NotNull
     @Size(min = 4, max = 30)
     private String name;
+
+    @NotNull
+    @Size(min = 10, max = 30)
+    private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
