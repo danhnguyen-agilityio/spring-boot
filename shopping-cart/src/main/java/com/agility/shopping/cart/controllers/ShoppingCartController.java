@@ -140,7 +140,8 @@ public class ShoppingCartController {
             throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
         }
 
-        // Update shopping cart
+        // Update shopping cart when name of shopping cart with given id not change
+        // or shopping cart name does not exist
         shoppingCart = shoppingCartMapper.toShoppingCart(request);
         shoppingCart = shoppingCartRepository.save(shoppingCart);
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);

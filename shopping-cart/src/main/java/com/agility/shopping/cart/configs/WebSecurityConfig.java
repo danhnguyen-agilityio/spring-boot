@@ -25,6 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String SHOPPING_CART_URL = "/shopping-carts";
+    public static final String SHOPPING_CART_DETAIL_URL = "/shopping-carts/{id}";
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

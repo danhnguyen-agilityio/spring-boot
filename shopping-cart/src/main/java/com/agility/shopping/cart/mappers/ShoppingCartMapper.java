@@ -33,6 +33,15 @@ public interface ShoppingCartMapper {
     ShoppingCartResponse toShoppingCartResponse(ShoppingCart shoppingCart);
 
     /**
+     * Convert from shopping cart to shopping cart request
+     *
+     * @param shoppingCart Shopping cart
+     * @return Shopping cart request
+     */
+    // FIXME:: Consider use this method for testing
+    ShoppingCartRequest toShoppingCartRequest(ShoppingCart shoppingCart);
+
+    /**
      * Convert from user to user response
      *
      * @param user User need convert
