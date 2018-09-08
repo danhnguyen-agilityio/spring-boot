@@ -31,10 +31,10 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * Test get authentication from token
+     * Test get authentication success from valid token
      */
     @Test
-    public void testGetAuthentication() {
+    public void testGetAuthenticationSuccessFromValidToken() {
         String username = "admin";
         val roles = new HashSet<String>();
         roles.add(RoleType.ADMIN.getName());
@@ -50,6 +50,27 @@ public class TokenAuthenticationServiceTest {
         assertEquals(authentication.getName(), username);
     }
 
+    /**
+     * Test get authentication fail from null token
+     */
+    @Test
+    public void testGetAuthenticationFailFromNullToken() {
+        String token = null;
 
+        // Get authentication from token
+        Authentication authentication =
+            TokenAuthenticationService.getAuthentication(token);
+
+        assertNull(authentication);
+    }
+
+    /**
+     * Test get authentication fail when token has expired
+     */
+    // FIXME:: Get configuration security from configuration application to test
+    @Test
+    public void testGetAuthenticationFailWhenTokenHasExpired() {
+
+    }
 
 }

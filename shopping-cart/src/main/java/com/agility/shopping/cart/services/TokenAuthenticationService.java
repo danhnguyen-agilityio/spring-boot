@@ -63,6 +63,10 @@ public class TokenAuthenticationService {
     public static Authentication getAuthentication(String token) {
         log.debug("Get authentication from token");
 
+        if (token == null || !token.startsWith(TOKEN_PREFIX)) {
+            return null;
+        }
+
         // Parse the token
         Claims claims = Jwts.parser()
             .setSigningKey(SECRET)

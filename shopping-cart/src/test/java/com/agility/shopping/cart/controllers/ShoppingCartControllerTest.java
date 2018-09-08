@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
-import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_URL;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
