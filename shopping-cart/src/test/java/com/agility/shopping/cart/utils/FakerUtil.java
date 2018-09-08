@@ -105,6 +105,16 @@ public class FakerUtil {
         return TokenAuthenticationService.createToken(username, roles);
     }
 
+
+    /**
+     * Generate long number
+     *
+     * @return Long number
+     */
+    public static Long generateLongNumber() {
+        return new Random().nextLong();
+    }
+
     /**
      * Generate random string
      *

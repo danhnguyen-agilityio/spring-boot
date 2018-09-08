@@ -147,5 +147,37 @@ public class ShoppingCartController {
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
     }
 
+    /**
+     * Delete shopping cart by given id
+     *
+     * @param id Shopping cart id
+     * @return Deleted shopping cart response
+     * @throws ResourceNotFoundException  if shopping cart id does not exist
+     * @throws ResourceForbiddenException if authenticated user not own shopping cart with given id
+     */
+    @DeleteMapping("/{id}")
+    public ShoppingCartResponse delete(@PathVariable long id) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id);
+
+        // Throw not found exception when shopping cart id does not exist
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get authenticated username
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // Throw forbidden exception when authenticated user not own shopping cart with given id
+        if (!username.equals(shoppingCart.getUser().getUsername())) {
+            throw new ResourceForbiddenException(SHOPPING_CART_FORBIDDEN);
+        }
+
+        // Delete shopping cart when authenticated user own shopping cart with given id
+        shoppingCartRepository.delete(id);
+
+        return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
+
+    }
+
 
 }

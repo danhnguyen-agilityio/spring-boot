@@ -35,12 +35,11 @@ import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRIN
 import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.fakeShoppingCart;
+import static com.agility.shopping.cart.utils.FakerUtil.generateLongNumber;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -217,10 +216,6 @@ public class ShoppingCartControllerTest {
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 
-    // ============================================================
-    // Test update shopping cart
-    // ============================================================
-
     /**
      * Test find all shopping cart fail forbidden
      */
@@ -236,6 +231,10 @@ public class ShoppingCartControllerTest {
             .andExpect(status().isForbidden());
     }
 
+    // ============================================================
+    // Test update shopping cart
+    // ============================================================
+
     /**
      * Test update shopping cart fail forbidden exception for admin user
      */
@@ -245,7 +244,7 @@ public class ShoppingCartControllerTest {
         String token = FakerUtil.generateAdminToken();
 
         // Call api
-        mockMvc.perform(put(SHOPPING_CART_URL)
+        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, FakerUtil.generateLongNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -396,6 +395,106 @@ public class ShoppingCartControllerTest {
         verify(shoppingCartRepository.findOne(shoppingCart.getId()), times(1));
         verify(shoppingCartRepository.existsByName(request.getName()), times(1));
         verify(shoppingCartRepository.save(shoppingCart), times(1));
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    // ============================================================
+    // Test update shopping cart
+    // ============================================================
+
+    /**
+     * Test delete shopping cart fail forbidden exception for admin user
+     */
+    @Test
+    public void testDeleteShoppingCartFailForbiddenForAdminUser() throws Exception {
+        // Generate token have role admin
+        String token = FakerUtil.generateAdminToken();
+
+        // Call api
+        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, generateLongNumber())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test delete shopping cart fail resource not found when shopping cart id does not exist
+     */
+    @Test
+    public void testDeleteShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
+        // Mock shopping cart
+        long id = generateLongNumber();
+        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
+
+        // Generate token have role member
+        String token = FakerUtil.generateMemberToken();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(id)).thenReturn(null);
+
+        // Call api
+        mockMvc.perform(delete(SHOPPING_CART_DETAIL_URL, id)
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isNotFound());
+
+        verify(shoppingCartRepository.findOne(id), times(1));
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test delete shopping cart fail forbidden when authenticated user not own shopping cart with given id
+     */
+    @Test
+    public void testDeleteShoppingCartFailForbiddenWhenAuthenticatedUserNotOwnShoppingCartWithGivenId()
+        throws Exception {
+
+        // Mock shopping cart
+        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
+
+        // Generate token have role member
+        String token = FakerUtil.generateMemberToken();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId())).thenReturn(shoppingCart);
+
+        // Call api
+        mockMvc.perform(delete(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isForbidden());
+
+        verify(shoppingCartRepository.findOne(shoppingCart.getId()), times(1));
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test delete shopping cart success when authenticated user own shopping cart with given id
+     */
+    @Test
+    public void testDeleteShoppingCartSuccess() throws Exception {
+        // Mock shopping cart
+        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
+
+        // Generate token have role member
+        String token = FakerUtil.generateMemberToken(shoppingCart.getUser().getUsername());
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId())).thenReturn(shoppingCart);
+        doNothing().when(shoppingCartRepository).delete(shoppingCart.getId());
+
+        // Call api
+        mockMvc.perform(delete(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(request)))
+            .andExpect(status().isForbidden());
+
+        verify(shoppingCartRepository.findOne(shoppingCart.getId()), times(1));
+        verify(shoppingCartRepository, times(1)).delete(shoppingCart.getId());
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 
