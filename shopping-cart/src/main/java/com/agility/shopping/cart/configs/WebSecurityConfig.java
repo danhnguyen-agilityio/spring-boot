@@ -57,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/products/**").authenticated()
             // Only user admin can access to api create, update, delete product
             .antMatchers( "/products/**").hasAuthority(RoleType.ADMIN.getName())
-            .antMatchers("/shopping-cart/**").hasAuthority(RoleType.MEMBER.getName())
+            .antMatchers(SHOPPING_CART_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
             // The authentication filter
