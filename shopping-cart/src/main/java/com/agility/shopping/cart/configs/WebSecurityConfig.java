@@ -3,6 +3,7 @@ package com.agility.shopping.cart.configs;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.filters.JWTAuthenticationFilter;
 import com.agility.shopping.cart.filters.JWTAuthorizationFilter;
+import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,10 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private UserService userDetailService;
+    private UserService userService;
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     /**
      * Authenticate credential that user login with username and password
@@ -65,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             // The authentication filter
             .addFilter(new JWTAuthenticationFilter(authenticationManager(),
-                userService))
+                userRepository))
             // The authorization filter
             .addFilter(new JWTAuthorizationFilter(authenticationManager()))
             // Disables session creation on spring security

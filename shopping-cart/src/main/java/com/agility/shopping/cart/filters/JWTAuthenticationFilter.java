@@ -1,6 +1,8 @@
 package com.agility.shopping.cart.filters;
 
 import com.agility.shopping.cart.models.AccountCredential;
+import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +32,12 @@ import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRIN
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-    private UserService userService;
+    private UserRepository userRepository;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserService userService) {
+        UserRepository userRepository) {
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -84,8 +86,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Authentication authResult) throws IOException, ServletException {
 
         String username = ((UserDetails) authResult.getPrincipal()).getUsername();
-        String token = TokenAuthenticationService.createToken(username,
-            userService.getNameRolesByUsername(username));
+        User user = userRepository.findByUsername(username);
+        String token = TokenAuthenticationService.createToken(user);
         response.addHeader(HEADER_STRING, token);
 
     }
