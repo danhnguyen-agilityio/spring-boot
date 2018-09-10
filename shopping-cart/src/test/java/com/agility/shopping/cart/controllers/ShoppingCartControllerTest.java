@@ -76,7 +76,6 @@ public class ShoppingCartControllerTest {
             .build();
     }
 
-
     /**
      * Test create shopping cart success
      */

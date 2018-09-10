@@ -1,18 +1,16 @@
 package com.agility.shopping.cart.mappers;
 
-import com.agility.shopping.cart.dto.CartItemRequest;
-import com.agility.shopping.cart.dto.CartItemResponse;
-import com.agility.shopping.cart.dto.ProductResponse;
-import com.agility.shopping.cart.dto.ShoppingCartResponse;
+import com.agility.shopping.cart.dto.*;
 import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
+import com.agility.shopping.cart.models.User;
 import org.mapstruct.Mapper;
 
 /**
  * This interface is used to map between different object model
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CartItemMapper {
 
     /**
@@ -46,4 +44,12 @@ public interface CartItemMapper {
      * @return Product response
      */
     ProductResponse toProductResponse(Product product);
+
+    /**
+     * Convert from user to user response
+     *
+     * @param user User need convert
+     * @return User response
+     */
+    UserResponse userToUserResponse(User user);
 }

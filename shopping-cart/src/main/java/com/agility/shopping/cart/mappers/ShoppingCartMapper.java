@@ -49,7 +49,6 @@ public interface ShoppingCartMapper {
      */
     UserResponse userToUserResponse(User user);
 
-
     /**
      * Convert from shopping cart to shopping cart response
      *

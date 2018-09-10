@@ -27,6 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String SHOPPING_CART_URL = "/shopping-carts";
     public static final String SHOPPING_CART_DETAIL_URL = "/shopping-carts/{id}";
+    public static final String CART_ITEM_URL = "/cart-items";
+    public static final String CART_ITEM_DETAIL_URL = "/cart-items/{id}";
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,6 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // Only user admin can access to api create, update, delete product
             .antMatchers( "/products/**").hasAuthority(RoleType.ADMIN.getName())
             .antMatchers(SHOPPING_CART_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
+            .antMatchers(CART_ITEM_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
             // The authentication filter
