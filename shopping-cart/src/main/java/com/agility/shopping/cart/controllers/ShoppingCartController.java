@@ -134,6 +134,7 @@ public class ShoppingCartController {
             throw new ResourceForbiddenException(SHOPPING_CART_FORBIDDEN);
         }
 
+        // FIXME:: Consider remove unique field name, occur error when update database with name exists
         // Throw resource exists exception when shopping cart name belong to other shopping cart (not contain given id)
         if (!shoppingCart.getName().equals(request.getName())
             && shoppingCartRepository.existsByName(request.getName())) {
