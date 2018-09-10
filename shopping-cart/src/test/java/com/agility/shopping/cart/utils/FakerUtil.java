@@ -1,7 +1,11 @@
 package com.agility.shopping.cart.utils;
 
 import com.agility.shopping.cart.constants.RoleType;
+import com.agility.shopping.cart.constants.ShoppingCartStatus;
+import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
+import com.agility.shopping.cart.models.Product;
+import com.agility.shopping.cart.models.Role;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
@@ -18,12 +22,40 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FakerUtil {
 
     /**
-     * Fake user with arbitrary username and password
+     * Fake user
      *
      * @return User
      */
     public static User fakeUser() {
-        return new User(generateString(), generateString());
+        User user = new User();
+        user.setId(generateLongNumber());
+        user.setUsername(generateString());
+        user.setPassword(generateString());
+        return user;
+    }
+
+    /**
+     * Fake admin user
+     *
+     * @return Admin user
+     */
+    public static User fakeAdminUser() {
+        User user = fakeUser();
+        Set<Role> roles = Sets.newSet(new Role(RoleType.ADMIN.getName()));
+        user.setRoles(roles);
+        return user;
+    }
+
+    /**
+     * Fake member user
+     *
+     * @return Member user
+     */
+    public static User fakeMemberUser() {
+        User user = fakeUser();
+        Set<Role> roles = Sets.newSet(new Role(RoleType.MEMBER.getName()));
+        user.setRoles(roles);
+        return user;
     }
 
     /**
@@ -34,6 +66,31 @@ public class FakerUtil {
      */
     public static User fakeUser(String username) {
         return new User(username, generateString());
+    }
+
+    /**
+     * Fake product
+     *
+     * @return Product
+     */
+    public static Product fakeProduct() {
+        Product product = new Product();
+        product.setId(generateLongNumber());
+        product.setName(generateString());
+        product.setPrice(generateLongNumber());
+        return product;
+    }
+
+    /**
+     * Fake shopping cart data with
+     *
+     * @param shoppingCartStatus
+     * @return
+     */
+    public static ShoppingCart fakeShoppingCart(ShoppingCartStatus shoppingCartStatus) {
+        ShoppingCart shoppingCart = fakeShoppingCart();
+        shoppingCart.setStatus(shoppingCartStatus.getName());
+        return shoppingCart;
     }
 
     /**
@@ -67,6 +124,19 @@ public class FakerUtil {
      */
     public static ShoppingCartRequest fakeShoppingCartRequest() {
         return new ShoppingCartRequest(generateString(4, 30), generateString(10, 30));
+    }
+
+    /**
+     * Fake cart item request
+     *
+     * @return Cart item request
+     */
+    public static CartItemRequest fakeCartItemRequest() {
+        CartItemRequest cartItemRequest = new CartItemRequest();
+        cartItemRequest.setShoppingCartId(generateLongNumber());
+        cartItemRequest.setProductId(generateLongNumber());
+        cartItemRequest.setQuantity(generateLongNumber(1));
+        return cartItemRequest;
     }
 
     /**
@@ -107,6 +177,26 @@ public class FakerUtil {
         return TokenAuthenticationService.createToken(username, roles);
     }
 
+    /**
+     * Generate long number with given min value
+     *
+     * @param min Min value of created long number
+     * @return Long number
+     */
+    public static long generateLongNumber(long min) {
+        return generateLongNumber(min, Long.MAX_VALUE);
+    }
+
+    /**
+     * Generate long number with given min and max value
+     *
+     * @param min Min value of created long number
+     * @param max Max value of created long number
+     * @return Long number
+     */
+    public static long generateLongNumber(long min, long max) {
+        return ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
+    }
 
     /**
      * Generate long number
