@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 /**
  * This interface implement CRUD for cart item table
  */
@@ -17,6 +19,14 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
      * @param productId Product id
      * @return Cart item
      */
-    @Query("select s from ShoppingCart s where s.id = :shoppingCartId and s.product.id = :productId")
+    @Query("select c from CartItem s where s.shoppingCart.id = :shoppingCartId and s.product.id = :productId")
     CartItem findOne(@Param("shoppingCartId") long shoppingCartId, @Param("productId") long productId);
+
+    /**
+     * Find all cart item by shopping cart id
+     * @param shoppingCartId Shopping cart id
+     * @return List cart item
+     */
+    @Query("select c from CartItem c where c.shoppingCart.id = :shoppingCartId ")
+    List<CartItem> findAllByShoppingCartId(@Param("shoppingCartId") long shoppingCartId);
 }

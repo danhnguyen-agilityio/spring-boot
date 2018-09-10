@@ -7,6 +7,8 @@ import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import org.mapstruct.Mapper;
 
+import java.util.List;
+
 /**
  * This interface is used to map between different object model
  */
@@ -28,6 +30,14 @@ public interface CartItemMapper {
      * @return Cart item response
      */
     CartItemResponse toCartItemResponse(CartItem cartItem);
+
+    /**
+     * Convert from list cart item to list cart item response
+     *
+     * @param cartItems List cart item
+     * @return List cart item response
+     */
+    List<CartItemResponse> toCartItemResponse(List<CartItem> cartItems);
 
     /**
      * Convert from shopping cart to shopping cart response

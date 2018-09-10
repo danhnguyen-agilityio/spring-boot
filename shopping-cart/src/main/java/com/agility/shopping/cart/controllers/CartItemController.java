@@ -16,10 +16,13 @@ import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_NOT_FOUND;
 import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_DONE;
@@ -43,7 +46,8 @@ public class CartItemController {
      *
      * @param cartItemRequest Cart item request
      * @return Create item response
-     * @throws ResourceNotFoundException  if shopping car id or product id not exist
+     * @throws ResourceNotFoundException  if shopping car id of authenticated user or product id not exist
+     * @throws BadRequestException        if shopping cart already DONE
      * @throws ResourceForbiddenException if authenticated user not own shopping cart by given id
      */
     @PostMapping
@@ -93,6 +97,37 @@ public class CartItemController {
         // Convert cart item to cart item response and return it
         return cartItemMapper.toCartItemResponse(cartItem);
     }
+
+    /**
+     * Find all cart item by shopping cart id
+     *
+     * @param shoppingCartId Shopping cart id
+     * @param request        Request from user
+     * @return List cart item response
+     * @throws ResourceNotFoundException if shopping cart with given id of authenticated user not exist
+     */
+    @GetMapping
+    public List<CartItemResponse> finAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
+                                         HttpServletRequest request) {
+
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
+
+        // Throw Resource not found exception when no shopping cart by given shopping cart id and user id
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get list cart item by shopping cart id
+        List<CartItem> cartItems = cartItemRepository.findAllByShoppingCartId(shoppingCartId);
+
+        // Convert to list cart item response and return it
+        return cartItemMapper.toCartItemResponse(cartItems);
+    }
+
 
     /**
      * Get token from request

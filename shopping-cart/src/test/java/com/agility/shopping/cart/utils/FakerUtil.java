@@ -4,16 +4,11 @@ import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
-import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.models.Role;
-import com.agility.shopping.cart.models.ShoppingCart;
-import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.models.*;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import org.mockito.internal.util.collections.Sets;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -127,6 +122,20 @@ public class FakerUtil {
     }
 
     /**
+     * Fake cart item
+     *
+     * @return Cart item
+     */
+    public static CartItem fakeCartItem() {
+        CartItem cartItem = new CartItem();
+        cartItem.setId(generateLongNumber());
+        cartItem.setQuantity(generateLongNumber(1));
+        cartItem.setShoppingCart(fakeShoppingCart());
+        cartItem.setProduct(fakeProduct());
+        return cartItem;
+    }
+
+    /**
      * Fake cart item request
      *
      * @return Cart item request
@@ -137,6 +146,15 @@ public class FakerUtil {
         cartItemRequest.setProductId(generateLongNumber());
         cartItemRequest.setQuantity(generateLongNumber(1));
         return cartItemRequest;
+    }
+
+    /**
+     * Fake list 3 element cart item
+     *
+     * @return List cart item
+     */
+    public static List<CartItem> fakeListCartItem() {
+        return Arrays.asList(fakeCartItem(), fakeCartItem(), fakeCartItem());
     }
 
     /**
