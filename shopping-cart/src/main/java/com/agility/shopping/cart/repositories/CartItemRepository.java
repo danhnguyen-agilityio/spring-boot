@@ -16,7 +16,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
      * Find one cart item by shopping cart id and product id
      *
      * @param shoppingCartId Shopping cart id
-     * @param productId Product id
+     * @param productId      Product id
      * @return Cart item
      */
     @Query("select c from CartItem s where s.shoppingCart.id = :shoppingCartId and s.product.id = :productId")
@@ -24,9 +24,20 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     /**
      * Find all cart item by shopping cart id
+     *
      * @param shoppingCartId Shopping cart id
      * @return List cart item
      */
     @Query("select c from CartItem c where c.shoppingCart.id = :shoppingCartId ")
     List<CartItem> findAllByShoppingCartId(@Param("shoppingCartId") long shoppingCartId);
+
+    /**
+     * Find one cart item by cart item id and shopping cart id
+     *
+     * @param cartItemId     Cart item id
+     * @param shoppingCartId Shopping cart id
+     * @return Cart item
+     */
+    @Query("select c from CartItem c where c.cartItemId = :cartItemId and c.shoppingCart.id = :shoppingCartId ")
+    CartItem findOneByCartItemIdAndShoppingCartId(long cartItemId, long shoppingCartId);
 }

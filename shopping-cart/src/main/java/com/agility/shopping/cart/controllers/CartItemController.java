@@ -24,9 +24,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_NOT_FOUND;
-import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_DONE;
-import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_NOT_FOUND;
+import static com.agility.shopping.cart.exceptions.CustomError.*;
 
 /**
  * This class implement api that relate to Cart Item data
@@ -128,6 +126,40 @@ public class CartItemController {
         return cartItemMapper.toCartItemResponse(cartItems);
     }
 
+    /**
+     * Find one cart item in given shopping cart
+     *
+     * @param cartItemId     Cart item id
+     * @param shoppingCartId Shopping cart id
+     * @param request        Request from user
+     * @return Cart item
+     * @throws ResourceNotFoundException if shopping cart or cart item not exist
+     */
+    @GetMapping("/{id}")
+    public CartItemResponse findOne(@PathVariable long cartItemId,
+                                    @RequestParam(value = "shoppingCartId") long shoppingCartId,
+                                    HttpServletRequest request) {
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
+
+        // Throw Resource not found exception when no shopping cart by given shopping cart id and user id
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get cart item by given cart item id and shopping cart id
+        CartItem cartItem = cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItemId, shoppingCartId);
+
+        // Throw resource not found exception when cart item not exist
+        if (cartItem == null) {
+            throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
+        }
+
+        return cartItemMapper.toCartItemResponse(cartItem);
+    }
 
     /**
      * Get token from request
