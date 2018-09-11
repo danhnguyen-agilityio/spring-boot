@@ -72,7 +72,7 @@ public class CartItemController {
             throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
         }
 
-        // Throw bad request exception when no shopping cart is already done
+        // Throw bad request exception when shopping cart is already done
         if (isShoppingCartDone(shoppingCart)) {
             throw new BadRequestException(SHOPPING_CART_DONE);
         }
@@ -178,6 +178,7 @@ public class CartItemController {
      * @param request        Request from user
      * @return Updated cart item response
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
+     * @throws BadRequestException if shopping cart already DONE
      */
     @PutMapping("/{id}")
     public CartItemResponse update(@PathVariable("id") long cartItemId,
@@ -192,6 +193,11 @@ public class CartItemController {
         // Throw Resource not found exception when no shopping cart by given shopping cart id and user id
         if (shoppingCart == null) {
             throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Throw bad request exception when shopping cart is already done
+        if (isShoppingCartDone(shoppingCart)) {
+            throw new BadRequestException(SHOPPING_CART_DONE);
         }
 
         // Get cart item by given cart item id and shopping cart id
@@ -245,10 +251,11 @@ public class CartItemController {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
 
-        log.debug("Cart item id after get from database: {}", cartItem.getId());
-
-        // Delete cart item
-        cartItemRepository.delete(cartItemId);
+        // Update again shopping cart
+        log.debug("Size cart item before remove: {}", shoppingCart.getCartItems().size());
+        shoppingCart.getCartItems().remove(cartItem);
+        log.debug("Size cart item after remove: {}", shoppingCart.getCartItems().size());
+        shoppingCartRepository.save(shoppingCart);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }
