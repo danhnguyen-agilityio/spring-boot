@@ -16,8 +16,8 @@ import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,13 +32,21 @@ import static com.agility.shopping.cart.exceptions.CustomError.*;
  */
 @RestController
 @RequestMapping("/cart-items")
-@RequiredArgsConstructor
+// FIXME:: Consider apply RequiredArgsConstructor
+@Slf4j
 public class CartItemController {
 
-    private final ShoppingCartRepository shoppingCartRepository;
-    private final ProductRepository productRepository;
-    private final CartItemRepository cartItemRepository;
-    private final CartItemMapper cartItemMapper;
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private CartItemMapper cartItemMapper;
 
     /**
      * Create cart item from given request data
@@ -82,7 +90,7 @@ public class CartItemController {
 
         if (cartItem == null) {
             // Map cart item request to cart item
-            cartItemMapper.toCartItem(cartItemRequest);
+            cartItem = cartItemMapper.toCartItem(cartItemRequest);
             cartItem.setShoppingCart(shoppingCart);
             cartItem.setProduct(product);
         } else {
@@ -163,7 +171,7 @@ public class CartItemController {
     }
 
     /**
-     * Find one cart item in given shopping cart
+     * Update cart item in given shopping cart
      *
      * @param cartItemId     Cart item id
      * @param cartItemUpdate Cart item update
@@ -216,6 +224,8 @@ public class CartItemController {
     public CartItemResponse delete(@PathVariable("id") long cartItemId,
                                    @RequestParam long shoppingCartId,
                                    HttpServletRequest request) {
+        log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
+
         // Get user id from request
         Long userId = TokenAuthenticationService.getUserId(getToken(request));
 
@@ -234,6 +244,8 @@ public class CartItemController {
         if (cartItem == null) {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
+
+        log.debug("Cart item id after get from database: {}", cartItem.getId());
 
         // Delete cart item
         cartItemRepository.delete(cartItemId);

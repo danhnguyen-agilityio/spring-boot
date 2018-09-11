@@ -140,6 +140,7 @@ public class TokenAuthenticationService {
      * @return User id
      */
     public static Long getUserId(String token) {
+        log.debug("Get user id from token");
         if (token == null || !token.startsWith(TOKEN_PREFIX)) {
             return null;
         }
@@ -149,6 +150,8 @@ public class TokenAuthenticationService {
             .setSigningKey(SECRET)
             .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
             .getBody();
+
+        log.debug("User id {}", claims.getId());
 
         return Long.parseLong(claims.getId());
     }

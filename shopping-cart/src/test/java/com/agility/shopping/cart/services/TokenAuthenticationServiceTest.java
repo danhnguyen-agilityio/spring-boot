@@ -3,13 +3,16 @@ package com.agility.shopping.cart.services;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.utils.FakerUtil;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 import org.springframework.security.core.Authentication;
 
 import java.util.HashSet;
 
+import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
+import static com.agility.shopping.cart.utils.FakerUtil.fakeAdminUser;
 import static com.agility.shopping.cart.utils.FakerUtil.fakeMemberUser;
 import static com.agility.shopping.cart.utils.FakerUtil.fakeUser;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -18,6 +21,7 @@ import static org.junit.Assert.*;
 /**
  * This class test TokenAuthenticationService class
  */
+@Slf4j
 public class TokenAuthenticationServiceTest {
 
     /**
@@ -73,8 +77,10 @@ public class TokenAuthenticationServiceTest {
      */
     @Test
     public void testGetUserIdFromToken() {
+        log.debug("testGetUserIdFromToken: {}", HEADER_STRING);
+
         // Mock data
-        User user = fakeUser();
+        User user = fakeAdminUser();
 
         // Generate token
         String token = TokenAuthenticationService.createToken(user);
@@ -83,7 +89,7 @@ public class TokenAuthenticationServiceTest {
         Long userId = TokenAuthenticationService.getUserId(token);
 
         assertNotNull(userId);
-        assertEquals(user.getId(), userId);
+        assertEquals(user.getId().toString(), userId.toString());
     }
 
     /**
@@ -94,7 +100,7 @@ public class TokenAuthenticationServiceTest {
         // Get user id from token
         Long userId = TokenAuthenticationService.getUserId(null);
 
-        assertNotNull(userId);
+        assertNull(userId);
     }
 
     /**
