@@ -1,9 +1,11 @@
 package com.agility.shopping.cart.constants;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
 /**
  * Define constant value for security
  */
-// FIXME:: Should get value from application.yml
+@ConfigurationProperties(prefix = "security")
 public class SecurityConstants {
     public static final String SECRET = "SecretKeyToGenJWTs";
     public static final long EXPIRATION_TIME = 864000000l; // 10 DAYS

@@ -1,0 +1,6 @@
+security:
+    secret: SecretKeyToGenJWTs
+    expiration-time: 864000000l
+    token-prefix: Bearer
+    header-string: Authorization
+
