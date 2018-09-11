@@ -31,9 +31,7 @@ import java.util.List;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETAIL_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.exceptions.CustomError.CART_ITEM_NOT_FOUND;
-import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_NOT_FOUND;
-import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_NOT_FOUND;
+import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -558,6 +556,38 @@ public class CartItemControllerTest {
             .content(convertObjectToJsonBytes(cartItemUpdate)))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(cartItemUpdate.getShoppingCartId(), user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test update cart item throw resource not found exception when shopping cart done
+     */
+    @Test
+    public void testUpdateCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        CartItemUpdate cartItemUpdate = fakeCartItemUpdate();
+        CartItem cartItem = fakeCartItem();
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.DONE);
+
+        // Mock method
+        when(shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
+
+        // Call api
+        mockMvc.perform(put(CART_ITEM_DETAIL_URL, cartItem.getId())
+            .header(HEADER_STRING, token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(cartItemUpdate)))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_DONE.code())));
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemUpdate.getShoppingCartId(), user.getId());
