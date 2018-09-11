@@ -3,6 +3,7 @@ package com.agility.shopping.cart.models;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -19,6 +20,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EntityListeners(AuditingEntityListener.class)
 public class CartItem implements Serializable {
 
     @Id
@@ -27,7 +29,7 @@ public class CartItem implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cart_id")
+    @JoinColumn(name = "shopping_cart_id")
     private ShoppingCart shoppingCart;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,11 +40,11 @@ public class CartItem implements Serializable {
     @Min(1)
     private Long quantity;
 
-    @Column(name = "created_at", updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false)
     @CreatedDate
     private Instant createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at")
     @LastModifiedDate
     private Instant updatedAt;
 
