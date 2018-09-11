@@ -240,7 +240,7 @@ public class FakerUtil {
      * @return Long number
      */
     public static long generateLongNumber(long min, long max) {
-        return ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE);
+        return ThreadLocalRandom.current().nextLong(min, max);
     }
 
     /**

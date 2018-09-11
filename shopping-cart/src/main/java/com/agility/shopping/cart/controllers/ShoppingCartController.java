@@ -118,6 +118,7 @@ public class ShoppingCartController {
      */
     @GetMapping("/{id}")
     public ShoppingCartResponse findOne(@PathVariable long id, HttpServletRequest request) {
+        log.debug("GET /shopping-carts/{}", id);
         // Get user id from request
         Long userId = TokenAuthenticationService.getUserId(getToken(request));
 

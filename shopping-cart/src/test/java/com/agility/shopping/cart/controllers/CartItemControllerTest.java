@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -37,6 +38,7 @@ import static com.agility.shopping.cart.utils.FakerUtil.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,6 +57,9 @@ public class CartItemControllerTest {
     @Autowired
     private FilterChainProxy filterChainProxy;
 
+    @Autowired
+    private CartItemMapper cartItemMapper;
+
     @MockBean
     private ShoppingCartRepository shoppingCartRepository;
 
@@ -63,9 +68,6 @@ public class CartItemControllerTest {
 
     @MockBean
     private CartItemRepository cartItemRepository;
-
-    @MockBean
-    private CartItemMapper cartItemMapper;
 
     @Before
     public void setUp() {
@@ -149,8 +151,8 @@ public class CartItemControllerTest {
             .header(HEADER_STRING, token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_DONE.code())));
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), user.getId());
@@ -497,6 +499,7 @@ public class CartItemControllerTest {
             .header(HEADER_STRING, token)
             .param("shoppingCartId", shoppingCart.getId().toString()))
             .andExpect(status().isOk())
+            .andDo(print())
             .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
             .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
             .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
@@ -662,7 +665,7 @@ public class CartItemControllerTest {
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
         // Call api
-        mockMvc.perform(get(CART_ITEM_DETAIL_URL, cartItem.getId())
+        mockMvc.perform(put(CART_ITEM_DETAIL_URL, cartItem.getId())
             .header(HEADER_STRING, token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(cartItemUpdate)))
@@ -800,13 +803,13 @@ public class CartItemControllerTest {
         doNothing().when(cartItemRepository).delete(cartItemId);
 
         // Call api
-        mockMvc.perform(get(CART_ITEM_DETAIL_URL, cartItem.getId())
+        mockMvc.perform(delete(CART_ITEM_DETAIL_URL, cartItem.getId())
             .header(HEADER_STRING, token)
             .param("shoppingCartId", shoppingCartId.toString()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
             .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
-            .andExpect(jsonPath("$.quantity", is(cartItem.getShoppingCart().getId())));
+            .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
 
         verify(shoppingCartRepository, times(1)).
             findOne(shoppingCartId, user.getId());

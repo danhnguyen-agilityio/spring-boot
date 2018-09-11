@@ -60,7 +60,7 @@ public class CartItemController {
     @PostMapping
     public CartItemResponse create(@Valid @RequestBody CartItemRequest cartItemRequest,
                                    HttpServletRequest request) {
-
+        log.debug("POST /cart-items, body = {}", cartItemRequest);
         // Get user id from request
         Long userId = TokenAuthenticationService.getUserId(getToken(request));
 
@@ -251,11 +251,7 @@ public class CartItemController {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
 
-        // Update again shopping cart
-        log.debug("Size cart item before remove: {}", shoppingCart.getCartItems().size());
-        shoppingCart.getCartItems().remove(cartItem);
-        log.debug("Size cart item after remove: {}", shoppingCart.getCartItems().size());
-        shoppingCartRepository.save(shoppingCart);
+        cartItemRepository.delete(cartItemId);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }

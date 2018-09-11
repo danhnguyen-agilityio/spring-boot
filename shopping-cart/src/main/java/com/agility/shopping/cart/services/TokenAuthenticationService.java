@@ -68,9 +68,13 @@ public class TokenAuthenticationService {
             .setSubject(user.getUsername())
             .setId(user.getId().toString());
 
-        Set<String> roles = user.getRoles().stream()
-            .map(role -> role.getName())
-            .collect(Collectors.toSet());
+        Set<String> roles = null;
+
+        if (user.getRoles() != null) {
+            roles = user.getRoles().stream()
+                .map(role -> role.getName())
+                .collect(Collectors.toSet());
+        }
 
         if (user.getUsername() != null && user.getUsername().length() > 0) {
             claims.put("roles", roles);

@@ -2,7 +2,10 @@ package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.AccountCredential;
+import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.UserService;
+import com.agility.shopping.cart.utils.FakerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -26,6 +29,7 @@ import java.util.Set;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
+import static com.agility.shopping.cart.utils.FakerUtil.generateString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -52,6 +56,9 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private UserRepository userRepository;
+
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders
@@ -65,18 +72,16 @@ public class UserControllerTest {
      */
     @Test
     public void loginWithCorrectCredential() throws Exception {
-        String username = "test";
-        String password = "test";
+        User user = FakerUtil.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
+        credential.setUsername(user.getUsername());
+        credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(credential.getUsername()))
+        when(userService.loadUserByUsername(user.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
+                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
             ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(new HashSet<>());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
 
         mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -92,18 +97,17 @@ public class UserControllerTest {
      */
     @Test
     public void loginWithIncorrectCredential() throws Exception {
-        String username = "test";
-        String password = "test";
+        User user = FakerUtil.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
-        credential.setUsername("wrong");
-        credential.setPassword("wrong");
+        credential.setUsername(user.getUsername());
+        // Fake password
+        credential.setPassword(generateString());
 
         when(userService.loadUserByUsername(credential.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
+                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
             ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(new HashSet<>());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
 
         mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -127,18 +131,16 @@ public class UserControllerTest {
     @Test
     public void shouldAllowAccessToAuthenticatedUsers() throws Exception {
         log.debug("Test authenticated user can access to api");
-        String username = "test";
-        String password = "test";
+        User user = FakerUtil.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
+        credential.setUsername(user.getUsername());
+        credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(credential.getUsername()))
+        when(userService.loadUserByUsername(user.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
+                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
             ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(new HashSet<>());
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
 
         String token = mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -159,19 +161,16 @@ public class UserControllerTest {
      */
     @Test
     public void shouldAllowAccessToAdminApiWithAdminUser() throws Exception {
-        String username = "test";
-        String password = "test";
+        User user = FakerUtil.fakeAdminUser();
         AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
+        credential.setUsername(user.getUsername());
+        credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(credential.getUsername()))
+        when(userService.loadUserByUsername(user.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
+                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
             ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(roles);
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
 
         String token = mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)
@@ -196,19 +195,16 @@ public class UserControllerTest {
      */
     @Test
     public void shouldAllowAccessToMemberApiWithMemberUser() throws Exception {
-        String username = "test";
-        String password = "test";
+        User user = FakerUtil.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
-        credential.setUsername(username);
-        credential.setPassword(password);
-        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
+        credential.setUsername(user.getUsername());
+        credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(credential.getUsername()))
+        when(userService.loadUserByUsername(user.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(
-                username, passwordEncoder.encode(password), new HashSet<>()
+                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
             ));
-        when(userService.getNameRolesByUsername(username))
-            .thenReturn(roles);
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(user);
 
         String token = mockMvc.perform(post("/login")
             .contentType(MediaType.APPLICATION_JSON)

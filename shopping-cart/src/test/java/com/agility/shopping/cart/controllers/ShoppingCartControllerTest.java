@@ -3,6 +3,7 @@ package com.agility.shopping.cart.controllers;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
+import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
@@ -283,9 +284,10 @@ public class ShoppingCartControllerTest {
         Long shoppingCartId = generateLongNumber();
         ShoppingCart shoppingCart = fakeShoppingCart();
         shoppingCart.setId(shoppingCartId);
+        shoppingCart.setCartItems(Sets.newSet(fakeCartItem(), fakeCartItem()));
 
         // Mock method
-        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
+        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(shoppingCart);
 
         // Call api
         mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
