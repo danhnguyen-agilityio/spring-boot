@@ -27,8 +27,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETAIL_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
+import static com.agility.shopping.cart.exceptions.CustomError.CART_ITEM_NOT_FOUND;
 import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_NOT_FOUND;
 import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_NOT_FOUND;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
@@ -381,6 +383,96 @@ public class CartItemControllerTest {
         verifyNoMoreInteractions(shoppingCartRepository);
         verifyNoMoreInteractions(cartItemRepository);
     }
+
+    // =========================================================
+    // Test Get One Cart Item By Cart Item Id And Shopping Cart Id
+    // =========================================================
+
+    /**
+     * Test find one cart item throw forbidden exception for admin user
+     */
+    @Test
+    public void testFindOneCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
+        // Create admin token
+        String token = generateAdminToken();
+
+        // Call api
+        mockMvc.perform(get(CART_ITEM_DETAIL_URL, generateLongNumber())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test find one cart item by given cart item id and shopping cart id throw resource not found exception
+     * when no shopping cart with given id of authenticated user
+     */
+    @Test
+    public void testFindOneCartItemThrowResourceNotFoundExceptionWhenNoShoppingCartWithGivenIdOfAuthenticatedUser()
+        throws Exception {
+
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock cart item id and shopping cart id
+        Long cartItemId = generateLongNumber();
+        Long shoppingCartId = generateLongNumber();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
+
+        // Call api
+        mockMvc.perform(get(CART_ITEM_DETAIL_URL, cartItemId)
+            .header(HEADER_STRING, token)
+            .param("shoppingCartId", shoppingCartId.toString()))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCartId, user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test find one cart item throw resource not found exception
+     * when no cart item with given cart item id and shopping cart id
+     */
+    @Test
+    public void testFindOneCartItemThrowResourceNotFoundExceptionWhenNoCartItemWithGivenCartItemIdAndShoppingCartId()
+        throws Exception {
+
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock shopping cart and cart item
+        ShoppingCart shoppingCart = fakeShoppingCart(user);
+        CartItem cartItem = fakeCartItem();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
+        when(cartItemRepository.findOneByCartItemIdAndShoppingCartId(shoppingCart.getId(), cartItem.getId()))
+            .thenReturn(null);
+
+        // Call api
+        mockMvc.perform(get(CART_ITEM_DETAIL_URL, cartItem.getId())
+            .header(HEADER_STRING, token)
+            .param("shoppingCartId", shoppingCart.getId().toString()))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(CART_ITEM_NOT_FOUND.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCart.getId(), user.getId());
+        verify(cartItemRepository, times(1)).
+            findOneByCartItemIdAndShoppingCartId(shoppingCart.getId(), cartItem.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+        verifyNoMoreInteractions(cartItemRepository);
+    }
+
 
 
 }
