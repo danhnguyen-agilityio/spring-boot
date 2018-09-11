@@ -4,6 +4,7 @@ import com.agility.shopping.cart.constants.SecurityConstants;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemResponse;
+import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.exceptions.BadRequestException;
 import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
@@ -105,8 +106,8 @@ public class CartItemController {
      * @throws ResourceNotFoundException if shopping cart with given id of authenticated user not exist
      */
     @GetMapping
-    public List<CartItemResponse> finAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
-                                         HttpServletRequest request) {
+    public List<CartItemResponse> findAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
+                                          HttpServletRequest request) {
 
         // Get user id from request
         Long userId = TokenAuthenticationService.getUserId(getToken(request));
@@ -132,7 +133,7 @@ public class CartItemController {
      * @param cartItemId     Cart item id
      * @param shoppingCartId Shopping cart id
      * @param request        Request from user
-     * @return Cart item
+     * @return Cart item response
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @GetMapping("/{id}")
@@ -157,6 +158,46 @@ public class CartItemController {
         if (cartItem == null) {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
+
+        return cartItemMapper.toCartItemResponse(cartItem);
+    }
+
+    /**
+     * Find one cart item in given shopping cart
+     *
+     * @param cartItemId     Cart item id
+     * @param cartItemUpdate Cart item update
+     * @param request        Request from user
+     * @return Cart item response
+     * @throws ResourceNotFoundException if shopping cart or cart item not exist
+     */
+    @PutMapping("/{id}")
+    public CartItemResponse update(@PathVariable long cartItemId,
+                                   @Valid @RequestBody CartItemUpdate cartItemUpdate,
+                                   HttpServletRequest request) {
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), userId);
+
+        // Throw Resource not found exception when no shopping cart by given shopping cart id and user id
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get cart item by given cart item id and shopping cart id
+        CartItem cartItem = cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItemId,
+            cartItemUpdate.getShoppingCartId());
+
+        // Throw resource not found exception when cart item not exist
+        if (cartItem == null) {
+            throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
+        }
+
+        // Set new info to cartItem and save to database
+        cartItem.setQuantity(cartItemUpdate.getQuantity());
+        cartItem = cartItemRepository.save(cartItem);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }

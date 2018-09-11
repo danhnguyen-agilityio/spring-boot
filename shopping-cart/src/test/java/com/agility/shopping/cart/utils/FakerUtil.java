@@ -3,6 +3,7 @@ package com.agility.shopping.cart.utils;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
+import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.models.*;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
@@ -146,6 +147,18 @@ public class FakerUtil {
         cartItemRequest.setProductId(generateLongNumber());
         cartItemRequest.setQuantity(generateLongNumber(1));
         return cartItemRequest;
+    }
+
+    /**
+     * Fake cart item update
+     *
+     * @return Cart item update
+     */
+    public static CartItemUpdate fakeCartItemUpdate() {
+        CartItemUpdate cartItemUpdate = new CartItemUpdate();
+        cartItemUpdate.setShoppingCartId(generateLongNumber());
+        cartItemUpdate.setQuantity(generateLongNumber(1));
+        return cartItemUpdate;
     }
 
     /**
