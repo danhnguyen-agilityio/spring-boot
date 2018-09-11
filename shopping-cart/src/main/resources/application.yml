@@ -1,4 +1,8 @@
 spring:
+    # Specify which profiles are active
+    profiles:
+        active: dev
+
     # DATASOURCE
     # Set here configurations for the database connection
     datasource:
@@ -37,3 +41,9 @@ spring:
 logging:
     level:
         com.agility.shopping.cart: DEBUG
+
+security:
+    secret: SecretKeyToGenJWTs
+    expiration-time: 864000000
+    token-prefix: Bearer
+    header-string: Authorization

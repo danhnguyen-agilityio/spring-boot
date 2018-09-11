@@ -53,7 +53,7 @@ public class TokenAuthenticationService {
         log.debug("Set expiration time: {}", new Date(System.currentTimeMillis()
             + EXPIRATION_TIME));
 
-        return TOKEN_PREFIX + token;
+        return TOKEN_PREFIX + " " + token;
     }
 
     /**
@@ -103,6 +103,7 @@ public class TokenAuthenticationService {
             return null;
         }
 
+        // FIXME:: Consider try catch here, thrown ExpiredTokenException when time is expired
         // Parse the token
         Claims claims = Jwts.parser()
             .setSigningKey(SECRET)
@@ -113,12 +114,6 @@ public class TokenAuthenticationService {
         String user = claims.getSubject();
         log.debug("Username after parse: {}", user);
         if (user == null) return null;
-
-        // Extract the expiration time
-        Date expiredTime = claims.getExpiration();
-        log.debug("Expired time: {}", expiredTime);
-        if (new Date().after(expiredTime)) return null;
-        // FIXME:: Refactor custom error code to client when token is expired
 
         // Extract the Roles
         Collection<String> roles = (Collection<String>) claims.get("roles");
