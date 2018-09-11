@@ -473,6 +473,43 @@ public class CartItemControllerTest {
         verifyNoMoreInteractions(cartItemRepository);
     }
 
+    /**
+     * Test fine one cart item success
+     */
+    @Test
+    public void testFindOneCartItemSuccess() throws Exception {
 
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock shopping cart and cart item
+        ShoppingCart shoppingCart = fakeShoppingCart(user);
+        CartItem cartItem = fakeCartItem();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
+        when(cartItemRepository.findOneByCartItemIdAndShoppingCartId(shoppingCart.getId(), cartItem.getId()))
+            .thenReturn(cartItem);
+
+        // Call api
+        mockMvc.perform(get(CART_ITEM_DETAIL_URL, cartItem.getId())
+            .header(HEADER_STRING, token)
+            .param("shoppingCartId", shoppingCart.getId().toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
+            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
+            .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
+
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCart.getId(), user.getId());
+        verify(cartItemRepository, times(1)).
+            findOneByCartItemIdAndShoppingCartId(shoppingCart.getId(), cartItem.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+        verifyNoMoreInteractions(cartItemRepository);
+    }
 
 }
