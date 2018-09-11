@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.constants.SecurityConstants;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.dto.ShoppingCartResponse;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
@@ -10,11 +11,13 @@ import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
+import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import java.util.List;
@@ -107,6 +110,30 @@ public class ShoppingCartController {
     }
 
     /**
+     * Find one shopping cart by given id
+     *
+     * @param id      Shopping cart id
+     * @param request Request from user
+     * @return Cart item response with given id
+     * @throws ResourceNotFoundException if shopping cart not exist
+     */
+    @GetMapping("/{id}")
+    public ShoppingCartResponse findOne(@PathVariable long id, HttpServletRequest request) {
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
+
+        // Throw Resource not found exception when shopping cart not exist
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
+    }
+
+    /**
      * Update shopping cart with given id
      *
      * @param id      Shopping cart id
@@ -179,5 +206,14 @@ public class ShoppingCartController {
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
     }
 
+    /**
+     * Get token from request
+     *
+     * @param request Request from user
+     * @return Token string
+     */
+    private String getToken(HttpServletRequest request) {
+        return request.getHeader(SecurityConstants.HEADER_STRING);
+    }
 
 }

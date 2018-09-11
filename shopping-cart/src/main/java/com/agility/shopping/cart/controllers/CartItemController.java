@@ -168,7 +168,7 @@ public class CartItemController {
      * @param cartItemId     Cart item id
      * @param cartItemUpdate Cart item update
      * @param request        Request from user
-     * @return Cart item response
+     * @return Updated cart item response
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @PutMapping("/{id}")
@@ -205,9 +205,11 @@ public class CartItemController {
     /**
      * Delete cart item in given shopping cart
      *
-     * @param cartItemId
-     * @param shoppingCartId
-     * @return
+     * @param cartItemId     Cart item id
+     * @param shoppingCartId Shopping cart id
+     * @param request        Request from user
+     * @return Deleted cart item response
+     * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     // FIXME: Consider only use id, not use request param
     @DeleteMapping("/{id}")

@@ -5,7 +5,9 @@ import com.agility.shopping.cart.dto.ShoppingCartResponse;
 import com.agility.shopping.cart.dto.UserResponse;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.utils.ShoppingCartUtil;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -30,7 +32,19 @@ public interface ShoppingCartMapper {
      * @param shoppingCart Shopping cart
      * @return Shopping cart response
      */
+    @Mapping(source = "shoppingCart", target = "total")
     ShoppingCartResponse toShoppingCartResponse(ShoppingCart shoppingCart);
+
+
+    /**
+     * Calculate total money from shopping cart
+     *
+     * @param shoppingCart Shopping cart
+     * @return Total money from shopping cart
+     */
+    default Long toTotal(ShoppingCart shoppingCart) {
+        return ShoppingCartUtil.calculateTotal(shoppingCart);
+    }
 
     /**
      * Convert from shopping cart to shopping cart request

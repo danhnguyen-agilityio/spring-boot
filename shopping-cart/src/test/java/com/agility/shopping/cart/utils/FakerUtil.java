@@ -137,6 +137,20 @@ public class FakerUtil {
     }
 
     /**
+     * Fake cart item with quantity and price product
+     *
+     * @param quantity Quantity of product
+     * @param price    Price of product
+     * @return Cart item
+     */
+    public static CartItem fakeCartItemWithQuantityAndPrice(long quantity, long price) {
+        CartItem cartItem = fakeCartItem();
+        cartItem.setQuantity(quantity);
+        cartItem.getProduct().setPrice(price);
+        return cartItem;
+    }
+
+    /**
      * Fake cart item request
      *
      * @return Cart item request

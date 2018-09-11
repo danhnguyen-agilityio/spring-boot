@@ -9,6 +9,7 @@ import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.utils.FakerUtil;
+import com.agility.shopping.cart.utils.ShoppingCartUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +32,7 @@ import java.util.Set;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
+import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_NOT_FOUND;
 import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.*;
@@ -173,6 +175,10 @@ public class ShoppingCartControllerTest {
         verifyNoMoreInteractions(userRepository);
     }
 
+    // ============================================================
+    // Test find all shopping cart
+    // ============================================================
+
     /**
      * Test find all shopping cart success
      */
@@ -215,6 +221,84 @@ public class ShoppingCartControllerTest {
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
+
+    // ============================================================
+    // Test find one shopping cart
+    // ============================================================
+
+    /**
+     * Test find one shopping cart throw forbidden exception for admin user
+     */
+    @Test
+    public void testFindOneShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
+        // Create admin token
+        String token = generateAdminToken();
+
+        // Call api
+        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, generateLongNumber())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test find one shopping cart throw resource not found exception when shopping cart not exist
+     */
+    @Test
+    public void testFineOneShoppingCartThrowResourceNotFoundExceptionWhenShoppingCartNotExist() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        Long shoppingCartId = generateLongNumber();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
+
+        // Call api
+        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
+            .header(HEADER_STRING, token))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCartId, user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test find one shopping cart success
+     */
+    @Test
+    public void testFineOneShoppingCartSuccess() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        Long shoppingCartId = generateLongNumber();
+        ShoppingCart shoppingCart = fakeShoppingCart();
+        shoppingCart.setId(shoppingCartId);
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
+
+        // Call api
+        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(shoppingCart.getId())))
+            .andExpect(jsonPath("$.total", is(ShoppingCartUtil.calculateTotal(shoppingCart))));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCartId, user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
 
     // ============================================================
     // Test update shopping cart

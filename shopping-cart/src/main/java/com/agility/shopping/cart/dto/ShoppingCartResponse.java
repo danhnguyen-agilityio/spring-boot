@@ -15,4 +15,5 @@ public class ShoppingCartResponse {
     private String description;
     private UserResponse user;
     private String status;
+    private Long total;
 }
