@@ -137,7 +137,7 @@ public class CartItemController {
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @GetMapping("/{id}")
-    public CartItemResponse findOne(@PathVariable long cartItemId,
+    public CartItemResponse findOne(@PathVariable("id") long cartItemId,
                                     @RequestParam(value = "shoppingCartId") long shoppingCartId,
                                     HttpServletRequest request) {
         // Get user id from request
@@ -172,7 +172,7 @@ public class CartItemController {
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @PutMapping("/{id}")
-    public CartItemResponse update(@PathVariable long cartItemId,
+    public CartItemResponse update(@PathVariable("id") long cartItemId,
                                    @Valid @RequestBody CartItemUpdate cartItemUpdate,
                                    HttpServletRequest request) {
         // Get user id from request
@@ -198,6 +198,43 @@ public class CartItemController {
         // Set new info to cartItem and save to database
         cartItem.setQuantity(cartItemUpdate.getQuantity());
         cartItem = cartItemRepository.save(cartItem);
+
+        return cartItemMapper.toCartItemResponse(cartItem);
+    }
+
+    /**
+     * Delete cart item in given shopping cart
+     *
+     * @param cartItemId
+     * @param shoppingCartId
+     * @return
+     */
+    // FIXME: Consider only use id, not use request param
+    @DeleteMapping("/{id}")
+    public CartItemResponse delete(@PathVariable("id") long cartItemId,
+                                   @RequestParam long shoppingCartId,
+                                   HttpServletRequest request) {
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
+
+        // Throw Resource not found exception when no shopping cart by given shopping cart id and user id
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Get cart item by given cart item id and shopping cart id
+        CartItem cartItem = cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItemId, shoppingCartId);
+
+        // Throw resource not found exception when cart item not exist
+        if (cartItem == null) {
+            throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
+        }
+
+        // Delete cart item
+        cartItemRepository.delete(cartItemId);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }
