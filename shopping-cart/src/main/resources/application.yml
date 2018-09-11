@@ -23,7 +23,7 @@ spring:
             # Hibernate ddl auto (create, create-drop, update): with "update" the database
             # schema will be automatically updated accordingly to java entities found in
             # the project
-            ddl-auto: create-drop
+            ddl-auto: update
 
         # Automatically generate table from java entities if need
         generate-ddl: true
