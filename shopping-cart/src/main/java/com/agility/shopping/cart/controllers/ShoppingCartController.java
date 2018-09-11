@@ -69,7 +69,6 @@ public class ShoppingCartController {
 
         // Get user by username
         User user = userRepository.findByUsername(username);
-        log.debug("User: {}", user);
 
         // FIXME:: Consider resolve when get authentication or in here
         // Throw not found exception when user null
@@ -170,7 +169,8 @@ public class ShoppingCartController {
 
         // Update shopping cart when name of shopping cart with given id not change
         // or shopping cart name does not exist
-        shoppingCart = shoppingCartMapper.toShoppingCart(request);
+        shoppingCart.setName(request.getName());
+        shoppingCart.setDescription(request.getDescription());
         shoppingCart = shoppingCartRepository.save(shoppingCart);
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
     }

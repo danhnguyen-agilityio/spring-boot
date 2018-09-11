@@ -12,6 +12,7 @@ import java.time.Instant;
 @Setter
 public class CartItemResponse {
 
+    private Long id;
     private ShoppingCartResponse shoppingCart;
     private ProductResponse product;
     private Long quantity;
