@@ -251,7 +251,7 @@ public class CartItemController {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
 
-        cartItemRepository.delete(cartItemId);
+        cartItemRepository.delete(cartItem);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }

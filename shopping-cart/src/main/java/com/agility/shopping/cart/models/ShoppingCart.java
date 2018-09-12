@@ -42,7 +42,7 @@ public class ShoppingCart implements Serializable {
     @Column(name = "status", nullable = false)
     private String status = ShoppingCartStatus.EMPTY.getName();
 
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.EAGER)
     private Set<CartItem> cartItems;
 
 }

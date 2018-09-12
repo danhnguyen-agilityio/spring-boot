@@ -45,6 +45,6 @@ public class User implements Serializable {
     )
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user")
     private Set<ShoppingCart> shoppingCarts;
 }

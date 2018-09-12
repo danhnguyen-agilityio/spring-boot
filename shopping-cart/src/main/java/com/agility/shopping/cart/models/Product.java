@@ -51,6 +51,6 @@ public class Product implements Serializable {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems;
 }
