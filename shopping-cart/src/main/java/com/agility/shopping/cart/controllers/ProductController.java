@@ -94,36 +94,38 @@ public class ProductController {
      * @param request Product request
      * @return Product response
      * @throws ResourceNotFoundException if product with given id not exist
-     * @throws ResourceAlreadyExistsException if product with given name data
-     *          of request not match with given id
+     * @throws ResourceAlreadyExistsException if new name in request exists in other product
      */
-    // FIXME:: Refactor business code here
     @PutMapping(value = "/{id}")
-    public ProductResponse update(@PathVariable long id,
-        @Valid @RequestBody ProductRequest request) {
+    public ProductResponse update(@PathVariable long id, @Valid @RequestBody ProductRequest request) {
 
-        // Get product by name
-        Product product = productRepository.findByName(request.getName());
+        // Get product by id
+        Product product = productRepository.findOne(id);
 
+        // Throw resource not found exception when product not exist
         if (product == null) {
-            boolean existedId = productRepository.exists(id);
-
-            // Update product if product name not exist and product id exists
-            if (existedId) {
-                product = productRepository.save(productMapper.toProduct(request));
-            } else {
-                throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
-            }
-        } else {
-            // Update product if product name exists
-            // and product id match given id
-            if (product.getId() == id) {
-                product = productRepository.save(productMapper.toProduct(request));
-            } else {
-                throw new ResourceAlreadyExistsException((CustomError.PRODUCT_EXIST));
-            }
+            throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
         }
 
+        // Set new info and update product if product contain new name
+        if (product.getName() == request.getName()) {
+            product.setPrice(request.getPrice());
+            product.setUrl(request.getUrl());
+            product = productRepository.save(product);
+            return productMapper.toProductResponse(product);
+        }
+
+        // Throw resource exists exception when new name exist
+        boolean existedName = productRepository.existsByName(request.getName());
+        if (existedName) {
+            throw new ResourceAlreadyExistsException((CustomError.PRODUCT_EXIST));
+        }
+
+        // Set new info and update product when new name not exist
+        product.setName(request.getName());
+        product.setPrice(request.getPrice());
+        product.setUrl(request.getUrl());
+        product = productRepository.save(product);
         return productMapper.toProductResponse(product);
     }
 
