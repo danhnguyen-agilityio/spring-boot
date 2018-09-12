@@ -1,8 +1,10 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.SecurityConstants;
+import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.dto.ShoppingCartResponse;
+import com.agility.shopping.cart.exceptions.BadRequestException;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
@@ -208,9 +210,44 @@ public class ShoppingCartController {
     }
 
 
+    /**
+     * Checkout shopping cart by given id
+     *
+     * @param id Shopping cart id
+     * @param request Request from user
+     * @return Message success
+     * @throws ResourceNotFoundException if shopping cart not exist
+     * @throws BadRequestException if shopping cart done or shopping cart empty
+     */
     @PostMapping("/{id}/checkout")
-    public ShoppingCartResponse checkout(@PathVariable long id) {
-        return null;
+    public String checkout(@PathVariable long id, HttpServletRequest request) {
+
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
+
+        // Throw Resource not found exception when shopping cart not exist
+        if (shoppingCart == null) {
+            throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
+        }
+
+        // Throw Bad request exception when shopping cart done
+        if (isShoppingCartWithStatus(shoppingCart, ShoppingCartStatus.DONE)) {
+            throw new BadRequestException(SHOPPING_CART_DONE);
+        }
+
+        // Throw Bad request exception when shopping cart empty
+        if (isShoppingCartWithStatus(shoppingCart, ShoppingCartStatus.EMPTY)) {
+            throw new BadRequestException(SHOPPING_CART_EMPTY);
+        }
+
+        // Change status from IN_PROGRESS to COMPLETE
+        shoppingCart.setStatus(ShoppingCartStatus.DONE.getName());
+        shoppingCartRepository.save(shoppingCart);
+
+        return "Checkout shopping cart successfully";
     }
 
     /**
@@ -221,6 +258,17 @@ public class ShoppingCartController {
      */
     private String getToken(HttpServletRequest request) {
         return request.getHeader(SecurityConstants.HEADER_STRING);
+    }
+
+    /**
+     * Check whether or not shopping cart have given shopping cart status
+     *
+     * @param shoppingCart Shopping cart need check
+     * @param status       Status shopping cart
+     * @return true if shopping cart have given status, else return false
+     */
+    private boolean isShoppingCartWithStatus(ShoppingCart shoppingCart, ShoppingCartStatus status) {
+        return status.getName().equals(shoppingCart.getStatus());
     }
 
 }

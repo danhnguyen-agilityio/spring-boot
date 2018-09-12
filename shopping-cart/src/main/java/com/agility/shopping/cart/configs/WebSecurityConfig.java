@@ -28,6 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String SHOPPING_CART_URL = "/shopping-carts";
     public static final String SHOPPING_CART_DETAIL_URL = "/shopping-carts/{id}";
+    public static final String SHOPPING_CART_CHECKOUT_URL = "/shopping-carts/{id}/checkout";
     public static final String CART_ITEM_URL = "/cart-items";
     public static final String CART_ITEM_DETAIL_URL = "/cart-items/{id}";
 

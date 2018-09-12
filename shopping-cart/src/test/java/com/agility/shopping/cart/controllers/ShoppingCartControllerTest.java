@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.RoleType;
+import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
 import com.agility.shopping.cart.models.CartItem;
@@ -12,6 +13,7 @@ import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.utils.FakerUtil;
 import com.agility.shopping.cart.utils.ShoppingCartUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,13 +33,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_CHECKOUT_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.exceptions.CustomError.SHOPPING_CART_NOT_FOUND;
-import static com.agility.shopping.cart.exceptions.CustomError.USER_NOT_FOUND;
+import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -475,7 +478,7 @@ public class ShoppingCartControllerTest {
     }
 
     // ============================================================
-    // Test update shopping cart
+    // Test delete shopping cart
     // ============================================================
 
     /**
@@ -572,6 +575,140 @@ public class ShoppingCartControllerTest {
 
         verify(shoppingCartRepository, times(1)).findOne(shoppingCart.getId());
         verify(shoppingCartRepository, times(1)).delete(shoppingCart.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+
+    // ============================================================
+    // Test checkout shopping cart
+    // ============================================================
+
+    /**
+     * Test checkout shopping cart throw forbidden exception for admin user
+     */
+    @Test
+    public void testCheckoutShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
+        // Create admin token
+        String token = generateAdminToken();
+
+        // Call api
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, generateLongNumber())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test checkout shopping cart throw resource not found exception when shopping cart not exist
+     */
+    @Test
+    public void testCheckoutShoppingCartThrowResourceNotFoundExceptionWhenShoppingCartNotExist() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        Long shoppingCartId = generateLongNumber();
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
+
+        // Call api
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCartId)
+            .header(HEADER_STRING, token))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCartId, user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test checkout shopping cart throw bad request exception when shopping cart done
+     */
+    @Test
+    public void testCheckoutShoppingCartThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.DONE);
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
+
+        // Call api
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_DONE.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCart.getId(), user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test checkout shopping cart throw bad request exception when shopping cart empty
+     */
+    @Test
+    public void testCheckoutShoppingCartThrowBadRequestExceptionWhenShoppingCartEmpty() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.EMPTY);
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
+
+        // Call api
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code", is(SHOPPING_CART_EMPTY.code())));
+
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCart.getId(), user.getId());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test checkout shopping cart success with status IN_PROGRESS
+     */
+    @Test
+    public void testCheckoutShoppingCartSuccess() throws Exception {
+        // Mock member user
+        User user = fakeMemberUser();
+
+        // Fake token
+        String token = TokenAuthenticationService.createToken(user);
+
+        // Mock data
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
+
+        // Mock method
+        when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
+        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
+
+        // Call api
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
+            .header(HEADER_STRING, token))
+            .andExpect(status().isOk());
+
+        assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.DONE.getName());
+        verify(shoppingCartRepository, times(1)).
+            findOne(shoppingCart.getId(), user.getId());
+        verify(shoppingCartRepository, times(1))
+            .save(any(ShoppingCart.class));
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 
