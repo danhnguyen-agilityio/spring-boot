@@ -4,6 +4,7 @@ import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
 import com.agility.shopping.cart.models.Product;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.Collection;
 import java.util.List;

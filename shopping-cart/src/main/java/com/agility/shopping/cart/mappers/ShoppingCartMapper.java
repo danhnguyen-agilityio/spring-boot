@@ -1,15 +1,17 @@
 package com.agility.shopping.cart.mappers;
 
-import com.agility.shopping.cart.dto.ShoppingCartRequest;
-import com.agility.shopping.cart.dto.ShoppingCartResponse;
-import com.agility.shopping.cart.dto.UserResponse;
+import com.agility.shopping.cart.dto.*;
+import com.agility.shopping.cart.models.CartItem;
+import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.utils.ShoppingCartUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * ShoppingCartMapper interface is used to map between different object models
@@ -71,6 +73,34 @@ public interface ShoppingCartMapper {
      */
     List<ShoppingCartResponse> toShoppingCartResponse(
         List<ShoppingCart> shoppingCarts);
+
+    /**
+     * Convert from cart item to cart item response
+     *
+     * @param cartItem Cart item
+     * @return Cart item response
+     */
+    @Mappings({
+        @Mapping(target = "shoppingCart", ignore = true),
+        @Mapping(target = "product", ignore = true)
+    })
+    CartItemResponse cartItemToCartItemResponse(CartItem cartItem);
+
+    /**
+     * Convert from list cart item to list cart item response
+     *
+     * @param cartItems List cart item
+     * @return List cart item response
+     */
+    Set<CartItemResponse> cartItemToCartItemResponse(Set<CartItem> cartItems);
+
+    /**
+     * Convert product to product response
+     *
+     * @param product
+     * @return product response
+     */
+    ProductResponse productToProductResponse(Product product);
 }
 
 

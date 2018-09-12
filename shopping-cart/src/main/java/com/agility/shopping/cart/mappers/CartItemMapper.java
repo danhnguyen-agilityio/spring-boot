@@ -6,6 +6,8 @@ import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -45,6 +47,9 @@ public interface CartItemMapper {
      * @param shoppingCart Shopping cart
      * @return Shopping cart response
      */
+    @Mappings({
+        @Mapping(target = "cartItems", ignore = true)
+    })
     ShoppingCartResponse toShoppingCartResponse(ShoppingCart shoppingCart);
 
     /**

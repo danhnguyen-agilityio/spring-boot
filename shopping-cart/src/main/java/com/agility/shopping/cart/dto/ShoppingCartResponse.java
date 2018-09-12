@@ -1,7 +1,10 @@
 package com.agility.shopping.cart.dto;
 
+import com.agility.shopping.cart.models.CartItem;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Set;
 
 /**
  * This class is used to encapsulate response data when app response
@@ -15,5 +18,6 @@ public class ShoppingCartResponse {
     private String description;
     private UserResponse user;
     private String status;
+    private Set<CartItemResponse> cartItems;
     private Long total;
 }
