@@ -179,7 +179,7 @@ public class CartItemController {
      * @param request        Request from user
      * @return Updated cart item response
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
-     * @throws BadRequestException if shopping cart already DONE
+     * @throws BadRequestException       if shopping cart already DONE
      */
     @PutMapping("/{id}")
     public CartItemResponse update(@PathVariable("id") long cartItemId,
@@ -223,13 +223,13 @@ public class CartItemController {
      * @param cartItemId     Cart item id
      * @param shoppingCartId Shopping cart id
      * @param request        Request from user
-     * @return Deleted cart item response
+     * @return Message success
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @DeleteMapping("/{id}")
-    public CartItemResponse delete(@PathVariable("id") long cartItemId,
-                                   @RequestParam long shoppingCartId,
-                                   HttpServletRequest request) {
+    public String delete(@PathVariable("id") long cartItemId,
+                         @RequestParam long shoppingCartId,
+                         HttpServletRequest request) {
         log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
 
         // Get user id from request
@@ -262,7 +262,7 @@ public class CartItemController {
         // Save shopping cart
         shoppingCartRepository.save(shoppingCart);
 
-        return cartItemMapper.toCartItemResponse(cartItem);
+        return "Delete cart item successfully";
     }
 
     /**

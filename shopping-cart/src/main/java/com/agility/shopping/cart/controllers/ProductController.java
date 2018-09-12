@@ -134,11 +134,11 @@ public class ProductController {
      * Delete product by given id
      *
      * @param id Id of product
-     * @return Deleted product with given id
+     * @return Message success
      * @throws ResourceNotFoundException if product doesn't exist with given id
      */
     @DeleteMapping(value = "/{id}")
-    public ProductResponse delete(@PathVariable long id) {
+    public String delete(@PathVariable long id) {
         Product product = productRepository.findOne(id);
 
         // Throw exception when null product
@@ -149,6 +149,6 @@ public class ProductController {
         // Delete product
         productRepository.delete(id);
 
-        return productMapper.toProductResponse(product);
+        return "Delete product successfully";
     }
 }
