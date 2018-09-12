@@ -99,6 +99,7 @@ public class CartItemController {
         }
 
         // Create or update cart item
+        cartItem.getShoppingCart().setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         cartItem = cartItemRepository.save(cartItem);
 
         // Convert cart item to cart item response and return it
@@ -250,7 +251,16 @@ public class CartItemController {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
 
-        cartItemRepository.delete(cartItem);
+        // Remove cart item
+        shoppingCart.getCartItems().remove(cartItem);
+
+        // Change status if size cart item equal 0
+        if (shoppingCart.getCartItems().size() == 0) {
+            shoppingCart.setStatus(ShoppingCartStatus.EMPTY.name());
+        }
+
+        // Save shopping cart
+        shoppingCartRepository.save(shoppingCart);
 
         return cartItemMapper.toCartItemResponse(cartItem);
     }

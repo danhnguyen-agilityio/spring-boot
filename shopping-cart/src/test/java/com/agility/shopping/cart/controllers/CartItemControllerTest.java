@@ -13,9 +13,11 @@ import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -36,6 +38,7 @@ import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.*;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -172,7 +175,7 @@ public class CartItemControllerTest {
 
         // Mock data
         CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.INPROGRESS);
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
 
         // Mock method
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
@@ -207,7 +210,7 @@ public class CartItemControllerTest {
 
         // Mock cart item request, shopping cart, product
         CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.INPROGRESS);
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         Product product = fakeProduct();
         long quantity = generateLongNumber();
         CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
@@ -259,7 +262,7 @@ public class CartItemControllerTest {
 
         // Mock cart item request, shopping cart, product
         CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.INPROGRESS);
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         Product product = fakeProduct();
         long quantity = generateLongNumber();
         CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
@@ -790,17 +793,18 @@ public class CartItemControllerTest {
         // Mock data
         Long shoppingCartId = generateLongNumber();
         Long cartItemId = generateLongNumber();
-        ShoppingCart shoppingCart = fakeShoppingCart(user);
+        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         shoppingCart.setId(shoppingCartId);
         CartItem cartItem = fakeCartItem();
         cartItem.setId(cartItemId);
         cartItem.setShoppingCart(shoppingCart);
+        shoppingCart.setCartItems(Sets.newSet(cartItem));
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(shoppingCart);
         when(cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItemId, shoppingCartId))
             .thenReturn(cartItem);
-        doNothing().when(cartItemRepository).delete(cartItemId);
+        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
 
         // Call api
         mockMvc.perform(delete(CART_ITEM_DETAIL_URL, cartItem.getId())
@@ -811,6 +815,7 @@ public class CartItemControllerTest {
             .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
             .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
 
+        assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.EMPTY);
         verify(shoppingCartRepository, times(1)).
             findOne(shoppingCartId, user.getId());
         verify(cartItemRepository, times(1)).

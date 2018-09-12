@@ -14,6 +14,7 @@ public enum CustomError {
     SHOPPING_CART_NOT_FOUND(431, "Shopping cart not found"),
     SHOPPING_CART_FORBIDDEN(432, "You don't have permission to update shopping cart of other user"),
     SHOPPING_CART_DONE(433, "Shopping cart is already done"),
+    SHOPPING_CART_EMPTY(434, "Shopping cart empty"),
     CART_ITEM_NOT_FOUND(440, "Cart item not found");
 
     private int code;

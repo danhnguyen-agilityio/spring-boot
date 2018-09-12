@@ -5,7 +5,7 @@ package com.agility.shopping.cart.constants;
  */
 public enum ShoppingCartStatus {
     EMPTY("EMPTY"),
-    INPROGRESS("INPROGRESS"),
+    IN_PROGRESS("IN_PROGRESS"),
     DONE("DONE");
 
     private String name;
