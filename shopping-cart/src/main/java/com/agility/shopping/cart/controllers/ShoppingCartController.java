@@ -202,9 +202,15 @@ public class ShoppingCartController {
         }
 
         // Delete shopping cart when authenticated user own shopping cart with given id
-        shoppingCartRepository.delete(id);
+        shoppingCartRepository.delete(shoppingCart);
 
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
+    }
+
+
+    @PostMapping("/{id}/checkout")
+    public ShoppingCartResponse checkout(@PathVariable long id) {
+        return null;
     }
 
     /**

@@ -35,14 +35,14 @@ public class ShoppingCart implements Serializable {
     @Size(min = 10, max = 30)
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "status", nullable = false)
     private String status = ShoppingCartStatus.EMPTY.getName();
 
-    @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems;
 
 }

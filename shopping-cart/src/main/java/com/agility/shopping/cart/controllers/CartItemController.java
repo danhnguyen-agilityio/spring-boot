@@ -225,7 +225,6 @@ public class CartItemController {
      * @return Deleted cart item response
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
-    // FIXME: Consider only use id, not use request param
     @DeleteMapping("/{id}")
     public CartItemResponse delete(@PathVariable("id") long cartItemId,
                                    @RequestParam long shoppingCartId,

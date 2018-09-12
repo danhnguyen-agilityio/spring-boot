@@ -1,6 +1,5 @@
 package com.agility.shopping.cart.dto;
 
-import com.agility.shopping.cart.models.CartItem;
 import lombok.Getter;
 import lombok.Setter;
 
