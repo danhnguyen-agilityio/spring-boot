@@ -37,7 +37,16 @@ spring:
                 # Allows Hibernate to generate SQL optimized for a particular DBMS
                 dialect: org.hibernate.dialect.MySQL5Dialect
 
+    # JACKSON
+    jackson:
+        serialization:
+            write_dates_as_timestamps: false
+
 # LEVEL LOGGING
 logging:
     level:
         com.agility.shopping.cart: DEBUG
+
+# Value
+format:
+    datetime: yyyy-MM-dd HH:mm:ss

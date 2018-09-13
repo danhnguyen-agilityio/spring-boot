@@ -20,35 +20,19 @@ public class SecurityConstants {
     public static String TOKEN_PREFIX;
     public static String HEADER_STRING;
 
-    public static String getSECRET() {
-        return SECRET;
-    }
-
-    public static void setSECRET(String SECRET) {
+    public void setSECRET(String SECRET) {
         SecurityConstants.SECRET = SECRET;
     }
 
-    public static long getExpirationTime() {
-        return EXPIRATION_TIME;
-    }
-
-    public static void setExpirationTime(long expirationTime) {
+    public void setExpirationTime(long expirationTime) {
         EXPIRATION_TIME = expirationTime;
     }
 
-    public static String getTokenPrefix() {
-        return TOKEN_PREFIX;
-    }
-
-    public static void setTokenPrefix(String tokenPrefix) {
+    public void setTokenPrefix(String tokenPrefix) {
         TOKEN_PREFIX = tokenPrefix;
     }
 
-    public static String getHeaderString() {
-        return HEADER_STRING;
-    }
-
-    public static void setHeaderString(String headerString) {
+    public void setHeaderString(String headerString) {
         HEADER_STRING = headerString;
     }
 }
