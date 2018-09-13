@@ -233,7 +233,7 @@ public class CartItemController {
         log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
 
         // Get user id from request
-        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+        long userId = TokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);

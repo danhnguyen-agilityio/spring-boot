@@ -810,18 +810,15 @@ public class CartItemControllerTest {
         mockMvc.perform(delete(CART_ITEM_DETAIL_URL, cartItem.getId())
             .header(HEADER_STRING, token)
             .param("shoppingCartId", shoppingCartId.toString()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
-            .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
+            .andExpect(status().isOk());
 
-        assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.EMPTY);
+        assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.EMPTY.getName());
         verify(shoppingCartRepository, times(1)).
             findOne(shoppingCartId, user.getId());
         verify(cartItemRepository, times(1)).
             findOneByCartItemIdAndShoppingCartId(cartItemId, shoppingCartId);
-        verify(cartItemRepository, times(1))
-            .delete(cartItemId);
+        verify(shoppingCartRepository, times(1))
+            .save(any(ShoppingCart.class));
         verifyNoMoreInteractions(shoppingCartRepository);
         verifyNoMoreInteractions(cartItemRepository);
     }

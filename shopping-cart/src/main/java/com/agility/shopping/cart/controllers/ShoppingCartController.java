@@ -46,40 +46,37 @@ public class ShoppingCartController {
     /**
      * Create shopping cart
      *
-     * @param request Shopping cart request
+     * @param shoppingCartRequest Shopping cart request
+     * @param request Request from user
      * @return Shopping cart response
      */
     @PostMapping
-    public ShoppingCartResponse create(
-        @Valid @RequestBody ShoppingCartRequest request) {
+    public ShoppingCartResponse create(@Valid @RequestBody ShoppingCartRequest shoppingCartRequest,
+                                       HttpServletRequest request) {
 
-        log.debug("POST /shopping-carts, body = {}", request);
+        log.debug("POST /shopping-carts, body = {}", shoppingCartRequest);
 
         boolean existedName = shoppingCartRepository.
-            existsByName(request.getName());
+            existsByName(shoppingCartRequest.getName());
 
         // Throw resource exist exception product name already exists
         if (existedName) {
             throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
         }
 
-        // Get username from request
-        String username = SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getName();
-        log.debug("Username request: {}", username);
+        // Get user id;
+        long userId = TokenAuthenticationService.getUserId(getToken(request));
 
-        // Get user by username
-        User user = userRepository.findByUsername(username);
+        // Get user by user id
+        User user = userRepository.findOne(userId);
 
-        // FIXME:: Consider resolve when get authentication or in here
         // Throw not found exception when user null
         if (user == null) {
             throw new ResourceNotFoundException(USER_NOT_FOUND);
         }
 
         // Convert to shopping cart
-        ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(request);
+        ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(shoppingCartRequest);
 
         // Set user info for shopping cart
         shoppingCart.setUser(user);
@@ -138,42 +135,39 @@ public class ShoppingCartController {
     /**
      * Update shopping cart with given id
      *
-     * @param id      Shopping cart id
-     * @param request Shopping cart request
+     * @param id                  Shopping cart id
+     * @param shoppingCartRequest Shopping cart request
      * @return Shopping cart response
      * @throws ResourceNotFoundException      if shopping cart id does not exist
      * @throws ResourceForbiddenException     if authenticated user not own shopping cart with given id
      * @throws ResourceAlreadyExistsException if shopping cart name belong to other shopping cart (not contain given id)
      */
     @PutMapping("/{id}")
-    public ShoppingCartResponse update(@PathVariable long id, @Valid @RequestBody ShoppingCartRequest request) {
+    public ShoppingCartResponse update(@PathVariable long id,
+                                       @Valid @RequestBody ShoppingCartRequest shoppingCartRequest,
+                                       HttpServletRequest request) {
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id);
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
 
-        // Throw not found exception when shopping cart id does not exist
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
+
+        // Throw Resource not found exception when shopping cart not exist
         if (shoppingCart == null) {
             throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
         }
 
-        // Get authenticated username
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // Throw forbidden exception when authenticated user not own shopping cart with given id
-        if (!username.equals(shoppingCart.getUser().getUsername())) {
-            throw new ResourceForbiddenException(SHOPPING_CART_FORBIDDEN);
-        }
-
-        // FIXME:: Consider remove unique field name, occur error when update database with name exists
         // Throw resource exists exception when shopping cart name belong to other shopping cart (not contain given id)
-        if (!shoppingCart.getName().equals(request.getName())
-            && shoppingCartRepository.existsByName(request.getName())) {
+        if (!shoppingCart.getName().equals(shoppingCartRequest.getName())
+            && shoppingCartRepository.existsByName(shoppingCartRequest.getName())) {
             throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
         }
 
         // Update shopping cart when name of shopping cart with given id not change
         // or shopping cart name does not exist
-        shoppingCart.setName(request.getName());
-        shoppingCart.setDescription(request.getDescription());
+        shoppingCart.setName(shoppingCartRequest.getName());
+        shoppingCart.setDescription(shoppingCartRequest.getDescription());
         shoppingCart = shoppingCartRepository.save(shoppingCart);
         return shoppingCartMapper.toShoppingCartResponse(shoppingCart);
     }
@@ -187,20 +181,16 @@ public class ShoppingCartController {
      * @throws ResourceForbiddenException if authenticated user not own shopping cart with given id
      */
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable long id) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id);
+    public String delete(@PathVariable long id, HttpServletRequest request) {
+        // Get user id from request
+        Long userId = TokenAuthenticationService.getUserId(getToken(request));
 
-        // Throw not found exception when shopping cart id does not exist
+        // Get shopping cart by shopping cart id and user id
+        ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
+
+        // Throw Resource not found exception when shopping cart not exist
         if (shoppingCart == null) {
             throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
-        }
-
-        // Get authenticated username
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // Throw forbidden exception when authenticated user not own shopping cart with given id
-        if (!username.equals(shoppingCart.getUser().getUsername())) {
-            throw new ResourceForbiddenException(SHOPPING_CART_FORBIDDEN);
         }
 
         // Delete shopping cart when authenticated user own shopping cart with given id
@@ -213,11 +203,11 @@ public class ShoppingCartController {
     /**
      * Checkout shopping cart by given id
      *
-     * @param id Shopping cart id
+     * @param id      Shopping cart id
      * @param request Request from user
      * @return Message success
      * @throws ResourceNotFoundException if shopping cart not exist
-     * @throws BadRequestException if shopping cart done or shopping cart empty
+     * @throws BadRequestException       if shopping cart done or shopping cart empty
      */
     @PostMapping("/{id}/checkout")
     public String checkout(@PathVariable long id, HttpServletRequest request) {

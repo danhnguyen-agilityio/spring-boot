@@ -291,10 +291,7 @@ public class ProductControllerTest {
             .header(HEADER_STRING, token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(request.getName())))
-            .andExpect(jsonPath("$.price", is(request.getPrice())))
-            .andExpect(jsonPath("$.url", is(request.getUrl())));
+            .andExpect(status().isOk());
     }
 
     /***
@@ -342,10 +339,7 @@ public class ProductControllerTest {
             .header(HEADER_STRING, token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(request.getName())))
-            .andExpect(jsonPath("$.price", is(request.getPrice())))
-            .andExpect(jsonPath("$.url", is(request.getUrl())));
+            .andExpect(status().isOk());
     }
 
     /**
@@ -374,8 +368,7 @@ public class ProductControllerTest {
 
         mockMvc.perform(delete("/products/{id}", product.getId())
             .header(HEADER_STRING, token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(product.getName())));
+            .andExpect(status().isOk());
     }
 
     /**
