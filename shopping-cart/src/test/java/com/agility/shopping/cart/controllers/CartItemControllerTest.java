@@ -12,6 +12,7 @@ import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Before;
@@ -52,6 +53,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Slf4j
 public class CartItemControllerTest {
+
+    public static final Faker faker = new Faker();
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -212,7 +216,7 @@ public class CartItemControllerTest {
         CartItemRequest cartItemRequest = fakeCartItemRequest();
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         Product product = fakeProduct();
-        long quantity = generateLongNumber();
+        Long quantity = faker.number().randomNumber();
         CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
         cartItem.setQuantity(quantity);
         cartItem.setShoppingCart(shoppingCart);
@@ -231,9 +235,9 @@ public class CartItemControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(cartItemRequest)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.quantity", is(quantity)))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())));
+            .andExpect(jsonPath("$.quantity", is(quantity.intValue())))
+            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
+            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())));
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), user.getId());
@@ -264,7 +268,7 @@ public class CartItemControllerTest {
         CartItemRequest cartItemRequest = fakeCartItemRequest();
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         Product product = fakeProduct();
-        long quantity = generateLongNumber();
+        long quantity = faker.number().randomNumber();
         CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
         cartItem.setQuantity(quantity);
         cartItem.setShoppingCart(shoppingCart);
@@ -283,9 +287,10 @@ public class CartItemControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(cartItemRequest)))
             .andExpect(status().isOk())
+            .andDo(print())
             .andExpect(jsonPath("$.quantity", is(quantity + cartItemRequest.getQuantity())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())));
+            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
+            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())));
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), user.getId());
@@ -333,7 +338,7 @@ public class CartItemControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock shopping cart id
-        Long shoppingCartId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
@@ -400,7 +405,7 @@ public class CartItemControllerTest {
         String token = generateAdminToken();
 
         // Call api
-        mockMvc.perform(get(CART_ITEM_DETAIL_URL, generateLongNumber())
+        mockMvc.perform(get(CART_ITEM_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -420,8 +425,8 @@ public class CartItemControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock cart item id and shopping cart id
-        Long cartItemId = generateLongNumber();
-        Long shoppingCartId = generateLongNumber();
+        Long cartItemId = faker.number().randomNumber();
+        Long shoppingCartId = faker.number().randomNumber();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
@@ -503,8 +508,8 @@ public class CartItemControllerTest {
             .param("shoppingCartId", shoppingCart.getId().toString()))
             .andExpect(status().isOk())
             .andDo(print())
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
+            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())))
+            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
             .andExpect(jsonPath("$.quantity", is(cartItem.getQuantity())));
 
 
@@ -529,7 +534,7 @@ public class CartItemControllerTest {
         String token = generateAdminToken();
 
         // Call api
-        mockMvc.perform(put(CART_ITEM_DETAIL_URL, generateLongNumber())
+        mockMvc.perform(put(CART_ITEM_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -673,8 +678,8 @@ public class CartItemControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(cartItemUpdate)))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId())))
+            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())))
+            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
             .andExpect(jsonPath("$.quantity", is(cartItemUpdate.getQuantity())));
 
         verify(shoppingCartRepository, times(1)).
@@ -700,7 +705,7 @@ public class CartItemControllerTest {
         String token = generateAdminToken();
 
         // Call api
-        mockMvc.perform(delete(CART_ITEM_DETAIL_URL, generateLongNumber())
+        mockMvc.perform(delete(CART_ITEM_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -720,8 +725,8 @@ public class CartItemControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
-        Long cartItemId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
+        Long cartItemId = faker.number().randomNumber();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
@@ -753,8 +758,8 @@ public class CartItemControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
-        Long cartItemId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
+        Long cartItemId = faker.number().randomNumber();
         ShoppingCart shoppingCart = fakeShoppingCart(user);
         shoppingCart.setId(shoppingCartId);
 
@@ -791,8 +796,8 @@ public class CartItemControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
-        Long cartItemId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
+        Long cartItemId = faker.number().randomNumber();
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
         shoppingCart.setId(shoppingCartId);
         CartItem cartItem = fakeCartItem();

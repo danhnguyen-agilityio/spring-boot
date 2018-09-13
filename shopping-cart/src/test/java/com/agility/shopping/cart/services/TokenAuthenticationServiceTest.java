@@ -2,7 +2,6 @@ package com.agility.shopping.cart.services;
 
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.utils.FakerUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -19,8 +18,6 @@ import static com.agility.shopping.cart.constants.SecurityConstants.EXPIRATION_T
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.FakerUtil.fakeAdminUser;
-import static com.agility.shopping.cart.utils.FakerUtil.fakeMemberUser;
-import static com.agility.shopping.cart.utils.FakerUtil.fakeUser;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
@@ -72,11 +69,9 @@ public class TokenAuthenticationServiceTest {
      */
     @Test
     public void testGetAuthenticationFailFromNullToken() {
-        String token = null;
-
         // Get authentication from token
         Authentication authentication =
-            TokenAuthenticationService.getAuthentication(token);
+            TokenAuthenticationService.getAuthentication(null);
 
         assertNull(authentication);
     }

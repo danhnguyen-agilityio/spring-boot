@@ -8,6 +8,7 @@ import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.models.*;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.github.javafaker.Faker;
 import org.mockito.internal.util.collections.Sets;
 
 import java.util.*;
@@ -18,6 +19,9 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class FakerUtil {
 
+    private static final Faker faker = new Faker();
+    private static final Random ramdom = new Random();
+
     /**
      * Fake user
      *
@@ -25,9 +29,9 @@ public class FakerUtil {
      */
     public static User fakeUser() {
         User user = new User();
-        user.setId(generateLongNumber());
-        user.setUsername(generateString());
-        user.setPassword(generateString());
+        user.setId(faker.number().randomNumber());
+        user.setUsername(faker.name().name());
+        user.setPassword(faker.name().name());
         return user;
     }
 
@@ -62,7 +66,7 @@ public class FakerUtil {
      * @return User
      */
     public static User fakeUser(String username) {
-        return new User(username, generateString());
+        return new User(username, faker.internet().password());
     }
 
     /**
@@ -72,30 +76,30 @@ public class FakerUtil {
      */
     public static Product fakeProduct() {
         Product product = new Product();
-        product.setId(generateLongNumber());
-        product.setName(generateString());
-        product.setPrice(generateLongNumber());
+        product.setId(faker.number().randomNumber());
+        product.setName(faker.name().name());
+        product.setPrice(faker.number().randomNumber());
         return product;
     }
 
     /**
      * Fake product request
      *
-     * @return Produc request
+     * @return Product request
      */
     public static ProductRequest fakeProductRequest() {
         ProductRequest request = new ProductRequest();
-        request.setName(generateString());
-        request.setPrice(generateLongNumber());
-        request.setUrl(generateString());
+        request.setName(faker.name().name());
+        request.setPrice(faker.number().randomNumber());
+        request.setUrl(faker.internet().url());
         return request;
     }
 
     /**
      * Fake shopping cart data with
      *
-     * @param shoppingCartStatus
-     * @return
+     * @param shoppingCartStatus Shopping cart status
+     * @return Shopping cart with given status
      */
     public static ShoppingCart fakeShoppingCart(ShoppingCartStatus shoppingCartStatus) {
         ShoppingCart shoppingCart = fakeShoppingCart();
@@ -119,11 +123,11 @@ public class FakerUtil {
      */
     public static ShoppingCart fakeShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(new Random().nextLong());
-        shoppingCart.setName(generateString(4, 30));
-        shoppingCart.setDescription(generateString(10, 30));
+        shoppingCart.setId(faker.number().randomNumber());
+        shoppingCart.setName(faker.lorem().characters(4, 30));
+        shoppingCart.setDescription(faker.lorem().characters(10, 30));
         shoppingCart.setUser(user);
-        shoppingCart.setStatus(generateString());
+        shoppingCart.setStatus(randomEnum(ShoppingCartStatus.class).getName());
         return shoppingCart;
     }
 
@@ -133,7 +137,7 @@ public class FakerUtil {
      * @return Shopping cart request
      */
     public static ShoppingCartRequest fakeShoppingCartRequest() {
-        return new ShoppingCartRequest(generateString(4, 30), generateString(10, 30));
+        return new ShoppingCartRequest(faker.lorem().characters(4, 30), faker.lorem().characters(10, 30));
     }
 
     /**
@@ -143,8 +147,8 @@ public class FakerUtil {
      */
     public static CartItem fakeCartItem() {
         CartItem cartItem = new CartItem();
-        cartItem.setId(generateLongNumber());
-        cartItem.setQuantity(generateLongNumber(1));
+        cartItem.setId(faker.number().randomNumber());
+        cartItem.setQuantity(faker.number().numberBetween(1, Long.MAX_VALUE));
         cartItem.setShoppingCart(fakeShoppingCart());
         cartItem.setProduct(fakeProduct());
         return cartItem;
@@ -171,9 +175,9 @@ public class FakerUtil {
      */
     public static CartItemRequest fakeCartItemRequest() {
         CartItemRequest cartItemRequest = new CartItemRequest();
-        cartItemRequest.setShoppingCartId(generateLongNumber());
-        cartItemRequest.setProductId(generateLongNumber());
-        cartItemRequest.setQuantity(generateLongNumber(1));
+        cartItemRequest.setShoppingCartId(faker.number().randomNumber());
+        cartItemRequest.setProductId(faker.number().randomNumber());
+        cartItemRequest.setQuantity(faker.number().numberBetween(1, Long.MAX_VALUE));
         return cartItemRequest;
     }
 
@@ -184,8 +188,8 @@ public class FakerUtil {
      */
     public static CartItemUpdate fakeCartItemUpdate() {
         CartItemUpdate cartItemUpdate = new CartItemUpdate();
-        cartItemUpdate.setShoppingCartId(generateLongNumber());
-        cartItemUpdate.setQuantity(generateLongNumber(1));
+        cartItemUpdate.setShoppingCartId(faker.number().randomNumber());
+        cartItemUpdate.setQuantity(faker.number().numberBetween(1, Long.MAX_VALUE));
         return cartItemUpdate;
     }
 
@@ -199,31 +203,12 @@ public class FakerUtil {
     }
 
     /**
-     * Generate member token with random username
-     *
-     * @return Member token
-     */
-    public static String generateMemberToken() {
-        return generateMemberToken(generateString());
-    }
-
-    /**
-     * Generate member token with given username
-     *
-     * @return Member token
-     */
-    public static String generateMemberToken(String username) {
-        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
-        return TokenAuthenticationService.createToken(username, roles);
-    }
-
-    /**
      * Generate admin token with random username
      *
      * @return Admin token
      */
     public static String generateAdminToken() {
-        return generateAdminToken(generateString());
+        return generateAdminToken(faker.name().name());
     }
 
     /**
@@ -231,99 +216,21 @@ public class FakerUtil {
      *
      * @return Admin token
      */
-    public static String generateAdminToken(String username) {
+    private static String generateAdminToken(String username) {
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
         return TokenAuthenticationService.createToken(username, roles);
     }
 
     /**
-     * Generate long number with given min value
+     * Random enum value from give enum
      *
-     * @param min Min value of created long number
-     * @return Long number
+     * @param clazz Class with generate type Enum
+     * @param <T>   Generate type
+     * @return Enum value
      */
-    public static long generateLongNumber(long min) {
-        return generateLongNumber(min, Long.MAX_VALUE);
+    private static <T extends Enum<?>> T randomEnum(Class<T> clazz) {
+        int x = ramdom.nextInt(clazz.getEnumConstants().length);
+        return clazz.getEnumConstants()[x];
     }
-
-    /**
-     * Generate long number with given min and max value
-     *
-     * @param min Min value of created long number
-     * @param max Max value of created long number
-     * @return Long number
-     */
-    public static long generateLongNumber(long min, long max) {
-        return ThreadLocalRandom.current().nextLong(min, max);
-    }
-
-    /**
-     * Generate long number
-     *
-     * @return Long number
-     */
-    public static Long generateLongNumber() {
-        return new Random().nextLong();
-    }
-
-    /**
-     * Generate random string with given length
-     *
-     * @param size Size of created string
-     * @return Random string
-     */
-    public static String generateString(int size) {
-        StringBuilder sb = new StringBuilder();
-        Random random = new Random();
-        String subset = "0123456789abcdefghijklmnopqrstuvwxyz";
-        for (int i = 0; i < size; i++) {
-            int index = random.nextInt(subset.length());
-            char c = subset.charAt(index);
-            sb.append(c);
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Generate random string with arbitrary length
-     *
-     * @return Random string
-     */
-    public static String generateString() {
-        return generateString(1, 100);
-    }
-
-    /**
-     * Generate random string with size random from minSize to maxSize
-     *
-     * @param minSize Max size of string
-     * @param maxSize Min size of string
-     * @return Random String
-     */
-    public static String generateString(int minSize, int maxSize) {
-        return generateString(generateInteger(minSize, maxSize));
-    }
-
-    /**
-     * Return random integer number
-     *
-     * @return Integer number
-     */
-    public static int generateInteger() {
-        return ThreadLocalRandom.current().nextInt();
-    }
-
-    /**
-     * Return integer number random from min to max
-     *
-     * @param min Min number
-     * @param max Max number
-     * @return Integer number
-     */
-    public static int generateInteger(int min, int max) {
-        return ThreadLocalRandom.current().nextInt(min, max + 1);
-    }
-
 
 }

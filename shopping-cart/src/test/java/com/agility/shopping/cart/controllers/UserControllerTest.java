@@ -1,17 +1,16 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.AccountCredential;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.UserService;
 import com.agility.shopping.cart.utils.FakerUtil;
+import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,14 +21,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-
 import java.util.HashSet;
-import java.util.Set;
-
 import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
-import static com.agility.shopping.cart.utils.FakerUtil.generateString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Slf4j
 public class UserControllerTest {
+
+    private static final Faker faker = new Faker();
 
     private MockMvc mockMvc;
 
@@ -101,7 +98,7 @@ public class UserControllerTest {
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         // Fake password
-        credential.setPassword(generateString());
+        credential.setPassword(faker.internet().password());
 
         when(userService.loadUserByUsername(credential.getUsername()))
             .thenReturn(new org.springframework.security.core.userdetails.User(

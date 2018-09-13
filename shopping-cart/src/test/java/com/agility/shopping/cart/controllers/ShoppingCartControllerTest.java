@@ -4,7 +4,6 @@ import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
-import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
@@ -12,8 +11,8 @@ import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.utils.FakerUtil;
 import com.agility.shopping.cart.utils.ShoppingCartUtil;
+import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +53,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Slf4j
 public class ShoppingCartControllerTest {
+
+    private static final Faker faker = new Faker();
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -240,7 +242,7 @@ public class ShoppingCartControllerTest {
         String token = generateAdminToken();
 
         // Call api
-        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, generateLongNumber())
+        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -257,7 +259,7 @@ public class ShoppingCartControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
@@ -285,7 +287,7 @@ public class ShoppingCartControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
         ShoppingCart shoppingCart = fakeShoppingCart();
         shoppingCart.setId(shoppingCartId);
         shoppingCart.setCartItems(Sets.newSet(fakeCartItem(), fakeCartItem()));
@@ -297,7 +299,7 @@ public class ShoppingCartControllerTest {
         mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
             .header(HEADER_STRING, token))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(shoppingCart.getId())))
+            .andExpect(jsonPath("$.id", is(shoppingCart.getId().intValue())))
             .andExpect(jsonPath("$.total", is(ShoppingCartUtil.calculateTotal(shoppingCart))));
 
         verify(shoppingCartRepository, times(1)).
@@ -322,7 +324,7 @@ public class ShoppingCartControllerTest {
         ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
 
         // Call api
-        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, FakerUtil.generateLongNumber())
+        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
@@ -461,7 +463,7 @@ public class ShoppingCartControllerTest {
         String token = FakerUtil.generateAdminToken();
 
         // Call api
-        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, generateLongNumber())
+        mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -472,7 +474,7 @@ public class ShoppingCartControllerTest {
     @Test
     public void testDeleteShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
         // Mock shopping cart
-        long id = generateLongNumber();
+        long id = faker.number().randomNumber();
         ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
 
         // Generate token have role member
@@ -536,7 +538,7 @@ public class ShoppingCartControllerTest {
         String token = generateAdminToken();
 
         // Call api
-        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, generateLongNumber())
+        mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, faker.number().randomNumber())
             .header(HEADER_STRING, token))
             .andExpect(status().isForbidden());
     }
@@ -553,7 +555,7 @@ public class ShoppingCartControllerTest {
         String token = TokenAuthenticationService.createToken(user);
 
         // Mock data
-        Long shoppingCartId = generateLongNumber();
+        Long shoppingCartId = faker.number().randomNumber();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCartId, user.getId())).thenReturn(null);
