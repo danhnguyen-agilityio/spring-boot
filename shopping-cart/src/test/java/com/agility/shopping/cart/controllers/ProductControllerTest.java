@@ -85,7 +85,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test create product success
+     * TestModel create product success
      */
     @Test
     public void testCreateProductSuccess() throws Exception {
@@ -118,7 +118,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test create product fail resource exists exception when name product exists
+     * TestModel create product fail resource exists exception when name product exists
      */
     @Test
     public void testCreateProductFailResourceExistsWhenNameProductExists()
@@ -154,7 +154,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test find all product
+     * TestModel find all product
      */
     @Test
     public void testFindAllProduct()
@@ -197,7 +197,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test find product success
+     * TestModel find product success
      */
     @Test
     public void testFindProductSuccess() throws Exception {
@@ -226,7 +226,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test find product fail not found exception when product id not exist
+     * TestModel find product fail not found exception when product id not exist
      */
     @Test
     public void testFindProductFailNotFoundWhenProductIdNotExist() throws Exception {
@@ -248,11 +248,11 @@ public class ProductControllerTest {
     }
 
     // ================================================
-    // Test update product
+    // TestModel update product
     // ================================================
 
     /***
-     * Test update product throw resource not found exception when product exist
+     * TestModel update product throw resource not found exception when product exist
      */
     @Test
     public void testUpdateProductThrowResourceNotFoundExceptionWhenProductExist() throws Exception {
@@ -277,7 +277,7 @@ public class ProductControllerTest {
     }
 
     /***
-     * Test update product success when product with given id contain new name
+     * TestModel update product success when product with given id contain new name
      */
     @Test
     public void testUpdateProductSuccessWhenProductWithGivenIdContainNewName() throws Exception {
@@ -301,7 +301,7 @@ public class ProductControllerTest {
     }
 
     /***
-     * Test update product throw resource exists exception when new name exists
+     * TestModel update product throw resource exists exception when new name exists
      */
     @Test
     public void testUpdateProductThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
@@ -325,7 +325,7 @@ public class ProductControllerTest {
     }
 
     /***
-     * Test update product success when new name not exist
+     * TestModel update product success when new name not exist
      */
     @Test
     public void testUpdateProductSuccessWhenNewNameNotExist() throws Exception {
@@ -349,7 +349,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test delete product success
+     * TestModel delete product success
      */
     @Test
     public void testDeleteProductSuccess() throws Exception {
@@ -378,7 +378,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * Test delete product fail resource not found exception
+     * TestModel delete product fail resource not found exception
      * when product id not exist
      */
     @Test

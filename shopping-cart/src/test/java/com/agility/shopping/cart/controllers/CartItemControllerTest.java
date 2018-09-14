@@ -89,11 +89,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // Test Create Cart Item
+    // TestModel Create Cart Item
     // =========================================================
 
     /**
-     * Test create cart item throw forbidden exception for admin user
+     * TestModel create cart item throw forbidden exception for admin user
      */
     @Test
     public void testCreateCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -108,7 +108,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test create cart item throw resource not found exception
+     * TestModel create cart item throw resource not found exception
      * when no shopping cart by given shopping cart id and user id
      */
     @Test
@@ -141,7 +141,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test create cart item throw resource not found exception when shopping cart done
+     * TestModel create cart item throw resource not found exception when shopping cart done
      */
     @Test
     public void testCreatedCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
@@ -172,7 +172,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test create cart item throw resource not found exception when product id not exist
+     * TestModel create cart item throw resource not found exception when product id not exist
      */
     @Test
     public void testCreateCartItemThrowResourceNotFoundExceptionWhenProductIdNotExist() throws Exception {
@@ -207,7 +207,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test create cart item success when cart item with given shopping cart id and product id not exists
+     * TestModel create cart item success when cart item with given shopping cart id and product id not exists
      */
     @Test
     public void testCreateCartItemSuccessWhenCartItemNotExist() throws Exception {
@@ -258,7 +258,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test create cart item success when cart item with given shopping cart id and product id already exists
+     * TestModel create cart item success when cart item with given shopping cart id and product id already exists
      */
     // FIXME:: Refactor test case
     @Test
@@ -311,11 +311,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // Test Get All Cart Item By Shopping Cart Id
+    // TestModel Get All Cart Item By Shopping Cart Id
     // =========================================================
 
     /**
-     * Test find all cart item throw forbidden exception for admin user
+     * TestModel find all cart item throw forbidden exception for admin user
      */
     @Test
     public void testFindAllCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -330,7 +330,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test find all cart item by given shopping cart id throw resource not found exception
+     * TestModel find all cart item by given shopping cart id throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -362,7 +362,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test find all cart item success
+     * TestModel find all cart item success
      */
     @Test
     public void testFindAllCartItemSuccess() throws Exception {
@@ -399,11 +399,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // Test Get One Cart Item By Cart Item Id And Shopping Cart Id
+    // TestModel Get One Cart Item By Cart Item Id And Shopping Cart Id
     // =========================================================
 
     /**
-     * Test find one cart item throw forbidden exception for admin user
+     * TestModel find one cart item throw forbidden exception for admin user
      */
     @Test
     public void testFindOneCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -418,7 +418,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test find one cart item by given cart item id and shopping cart id throw resource not found exception
+     * TestModel find one cart item by given cart item id and shopping cart id throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -451,7 +451,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test find one cart item throw resource not found exception
+     * TestModel find one cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -489,7 +489,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test fine one cart item success
+     * TestModel fine one cart item success
      */
     @Test
     public void testFindOneCartItemSuccess() throws Exception {
@@ -529,11 +529,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // Test Update Cart Item
+    // TestModel Update Cart Item
     // =========================================================
 
     /**
-     * Test update cart item throw forbidden exception for admin user
+     * TestModel update cart item throw forbidden exception for admin user
      */
     @Test
     public void testUpdateCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -548,7 +548,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test update cart item throw resource not found exception
+     * TestModel update cart item throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -582,7 +582,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test update cart item throw resource not found exception when shopping cart done
+     * TestModel update cart item throw resource not found exception when shopping cart done
      */
     @Test
     public void testUpdateCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
@@ -614,7 +614,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test update cart item throw resource not found exception
+     * TestModel update cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -656,7 +656,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test update cart item success
+     * TestModel update cart item success
      */
     @Test
     public void testUpdateCartItemSuccess() throws Exception {
@@ -701,11 +701,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // Test Delete Cart Item
+    // TestModel Delete Cart Item
     // =========================================================
 
     /**
-     * Test delete cart item throw forbidden exception for admin user
+     * TestModel delete cart item throw forbidden exception for admin user
      */
     @Test
     public void testDeleteCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -720,7 +720,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test delete cart item throw resource not found exception
+     * TestModel delete cart item throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -753,7 +753,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test delete cart item throw resource not found exception
+     * TestModel delete cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -793,7 +793,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test delete cart item success
+     * TestModel delete cart item success
      */
     @Test
     public void testDeleteCartItemSuccess() throws Exception {
