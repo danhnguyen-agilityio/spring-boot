@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class ShoppingCartUtilTest {
 
     /**
-     * TestModel calculate total money from shopping cart
+     * Test calculate total money from shopping cart
      */
     @Test
     public void testCalculateTotal() {

@@ -36,7 +36,7 @@ public class TokenAuthenticationServiceTest {
     private TokenAuthenticationService tokenAuthenticationService;
 
     /**
-     * TestModel create token success
+     * Test create token success
      */
     @Test
     public void testCreateToken() {
@@ -50,7 +50,7 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * TestModel get authentication success from valid token
+     * Test get authentication success from valid token
      */
     @Test
     public void testGetAuthenticationSuccessFromValidToken() {
@@ -70,7 +70,7 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * TestModel get authentication fail from null token
+     * Test get authentication fail from null token
      */
     @Test
     public void testGetAuthenticationFailFromNullToken() {
@@ -82,7 +82,7 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * TestModel get authentication fail when token has expired
+     * Test get authentication fail when token has expired
      */
     @Test(expected = ExpiredJwtException.class)
     public void testGetAuthenticationFailWhenTokenHasExpired() throws Exception {
@@ -103,7 +103,7 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * TestModel get user id from valid token
+     * Test get user id from valid token
      */
     @Test
     public void testGetUserIdFromToken() {
@@ -123,7 +123,7 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * TestModel get user id from null token
+     * Test get user id from null token
      */
     @Test
     public void testGetUserIdFromNullToken() {

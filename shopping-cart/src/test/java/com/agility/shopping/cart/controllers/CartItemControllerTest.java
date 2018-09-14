@@ -52,8 +52,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public class CartItemControllerTest {
 
-    public static final Faker faker = new Faker();
-
+    private static final Faker faker = new Faker();
+    private User memberUser;
+    private User adminUser;
+    private String adminToken;
+    private String memberToken;
     private MockMvc mockMvc;
 
     @Autowired
@@ -82,6 +85,7 @@ public class CartItemControllerTest {
 
     @Before
     public void setUp() {
+        memberUser = fakeUser();
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)
@@ -89,14 +93,14 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // TestModel Create Cart Item
+    // Test Create Cart Item
     // =========================================================
 
     /**
-     * TestModel create cart item throw forbidden exception for admin user
+     * Test create cart item throw forbidden exception for admin user
      */
     @Test
-    public void testCreateCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
+    public void testCreateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
         // Generate token have role admin
         User user = fakeAdminUser();
         String token = tokenAuthenticationService.createToken(user);
@@ -108,7 +112,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel create cart item throw resource not found exception
+     * Test create cart item throw resource not found exception
      * when no shopping cart by given shopping cart id and user id
      */
     @Test
@@ -141,7 +145,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel create cart item throw resource not found exception when shopping cart done
+     * Test create cart item throw resource not found exception when shopping cart done
      */
     @Test
     public void testCreatedCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
@@ -172,7 +176,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel create cart item throw resource not found exception when product id not exist
+     * Test create cart item throw resource not found exception when product id not exist
      */
     @Test
     public void testCreateCartItemThrowResourceNotFoundExceptionWhenProductIdNotExist() throws Exception {
@@ -207,7 +211,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel create cart item success when cart item with given shopping cart id and product id not exists
+     * Test create cart item success when cart item with given shopping cart id and product id not exists
      */
     @Test
     public void testCreateCartItemSuccessWhenCartItemNotExist() throws Exception {
@@ -258,7 +262,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel create cart item success when cart item with given shopping cart id and product id already exists
+     * Test create cart item success when cart item with given shopping cart id and product id already exists
      */
     // FIXME:: Refactor test case
     @Test
@@ -311,11 +315,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // TestModel Get All Cart Item By Shopping Cart Id
+    // Test Get All Cart Item By Shopping Cart Id
     // =========================================================
 
     /**
-     * TestModel find all cart item throw forbidden exception for admin user
+     * Test find all cart item throw forbidden exception for admin user
      */
     @Test
     public void testFindAllCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -330,7 +334,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel find all cart item by given shopping cart id throw resource not found exception
+     * Test find all cart item by given shopping cart id throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -362,7 +366,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel find all cart item success
+     * Test find all cart item success
      */
     @Test
     public void testFindAllCartItemSuccess() throws Exception {
@@ -399,11 +403,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // TestModel Get One Cart Item By Cart Item Id And Shopping Cart Id
+    // Test Get One Cart Item By Cart Item Id And Shopping Cart Id
     // =========================================================
 
     /**
-     * TestModel find one cart item throw forbidden exception for admin user
+     * Test find one cart item throw forbidden exception for admin user
      */
     @Test
     public void testFindOneCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -418,7 +422,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel find one cart item by given cart item id and shopping cart id throw resource not found exception
+     * Test find one cart item by given cart item id and shopping cart id throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -451,7 +455,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel find one cart item throw resource not found exception
+     * Test find one cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -489,7 +493,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel fine one cart item success
+     * Test fine one cart item success
      */
     @Test
     public void testFindOneCartItemSuccess() throws Exception {
@@ -529,11 +533,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // TestModel Update Cart Item
+    // Test Update Cart Item
     // =========================================================
 
     /**
-     * TestModel update cart item throw forbidden exception for admin user
+     * Test update cart item throw forbidden exception for admin user
      */
     @Test
     public void testUpdateCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -548,7 +552,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel update cart item throw resource not found exception
+     * Test update cart item throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -582,7 +586,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel update cart item throw resource not found exception when shopping cart done
+     * Test update cart item throw resource not found exception when shopping cart done
      */
     @Test
     public void testUpdateCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
@@ -614,7 +618,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel update cart item throw resource not found exception
+     * Test update cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -656,7 +660,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel update cart item success
+     * Test update cart item success
      */
     @Test
     public void testUpdateCartItemSuccess() throws Exception {
@@ -701,11 +705,11 @@ public class CartItemControllerTest {
     }
 
     // =========================================================
-    // TestModel Delete Cart Item
+    // Test Delete Cart Item
     // =========================================================
 
     /**
-     * TestModel delete cart item throw forbidden exception for admin user
+     * Test delete cart item throw forbidden exception for admin user
      */
     @Test
     public void testDeleteCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -720,7 +724,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel delete cart item throw resource not found exception
+     * Test delete cart item throw resource not found exception
      * when no shopping cart with given id of authenticated user
      */
     @Test
@@ -753,7 +757,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel delete cart item throw resource not found exception
+     * Test delete cart item throw resource not found exception
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
@@ -793,7 +797,7 @@ public class CartItemControllerTest {
     }
 
     /**
-     * TestModel delete cart item success
+     * Test delete cart item success
      */
     @Test
     public void testDeleteCartItemSuccess() throws Exception {

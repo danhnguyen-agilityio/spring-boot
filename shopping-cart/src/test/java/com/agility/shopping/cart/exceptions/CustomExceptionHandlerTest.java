@@ -63,7 +63,7 @@ public class CustomExceptionHandlerTest {
     }
 
     /**
-     * TestModel request api should throw bad request when method argument mismatch
+     * Test request api should throw bad request when method argument mismatch
      */
     @Test
     public void shouldThrowBadRequest_WhenMethodArgumentMismatch() throws Exception {
@@ -75,7 +75,7 @@ public class CustomExceptionHandlerTest {
     }
 
     /**
-     * TestModel request api should throw not found when no handler for http request
+     * Test request api should throw not found when no handler for http request
      */
     @Test
     public void shouldThrowNotFound_WhenNoHandlerForHttpRequest() throws Exception {
@@ -88,7 +88,7 @@ public class CustomExceptionHandlerTest {
     }
 
     /**
-     * TestModel request api should throw method not allowed when http request method not supported
+     * Test request api should throw method not allowed when http request method not supported
      */
     @Test
     public void shouldThrowMethodNotAllowed_WhenHttpRequestMethodNotSupported() throws Exception {
@@ -100,7 +100,7 @@ public class CustomExceptionHandlerTest {
     }
 
     /**
-     * TestModel request api should throw unsupported media type when send invalid http media type
+     * Test request api should throw unsupported media type when send invalid http media type
      */
     @Test
     public void shouldThrowUnsupportedMediaType_WhenSendInvalidHttpMediaType() throws Exception {

@@ -67,7 +67,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel login with correct credential
+     * Test login with correct credential
      */
     @Test
     public void loginWithCorrectCredential() throws Exception {
@@ -92,7 +92,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel login with incorrect credential
+     * Test login with incorrect credential
      */
     @Test
     public void loginWithIncorrectCredential() throws Exception {
@@ -116,7 +116,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel unauthenticated user can not access to api
+     * Test unauthenticated user can not access to api
      */
     @Test
     public void shouldNotAllowAccessToUnauthenticatedUsers() throws Exception {
@@ -125,11 +125,11 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel authenticated user can access to api
+     * Test authenticated user can access to api
      */
     @Test
     public void shouldAllowAccessToAuthenticatedUsers() throws Exception {
-        log.debug("TestModel authenticated user can access to api");
+        log.debug("Test authenticated user can access to api");
         User user = FakerUtil.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
@@ -156,7 +156,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel admin can access to admin api but not access to member api
+     * Test admin can access to admin api but not access to member api
      */
     @Test
     public void shouldAllowAccessToAdminApiWithAdminUser() throws Exception {
@@ -190,7 +190,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel member user can access to member api but not access to admin api
+     * Test member user can access to member api but not access to admin api
      */
     @Test
     public void shouldAllowAccessToMemberApiWithMemberUser() throws Exception {
@@ -224,7 +224,7 @@ public class UserControllerTest {
     }
 
     /**
-     * TestModel user can access to api when token is expired
+     * Test user can access to api when token is expired
      */
     // TODO:: Create another profile (application-test.yml)
     @Test

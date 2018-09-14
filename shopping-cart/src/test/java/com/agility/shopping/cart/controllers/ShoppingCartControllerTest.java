@@ -91,11 +91,11 @@ public class ShoppingCartControllerTest {
     }
 
     // ============================================================
-    // TestModel create shopping cart
+    // Test create shopping cart
     // ============================================================
 
     /**
-     * TestModel create shopping cart success
+     * Test create shopping cart success
      */
     @Test
     public void testCreateShoppingCartSuccess() throws Exception {
@@ -128,7 +128,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel create shopping cart fail resource exists
+     * Test create shopping cart fail resource exists
      * when product name is already existed
      */
     @Test
@@ -157,7 +157,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel create shopping cart fail user not found
+     * Test create shopping cart fail user not found
      * when username does not exist
      */
     @Test
@@ -189,11 +189,11 @@ public class ShoppingCartControllerTest {
     }
 
     // ============================================================
-    // TestModel find all shopping cart
+    // Test find all shopping cart
     // ============================================================
 
     /**
-     * TestModel find all shopping cart success
+     * Test find all shopping cart success
      */
     @Test
     public void testFindAllShoppingCartSuccess() throws Exception {
@@ -223,7 +223,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel find all shopping cart fail forbidden for admin user
+     * Test find all shopping cart fail forbidden for admin user
      */
     @Test
     public void testFindAllShoppingCartFailForbiddenForAdminUser() throws Exception {
@@ -237,11 +237,11 @@ public class ShoppingCartControllerTest {
     }
 
     // ============================================================
-    // TestModel find one shopping cart
+    // Test find one shopping cart
     // ============================================================
 
     /**
-     * TestModel find one shopping cart throw forbidden exception for admin user
+     * Test find one shopping cart throw forbidden exception for admin user
      */
     @Test
     public void testFindOneShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -256,7 +256,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel find one shopping cart throw resource not found exception when shopping cart not exist
+     * Test find one shopping cart throw resource not found exception when shopping cart not exist
      */
     @Test
     public void testFineOneShoppingCartThrowResourceNotFoundExceptionWhenShoppingCartNotExist() throws Exception {
@@ -284,7 +284,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel find one shopping cart success
+     * Test find one shopping cart success
      */
     @Test
     public void testFineOneShoppingCartSuccess() throws Exception {
@@ -317,11 +317,11 @@ public class ShoppingCartControllerTest {
 
 
     // ============================================================
-    // TestModel update shopping cart
+    // Test update shopping cart
     // ============================================================
 
     /**
-     * TestModel update shopping cart fail forbidden exception for admin user
+     * Test update shopping cart fail forbidden exception for admin user
      */
     @Test
     public void testUpdateShoppingCartFailForbiddenForAdminUser() throws Exception {
@@ -341,7 +341,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel update shopping cart fail resource not found when shopping cart id does not exist
+     * Test update shopping cart fail resource not found when shopping cart id does not exist
      */
     @Test
     public void testUpdateShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
@@ -368,7 +368,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel update shopping cart fail resource exists when shopping cart name belong to other shopping cart
+     * Test update shopping cart fail resource exists when shopping cart name belong to other shopping cart
      */
     @Test
     public void testUpdateShoppingCartFailResourceExistsWhenShoppingCartNameExistsInOtherShoppingCart()
@@ -398,7 +398,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel update shopping cart success when shopping cart name not change
+     * Test update shopping cart success when shopping cart name not change
      */
     @Test
     public void testUpdateShoppingCartSuccessWhenShoppingCartNameNotChange() throws Exception {
@@ -428,7 +428,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel update shopping cart success when shopping cart name does not exist
+     * Test update shopping cart success when shopping cart name does not exist
      */
     @Test
     public void testUpdateShoppingCartSuccessWhenShoppingCartNameDoseNotExist() throws Exception {
@@ -460,11 +460,11 @@ public class ShoppingCartControllerTest {
     }
 
     // ============================================================
-    // TestModel delete shopping cart
+    // Test delete shopping cart
     // ============================================================
 
     /**
-     * TestModel delete shopping cart fail forbidden exception for admin user
+     * Test delete shopping cart fail forbidden exception for admin user
      */
     @Test
     public void testDeleteShoppingCartFailForbiddenForAdminUser() throws Exception {
@@ -479,7 +479,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel delete shopping cart fail resource not found when shopping cart id does not exist
+     * Test delete shopping cart fail resource not found when shopping cart id does not exist
      */
     @Test
     public void testDeleteShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
@@ -506,7 +506,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel delete shopping cart success when authenticated user own shopping cart with given id
+     * Test delete shopping cart success when authenticated user own shopping cart with given id
      */
     @Test
     public void testDeleteShoppingCartSuccess() throws Exception {
@@ -536,11 +536,11 @@ public class ShoppingCartControllerTest {
 
 
     // ============================================================
-    // TestModel checkout shopping cart
+    // Test checkout shopping cart
     // ============================================================
 
     /**
-     * TestModel checkout shopping cart throw forbidden exception for admin user
+     * Test checkout shopping cart throw forbidden exception for admin user
      */
     @Test
     public void testCheckoutShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
@@ -555,7 +555,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel checkout shopping cart throw resource not found exception when shopping cart not exist
+     * Test checkout shopping cart throw resource not found exception when shopping cart not exist
      */
     @Test
     public void testCheckoutShoppingCartThrowResourceNotFoundExceptionWhenShoppingCartNotExist() throws Exception {
@@ -583,7 +583,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel checkout shopping cart throw bad request exception when shopping cart done
+     * Test checkout shopping cart throw bad request exception when shopping cart done
      */
     @Test
     public void testCheckoutShoppingCartThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
@@ -611,7 +611,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel checkout shopping cart throw bad request exception when shopping cart empty
+     * Test checkout shopping cart throw bad request exception when shopping cart empty
      */
     @Test
     public void testCheckoutShoppingCartThrowBadRequestExceptionWhenShoppingCartEmpty() throws Exception {
@@ -639,7 +639,7 @@ public class ShoppingCartControllerTest {
     }
 
     /**
-     * TestModel checkout shopping cart success with status IN_PROGRESS
+     * Test checkout shopping cart success with status IN_PROGRESS
      */
     @Test
     public void testCheckoutShoppingCartSuccess() throws Exception {
