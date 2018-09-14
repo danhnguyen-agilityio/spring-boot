@@ -47,7 +47,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         super.setAuthenticationManager(authenticationManager);
     }
 
-
     /**
      * Authenticate the identify of the user
      * Is called when the login api is called

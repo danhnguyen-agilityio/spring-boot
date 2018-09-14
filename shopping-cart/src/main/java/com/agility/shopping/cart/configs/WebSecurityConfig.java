@@ -46,19 +46,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    JWTAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    @Bean
+    public JWTAuthorizationFilter jwtAuthorizationFilter() throws Exception {
+        return new JWTAuthorizationFilter(authenticationManager());
+    }
 
     /**
      * Authenticate credential that user login with username and password
@@ -85,7 +81,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // The authentication filter
             .addFilter(jwtAuthenticationFilter)
             // The authorization filter
-            .addFilter(new JWTAuthorizationFilter(authenticationManager(), securityConfig, tokenAuthenticationService))
+            .addFilter(jwtAuthorizationFilter())
             // Disables session creation on spring security
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

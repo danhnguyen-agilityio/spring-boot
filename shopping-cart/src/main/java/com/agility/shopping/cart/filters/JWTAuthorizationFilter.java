@@ -3,6 +3,7 @@ package com.agility.shopping.cart.filters;
 import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,15 +22,14 @@ import java.io.IOException;
 @Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
+    @Autowired
     private SecurityConfig securityConfig;
+
+    @Autowired
     private TokenAuthenticationService tokenAuthenticationService;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
-                                  SecurityConfig securityConfig,
-                                  TokenAuthenticationService tokenAuthenticationService) {
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.securityConfig = securityConfig;
-        this.tokenAuthenticationService = tokenAuthenticationService;
     }
 
     @Override
