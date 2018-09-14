@@ -40,7 +40,10 @@ spring:
     # JACKSON
     jackson:
         serialization:
+            # Disable converting dates to timestamps and instead use a ISO-8601 compliant format
             write_dates_as_timestamps: false
+        # Controls the inclusion of properties during serialization
+        default-property-inclusion: non_null
 
 # LEVEL LOGGING
 logging:
