@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.services;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
@@ -17,15 +19,18 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.agility.shopping.cart.constants.SecurityConstants.EXPIRATION_TIME;
-import static com.agility.shopping.cart.constants.SecurityConstants.SECRET;
-import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
-
 /**
  * This class used to generate and parse token
  */
+@Service
 @Slf4j
 public class TokenAuthenticationService {
+
+    private SecurityConfig securityConfig;
+
+    public TokenAuthenticationService(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
+    }
 
     /**
      * Create token with given username and roles
@@ -34,7 +39,7 @@ public class TokenAuthenticationService {
      * @param roles
      * @return Token generated from username and roles info
      */
-    public static String createToken(String username, Set<String> roles) {
+    public String createToken(String username, Set<String> roles) {
         log.debug("Generate token");
         Claims claims = Jwts.claims().setSubject(username);
 
@@ -45,15 +50,15 @@ public class TokenAuthenticationService {
         // Generate the token
         String token = Jwts.builder()
             .setClaims(claims)
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(SignatureAlgorithm.HS512, SECRET)
+            .setExpiration(new Date(System.currentTimeMillis() + securityConfig.getExpirationTime()))
+            .signWith(SignatureAlgorithm.HS512, securityConfig.getSecret())
             .compact();
 
         log.debug("Current time: {}", new Date(System.currentTimeMillis()));
         log.debug("Set expiration time: {}", new Date(System.currentTimeMillis()
-            + EXPIRATION_TIME));
+            + securityConfig.getExpirationTime()));
 
-        return TOKEN_PREFIX + " " + token;
+        return securityConfig.getTokenPrefix() + " " + token;
     }
 
     /**
@@ -62,7 +67,7 @@ public class TokenAuthenticationService {
      * @param user User info
      * @return Token string
      */
-    public static String createToken(User user) {
+    public String createToken(User user) {
         log.debug("Generate token");
         Claims claims = Jwts.claims()
             .setSubject(user.getUsername())
@@ -83,15 +88,15 @@ public class TokenAuthenticationService {
         // Generate the token
         String token = Jwts.builder()
             .setClaims(claims)
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-            .signWith(SignatureAlgorithm.HS512, SECRET)
+            .setExpiration(new Date(System.currentTimeMillis() + securityConfig.getExpirationTime()))
+            .signWith(SignatureAlgorithm.HS512, securityConfig.getSecret())
             .compact();
 
         log.debug("Current time: {}", new Date(System.currentTimeMillis()));
         log.debug("Set expiration time: {}", new Date(System.currentTimeMillis()
-            + EXPIRATION_TIME));
+            + securityConfig.getExpirationTime()));
 
-        return TOKEN_PREFIX + token;
+        return securityConfig.getTokenPrefix() + token;
     }
 
     /**
@@ -100,18 +105,18 @@ public class TokenAuthenticationService {
      * @param token Token is attached in request
      * @return Authentication
      */
-    public static Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token) {
         log.debug("Get authentication from token");
 
-        if (token == null || !token.startsWith(TOKEN_PREFIX)) {
+        if (token == null || !token.startsWith(securityConfig.getTokenPrefix())) {
             return null;
         }
 
         // FIXME:: Consider try catch here, thrown ExpiredTokenException when time is expired
         // Parse the token
         Claims claims = Jwts.parser()
-            .setSigningKey(SECRET)
-            .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+            .setSigningKey(securityConfig.getSecret())
+            .parseClaimsJws(token.replace(securityConfig.getTokenPrefix(), ""))
             .getBody();
 
         // Extract the username
@@ -138,16 +143,16 @@ public class TokenAuthenticationService {
      * @param token Token is attached in request
      * @return User id
      */
-    public static Long getUserId(String token) {
+    public Long getUserId(String token) {
         log.debug("Get user id from token");
-        if (token == null || !token.startsWith(TOKEN_PREFIX)) {
+        if (token == null || !token.startsWith(securityConfig.getTokenPrefix())) {
             return null;
         }
 
         // Parse the token
         Claims claims = Jwts.parser()
-            .setSigningKey(SECRET)
-            .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
+            .setSigningKey(securityConfig.getSecret())
+            .parseClaimsJws(token.replace(securityConfig.getTokenPrefix(), ""))
             .getBody();
 
         log.debug("User id {}", claims.getId());

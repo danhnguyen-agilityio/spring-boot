@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.filters;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 
 /**
  * This class get authentication from token that is attached in request
@@ -22,27 +21,34 @@ import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX
 @Slf4j
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
+    private SecurityConfig securityConfig;
+    private TokenAuthenticationService tokenAuthenticationService;
+
+    public JWTAuthorizationFilter(AuthenticationManager authenticationManager,
+                                  SecurityConfig securityConfig,
+                                  TokenAuthenticationService tokenAuthenticationService) {
         super(authenticationManager);
+        this.securityConfig = securityConfig;
+        this.tokenAuthenticationService = tokenAuthenticationService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-        HttpServletResponse response, FilterChain chain)
+                                    HttpServletResponse response, FilterChain chain)
         throws IOException, ServletException {
         log.debug("Implement Authorization Filter");
 
-        String token = request.getHeader(HEADER_STRING);
+        String token = request.getHeader(securityConfig.getHeaderString());
         log.debug("Token: {}", token);
 
-        if (token == null || !token.startsWith(TOKEN_PREFIX)) {
+        if (token == null || !token.startsWith(securityConfig.getTokenPrefix())) {
             // Token not found
             chain.doFilter(request, response);
             return;
         }
 
         // Token found - Get authentication
-        Authentication authentication = TokenAuthenticationService.getAuthentication(token);
+        Authentication authentication = tokenAuthenticationService.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }

@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.exceptions.CustomError;
@@ -34,7 +35,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -63,6 +63,12 @@ public class ProductControllerTest {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
+
+    @Autowired
+    private SecurityConfig securityConfig;
 
     @MockBean
     private UserService userService;
@@ -97,14 +103,14 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock method
         when(productRepository.existsByName(product.getName())).thenReturn(false);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(post("/products")
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk())
@@ -121,7 +127,7 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock product
         Product product = Product.builder()
@@ -139,7 +145,7 @@ public class ProductControllerTest {
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
         mockMvc.perform(post("/products")
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isConflict())
@@ -157,7 +163,7 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock list product
         Product product1 = Product.builder()
@@ -182,7 +188,7 @@ public class ProductControllerTest {
         when(productRepository.findAll()).thenReturn(products);
 
         mockMvc.perform(get("/products")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name",
                 is(product1.getName())))
@@ -208,13 +214,13 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
 
         mockMvc.perform(get("/products/{id}", product.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.name", is(product.getName())));
     }
@@ -228,7 +234,7 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock id of product
         long productId = 1L;
@@ -237,7 +243,7 @@ public class ProductControllerTest {
         when(productRepository.findOne(productId)).thenReturn(null);
 
         mockMvc.perform(get("/products/{id}", productId)
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound());
     }
 
@@ -252,7 +258,7 @@ public class ProductControllerTest {
     public void testUpdateProductThrowResourceNotFoundExceptionWhenProductExist() throws Exception {
         // Generate token have role admin
         User user = fakeAdminUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Generate data
         Product product = fakeProduct();
@@ -262,7 +268,7 @@ public class ProductControllerTest {
         when(productRepository.findOne(product.getId())).thenReturn(null);
 
         mockMvc.perform(put("/products/{id}", product.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isNotFound())
@@ -277,7 +283,7 @@ public class ProductControllerTest {
     public void testUpdateProductSuccessWhenProductWithGivenIdContainNewName() throws Exception {
         // Generate token have role admin
         User user = fakeAdminUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Generate data
         Product product = fakeProduct();
@@ -288,7 +294,7 @@ public class ProductControllerTest {
         when(productRepository.findOne(product.getId())).thenReturn(product);
 
         mockMvc.perform(put("/products/{id}", product.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk());
@@ -301,7 +307,7 @@ public class ProductControllerTest {
     public void testUpdateProductThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
         // Generate token have role admin
         User user = fakeAdminUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Fake differ product and product request
         Product product = fakeProduct();
@@ -312,7 +318,7 @@ public class ProductControllerTest {
         when(productRepository.existsByName(request.getName())).thenReturn(true);
 
         mockMvc.perform(put("/products/{id}", product.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isConflict());
@@ -325,7 +331,7 @@ public class ProductControllerTest {
     public void testUpdateProductSuccessWhenNewNameNotExist() throws Exception {
         // Generate token have role admin
         User user = fakeAdminUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Fake differ product and product request
         Product product = fakeProduct();
@@ -336,7 +342,7 @@ public class ProductControllerTest {
         when(productRepository.existsByName(request.getName())).thenReturn(false);
 
         mockMvc.perform(put("/products/{id}", product.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk());
@@ -360,14 +366,14 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
         doNothing().when(productRepository).delete(product.getId());
 
         mockMvc.perform(delete("/products/{id}", product.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk());
     }
 
@@ -390,13 +396,13 @@ public class ProductControllerTest {
         // Generate token have role admin
         String username = "admin";
         Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(null);
 
         mockMvc.perform(delete("/products/{id}", product.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound());
     }
 

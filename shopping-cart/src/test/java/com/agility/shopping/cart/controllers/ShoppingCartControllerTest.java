@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
@@ -34,7 +35,6 @@ import java.util.Set;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_CHECKOUT_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
 import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static com.agility.shopping.cart.utils.FakerUtil.*;
@@ -70,6 +70,12 @@ public class ShoppingCartControllerTest {
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
 
+    @Autowired
+    private SecurityConfig securityConfig;
+
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
+
     @MockBean
     private UserRepository userRepository;
 
@@ -99,7 +105,7 @@ public class ShoppingCartControllerTest {
 
         // Generate member token
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
         when(shoppingCartRepository.existsByName(request.getName())).thenReturn(false);
@@ -108,7 +114,7 @@ public class ShoppingCartControllerTest {
             .thenReturn(shoppingCart);
 
         mockMvc.perform(post("/shopping-carts")
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk())
@@ -134,14 +140,14 @@ public class ShoppingCartControllerTest {
 
         // Generate member token
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
         when(shoppingCartRepository.existsByName(request.getName()))
             .thenReturn(true);
 
         mockMvc.perform(post("/shopping-carts")
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isConflict());
@@ -163,14 +169,14 @@ public class ShoppingCartControllerTest {
 
         // Generate member token
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
         when(shoppingCartRepository.existsByName(request.getName())).thenReturn(false);
         when(userRepository.findOne(user.getId())).thenReturn(null);
 
         mockMvc.perform(post("/shopping-carts")
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isNotFound())
@@ -198,14 +204,14 @@ public class ShoppingCartControllerTest {
         // Generate token have role member
         String username = "user";
         Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Mock method
         when(shoppingCartRepository.findAllByUsername(username))
             .thenReturn(shoppingCarts);
 
         mockMvc.perform(get("/shopping-carts")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name",
                 is(shoppingCarts.get(0).getName())))
@@ -222,10 +228,11 @@ public class ShoppingCartControllerTest {
     @Test
     public void testFindAllShoppingCartFailForbiddenForAdminUser() throws Exception {
         // Generate token have role admin
-        String token = generateAdminToken();
+        User user = fakeAdminUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         mockMvc.perform(get("/shopping-carts")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 
@@ -238,12 +245,13 @@ public class ShoppingCartControllerTest {
      */
     @Test
     public void testFindOneShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
-        // Create admin token
-        String token = generateAdminToken();
+        // Generate token have role admin
+        User user = fakeAdminUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         // Call api
         mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 
@@ -256,7 +264,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         Long shoppingCartId = faker.number().randomNumber();
@@ -266,7 +274,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
 
@@ -284,7 +292,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         Long shoppingCartId = faker.number().randomNumber();
@@ -297,7 +305,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, shoppingCartId)
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", is(shoppingCart.getId().intValue())))
             .andExpect(jsonPath("$.total", is(ShoppingCartUtil.calculateTotal(shoppingCart))));
@@ -318,14 +326,15 @@ public class ShoppingCartControllerTest {
     @Test
     public void testUpdateShoppingCartFailForbiddenForAdminUser() throws Exception {
         // Generate token have role admin
-        String token = FakerUtil.generateAdminToken();
+        User user = fakeAdminUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart request
         ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isForbidden());
@@ -342,14 +351,14 @@ public class ShoppingCartControllerTest {
 
         // Generate token have role member
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
         when(shoppingCartRepository.findOne(id, user.getId())).thenReturn(null);
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, id)
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isNotFound());
@@ -366,7 +375,7 @@ public class ShoppingCartControllerTest {
         throws Exception {
 
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart and shopping cart request
         ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
@@ -378,7 +387,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isConflict());
@@ -395,7 +404,7 @@ public class ShoppingCartControllerTest {
     public void testUpdateShoppingCartSuccessWhenShoppingCartNameNotChange() throws Exception {
 
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
         ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
@@ -407,7 +416,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk())
@@ -425,7 +434,7 @@ public class ShoppingCartControllerTest {
     public void testUpdateShoppingCartSuccessWhenShoppingCartNameDoseNotExist() throws Exception {
 
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
         ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
@@ -438,7 +447,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk())
@@ -460,11 +469,12 @@ public class ShoppingCartControllerTest {
     @Test
     public void testDeleteShoppingCartFailForbiddenForAdminUser() throws Exception {
         // Generate token have role admin
-        String token = FakerUtil.generateAdminToken();
+        User user = fakeAdminUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 
@@ -479,14 +489,14 @@ public class ShoppingCartControllerTest {
 
         // Generate token have role member
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
         when(shoppingCartRepository.findOne(id, user.getId())).thenReturn(null);
 
         // Call api
         mockMvc.perform(delete(SHOPPING_CART_DETAIL_URL, id)
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isNotFound());
@@ -502,7 +512,7 @@ public class ShoppingCartControllerTest {
     public void testDeleteShoppingCartSuccess() throws Exception {
         // Generate token have role member
         User user = fakeMemberUser();
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
         ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
@@ -514,7 +524,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(delete(SHOPPING_CART_DETAIL_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token)
+            .header(securityConfig.getHeaderString(), token)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(request)))
             .andExpect(status().isOk());
@@ -534,12 +544,13 @@ public class ShoppingCartControllerTest {
      */
     @Test
     public void testCheckoutShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
-        // Create admin token
-        String token = generateAdminToken();
+        // Generate token have role admin
+        User user = fakeAdminUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         // Call api
         mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, faker.number().randomNumber())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 
@@ -552,7 +563,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         Long shoppingCartId = faker.number().randomNumber();
@@ -562,7 +573,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCartId)
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound())
             .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
 
@@ -580,7 +591,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.DONE);
@@ -590,7 +601,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code", is(SHOPPING_CART_DONE.code())));
 
@@ -608,7 +619,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.EMPTY);
@@ -618,7 +629,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.code", is(SHOPPING_CART_EMPTY.code())));
 
@@ -636,7 +647,7 @@ public class ShoppingCartControllerTest {
         User user = fakeMemberUser();
 
         // Fake token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock data
         ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
@@ -647,7 +658,7 @@ public class ShoppingCartControllerTest {
 
         // Call api
         mockMvc.perform(post(SHOPPING_CART_CHECKOUT_URL, shoppingCart.getId())
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk());
 
         assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.DONE.getName());

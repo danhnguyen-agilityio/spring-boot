@@ -1,6 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.constants.SecurityConstants;
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemResponse;
@@ -48,6 +48,12 @@ public class CartItemController {
     @Autowired
     private CartItemMapper cartItemMapper;
 
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
+
+    @Autowired
+    private SecurityConfig securityConfig;
+
     /**
      * Create cart item from given request data
      *
@@ -62,7 +68,7 @@ public class CartItemController {
                                    HttpServletRequest request) {
         log.debug("POST /cart-items, body = {}", cartItemRequest);
         // Get user id from request
-        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), userId);
@@ -119,7 +125,7 @@ public class CartItemController {
                                           HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -150,7 +156,7 @@ public class CartItemController {
                                     @RequestParam(value = "shoppingCartId") long shoppingCartId,
                                     HttpServletRequest request) {
         // Get user id from request
-        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -186,7 +192,7 @@ public class CartItemController {
                                    @Valid @RequestBody CartItemUpdate cartItemUpdate,
                                    HttpServletRequest request) {
         // Get user id from request
-        Long userId = TokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), userId);
@@ -233,7 +239,7 @@ public class CartItemController {
         log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
 
         // Get user id from request
-        long userId = TokenAuthenticationService.getUserId(getToken(request));
+        long userId = tokenAuthenticationService.getUserId(getToken(request));
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -272,7 +278,7 @@ public class CartItemController {
      * @return Token string
      */
     private String getToken(HttpServletRequest request) {
-        return request.getHeader(SecurityConstants.HEADER_STRING);
+        return request.getHeader(securityConfig.getHeaderString());
     }
 
     /**

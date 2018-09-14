@@ -49,7 +49,3 @@ spring:
 logging:
     level:
         com.agility.shopping.cart: DEBUG
-
-# Value
-format:
-    datetime: yyyy-MM-dd HH:mm:ss

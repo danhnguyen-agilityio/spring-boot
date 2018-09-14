@@ -1,18 +1,20 @@
 package com.agility.shopping.cart.filters;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.AccountCredential;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
-import com.agility.shopping.cart.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,24 +23,30 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
 
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-
 /**
  * This class verify username and password when receive a request login,
  * then it creates a Token for this request.
  * The Token contains the username, roles and whatever we need
  */
+
+@Service
 @Slf4j
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private AuthenticationManager authenticationManager;
+    @Autowired
+    private SecurityConfig securityConfig;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager,
-        UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
+
+    @Autowired
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+        super.setAuthenticationManager(authenticationManager);
     }
+
 
     /**
      * Authenticate the identify of the user
@@ -46,7 +54,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
-        HttpServletResponse response) throws AuthenticationException {
+                                                HttpServletResponse response) throws AuthenticationException {
 
         log.debug("Authenticate username and password");
 
@@ -59,14 +67,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         if (credential == null) {
-            return authenticationManager.authenticate(
+            return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
                     null,
                     null,
                     new HashSet<>())
             );
         } else {
-            return authenticationManager.authenticate(
+            return getAuthenticationManager().authenticate(
                 new UsernamePasswordAuthenticationToken(
                     credential.getUsername(),
                     credential.getPassword(),
@@ -82,13 +90,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
-        HttpServletResponse response, FilterChain chain,
-        Authentication authResult) throws IOException, ServletException {
+                                            HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
 
+        log.info("Authentication success");
         String username = ((UserDetails) authResult.getPrincipal()).getUsername();
         User user = userRepository.findByUsername(username);
-        String token = TokenAuthenticationService.createToken(user);
-        response.addHeader(HEADER_STRING, token);
+        String token = tokenAuthenticationService.createToken(user);
+        response.addHeader(securityConfig.getHeaderString(), token);
 
     }
 }

@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.services;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.User;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -7,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,9 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashSet;
 
-import static com.agility.shopping.cart.constants.SecurityConstants.EXPIRATION_TIME;
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.FakerUtil.fakeAdminUser;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
@@ -30,6 +29,12 @@ import static org.junit.Assert.*;
 @Slf4j
 public class TokenAuthenticationServiceTest {
 
+    @Autowired
+    private SecurityConfig securityConfig;
+
+    @Autowired
+    private TokenAuthenticationService tokenAuthenticationService;
+
     /**
      * Test create token success
      */
@@ -38,10 +43,10 @@ public class TokenAuthenticationServiceTest {
         String username = "admin";
         val roles = new HashSet<String>();
         roles.add(RoleType.ADMIN.getName());
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         assertNotNull(token);
-        assertThat(token, containsString(TOKEN_PREFIX));
+        assertThat(token, containsString(securityConfig.getTokenPrefix()));
     }
 
     /**
@@ -54,11 +59,11 @@ public class TokenAuthenticationServiceTest {
         roles.add(RoleType.ADMIN.getName());
 
         // Create token
-        String token = TokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(username, roles);
 
         // Get authentication from token
         Authentication authentication =
-            TokenAuthenticationService.getAuthentication(token);
+            tokenAuthenticationService.getAuthentication(token);
 
         assertNotNull(authentication);
         assertEquals(authentication.getName(), username);
@@ -71,7 +76,7 @@ public class TokenAuthenticationServiceTest {
     public void testGetAuthenticationFailFromNullToken() {
         // Get authentication from token
         Authentication authentication =
-            TokenAuthenticationService.getAuthentication(null);
+            tokenAuthenticationService.getAuthentication(null);
 
         assertNull(authentication);
     }
@@ -85,14 +90,14 @@ public class TokenAuthenticationServiceTest {
         User user = fakeAdminUser();
 
         // Generate token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Wait time
-        Thread.sleep(EXPIRATION_TIME);
+        Thread.sleep(securityConfig.getExpirationTime());
 
         // Get authentication from token
         Authentication authentication =
-            TokenAuthenticationService.getAuthentication(token);
+            tokenAuthenticationService.getAuthentication(token);
 
         assertNotNull(authentication);
     }
@@ -102,16 +107,16 @@ public class TokenAuthenticationServiceTest {
      */
     @Test
     public void testGetUserIdFromToken() {
-        log.debug("testGetUserIdFromToken: {}", HEADER_STRING);
+        log.debug("testGetUserIdFromToken: {}", securityConfig.getHeaderString());
 
         // Mock data
         User user = fakeAdminUser();
 
         // Generate token
-        String token = TokenAuthenticationService.createToken(user);
+        String token = tokenAuthenticationService.createToken(user);
 
         // Get user id from token
-        Long userId = TokenAuthenticationService.getUserId(token);
+        Long userId = tokenAuthenticationService.getUserId(token);
 
         assertNotNull(userId);
         assertEquals(user.getId().toString(), userId.toString());
@@ -123,7 +128,7 @@ public class TokenAuthenticationServiceTest {
     @Test
     public void testGetUserIdFromNullToken() {
         // Get user id from token
-        Long userId = TokenAuthenticationService.getUserId(null);
+        Long userId = tokenAuthenticationService.getUserId(null);
 
         assertNull(userId);
     }

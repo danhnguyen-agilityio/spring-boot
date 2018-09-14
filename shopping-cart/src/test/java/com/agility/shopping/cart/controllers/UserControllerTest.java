@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.AccountCredential;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
@@ -22,8 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import java.util.HashSet;
-import static com.agility.shopping.cart.constants.SecurityConstants.HEADER_STRING;
-import static com.agility.shopping.cart.constants.SecurityConstants.TOKEN_PREFIX;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -49,6 +48,9 @@ public class UserControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SecurityConfig securityConfig;
 
     @MockBean
     private UserService userService;
@@ -85,8 +87,8 @@ public class UserControllerTest {
             .content(convertObjectToJsonBytes(credential)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)));
+            .andExpect(header().string(securityConfig.getHeaderString(),
+                CoreMatchers.containsString(securityConfig.getTokenPrefix())));
     }
 
     /**
@@ -144,12 +146,12 @@ public class UserControllerTest {
             .content(convertObjectToJsonBytes(credential)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
+            .andExpect(header().string(securityConfig.getHeaderString(),
+                CoreMatchers.containsString(securityConfig.getTokenPrefix())))
+            .andReturn().getResponse().getHeader(securityConfig.getHeaderString());
 
         mockMvc.perform(get("/test")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk());
     }
 
@@ -174,16 +176,16 @@ public class UserControllerTest {
             .content(convertObjectToJsonBytes(credential)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
+            .andExpect(header().string(securityConfig.getHeaderString(),
+                CoreMatchers.containsString(securityConfig.getTokenPrefix())))
+            .andReturn().getResponse().getHeader(securityConfig.getHeaderString());
 
         mockMvc.perform(get("/admin")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk());
 
         mockMvc.perform(get("/user")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 
@@ -208,16 +210,16 @@ public class UserControllerTest {
             .content(convertObjectToJsonBytes(credential)))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(header().string(HEADER_STRING,
-                CoreMatchers.containsString(TOKEN_PREFIX)))
-            .andReturn().getResponse().getHeader(HEADER_STRING);
+            .andExpect(header().string(securityConfig.getHeaderString(),
+                CoreMatchers.containsString(securityConfig.getTokenPrefix())))
+            .andReturn().getResponse().getHeader(securityConfig.getHeaderString());
 
         mockMvc.perform(get("/user")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isOk());
 
         mockMvc.perform(get("/admin")
-            .header(HEADER_STRING, token))
+            .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
 

@@ -10,9 +10,10 @@ import com.agility.shopping.cart.models.*;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.github.javafaker.Faker;
 import org.mockito.internal.util.collections.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class is used to fake data
@@ -20,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class FakerUtil {
 
     private static final Faker faker = new Faker();
-    private static final Random ramdom = new Random();
+    private static final Random random = new Random();
 
     /**
      * Fake user
@@ -203,25 +204,6 @@ public class FakerUtil {
     }
 
     /**
-     * Generate admin token with random username
-     *
-     * @return Admin token
-     */
-    public static String generateAdminToken() {
-        return generateAdminToken(faker.name().name());
-    }
-
-    /**
-     * Generate admin token with given username
-     *
-     * @return Admin token
-     */
-    private static String generateAdminToken(String username) {
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        return TokenAuthenticationService.createToken(username, roles);
-    }
-
-    /**
      * Random enum value from give enum
      *
      * @param clazz Class with generate type Enum
@@ -229,7 +211,7 @@ public class FakerUtil {
      * @return Enum value
      */
     private static <T extends Enum<?>> T randomEnum(Class<T> clazz) {
-        int x = ramdom.nextInt(clazz.getEnumConstants().length);
+        int x = random.nextInt(clazz.getEnumConstants().length);
         return clazz.getEnumConstants()[x];
     }
 
