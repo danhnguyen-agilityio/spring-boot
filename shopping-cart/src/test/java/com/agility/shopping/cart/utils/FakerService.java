@@ -14,14 +14,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to fake data
  */
-public class FakerUtil {
+@Service
+public class FakerService {
 
     private static final Faker faker = new Faker();
     private static final Random random = new Random();
+
+    /**
+     * Fake user with given roles
+     *
+     * @param roleTypes List role type of user
+     * @return User with given roles
+     */
+    public static User fakeUser(List<RoleType> roleTypes) {
+        Set<Role> roles = roleTypes.stream()
+            .map(roleType -> new Role(roleType.getName()))
+            .collect(Collectors.toSet());
+        return User.builder()
+            .id(faker.number().randomNumber())
+            .username(faker.name().name())
+            .password(faker.name().name())
+            .roles(roles)
+            .build();
+    }
+
+    /**
+     * Fake user with given role
+     *
+     * @param roleType Role type of user
+     * @return User with given role
+     */
+    public static User fakeUser(RoleType roleType) {
+        return fakeUser(Arrays.asList(roleType));
+    }
+
 
     /**
      * Fake user
@@ -76,11 +107,11 @@ public class FakerUtil {
      * @return Product
      */
     public static Product fakeProduct() {
-        Product product = new Product();
-        product.setId(faker.number().randomNumber());
-        product.setName(faker.name().name());
-        product.setPrice(faker.number().randomNumber());
-        return product;
+        return Product.builder()
+            .id(faker.number().randomNumber())
+            .name(faker.name().name())
+            .price(faker.number().randomNumber())
+            .build();
     }
 
     /**
@@ -114,7 +145,13 @@ public class FakerUtil {
      * @return Shopping cart object
      */
     public static ShoppingCart fakeShoppingCart() {
-        return fakeShoppingCart(fakeUser());
+        return ShoppingCart.builder()
+            .id(faker.number().randomNumber())
+            .name(faker.lorem().characters(4, 30))
+            .description(faker.lorem().characters(10, 30))
+            .status(randomEnum(ShoppingCartStatus.class).getName())
+            .user(fakeUser(RoleType.MEMBER))
+            .build();
     }
 
     /**

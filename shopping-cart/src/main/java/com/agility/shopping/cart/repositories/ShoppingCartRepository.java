@@ -26,7 +26,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long
      * @param username username of user that own shopping cart
      * @return List shopping cart
      */
-    // FIXME:: Consider user principle.username
     @Query("SELECT s FROM ShoppingCart s WHERE s.user.username = :username ")
     List<ShoppingCart> findAllByUsername(@Param("username") String username);
 

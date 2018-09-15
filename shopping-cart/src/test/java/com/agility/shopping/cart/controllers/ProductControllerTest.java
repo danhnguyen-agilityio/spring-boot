@@ -12,7 +12,7 @@ import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.agility.shopping.cart.utils.FakerUtil.*;
+import static com.agility.shopping.cart.utils.FakerService.*;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Before;

@@ -5,7 +5,7 @@ import com.agility.shopping.cart.models.AccountCredential;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.UserService;
-import com.agility.shopping.cart.utils.FakerUtil;
+import com.agility.shopping.cart.utils.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
@@ -71,7 +71,7 @@ public class UserControllerTest {
      */
     @Test
     public void loginWithCorrectCredential() throws Exception {
-        User user = FakerUtil.fakeMemberUser();
+        User user = FakerService.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
@@ -96,7 +96,7 @@ public class UserControllerTest {
      */
     @Test
     public void loginWithIncorrectCredential() throws Exception {
-        User user = FakerUtil.fakeMemberUser();
+        User user = FakerService.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         // Fake password
@@ -130,7 +130,7 @@ public class UserControllerTest {
     @Test
     public void shouldAllowAccessToAuthenticatedUsers() throws Exception {
         log.debug("Test authenticated user can access to api");
-        User user = FakerUtil.fakeMemberUser();
+        User user = FakerService.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
@@ -160,7 +160,7 @@ public class UserControllerTest {
      */
     @Test
     public void shouldAllowAccessToAdminApiWithAdminUser() throws Exception {
-        User user = FakerUtil.fakeAdminUser();
+        User user = FakerService.fakeAdminUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
@@ -194,7 +194,7 @@ public class UserControllerTest {
      */
     @Test
     public void shouldAllowAccessToMemberApiWithMemberUser() throws Exception {
-        User user = FakerUtil.fakeMemberUser();
+        User user = FakerService.fakeMemberUser();
         AccountCredential credential = new AccountCredential();
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());

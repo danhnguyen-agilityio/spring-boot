@@ -19,6 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder
 public class ShoppingCart implements Serializable {
 
     @Id

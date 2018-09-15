@@ -4,7 +4,7 @@ import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.TestModel;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.utils.ConvertUtil;
-import com.agility.shopping.cart.utils.FakerUtil;
+import com.agility.shopping.cart.utils.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -55,7 +55,7 @@ public class CustomExceptionHandlerTest {
     @Before
     public void setUp() {
         test = new TestModel(faker.name().name(), faker.name().name());
-        token = tokenAuthenticationService.createToken(FakerUtil.fakeMemberUser());
+        token = tokenAuthenticationService.createToken(FakerService.fakeMemberUser());
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)

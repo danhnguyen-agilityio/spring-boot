@@ -10,7 +10,7 @@ import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
-import com.agility.shopping.cart.utils.FakerUtil;
+import com.agility.shopping.cart.utils.FakerService;
 import com.agility.shopping.cart.utils.ShoppingCartUtil;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
 import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
-import static com.agility.shopping.cart.utils.FakerUtil.*;
+import static com.agility.shopping.cart.utils.FakerService.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -100,7 +100,7 @@ public class ShoppingCartControllerTest {
     @Test
     public void testCreateShoppingCartSuccess() throws Exception {
         // Mock shopping cart
-        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCart shoppingCart = FakerService.fakeShoppingCart();
         ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
 
         // Generate member token
@@ -330,7 +330,7 @@ public class ShoppingCartControllerTest {
         String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart request
-        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
+        ShoppingCartRequest request = FakerService.fakeShoppingCartRequest();
 
         // Call api
         mockMvc.perform(put(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
@@ -347,7 +347,7 @@ public class ShoppingCartControllerTest {
     public void testUpdateShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
         // Mock shopping cart
         long id = 1L;
-        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
+        ShoppingCartRequest request = FakerService.fakeShoppingCartRequest();
 
         // Generate token have role member
         User user = fakeMemberUser();
@@ -378,8 +378,8 @@ public class ShoppingCartControllerTest {
         String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart and shopping cart request
-        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
-        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCartRequest request = FakerService.fakeShoppingCartRequest();
+        ShoppingCart shoppingCart = FakerService.fakeShoppingCart();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
@@ -407,7 +407,7 @@ public class ShoppingCartControllerTest {
         String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
-        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCart shoppingCart = FakerService.fakeShoppingCart();
         ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
 
         // Mock method
@@ -437,8 +437,8 @@ public class ShoppingCartControllerTest {
         String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
-        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
-        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
+        ShoppingCart shoppingCart = FakerService.fakeShoppingCart();
+        ShoppingCartRequest request = FakerService.fakeShoppingCartRequest();
 
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), user.getId())).thenReturn(shoppingCart);
@@ -485,7 +485,7 @@ public class ShoppingCartControllerTest {
     public void testDeleteShoppingCartFailResourceNotFoundWhenShoppingCartIdDoesNotExist() throws Exception {
         // Mock shopping cart
         long id = faker.number().randomNumber();
-        ShoppingCartRequest request = FakerUtil.fakeShoppingCartRequest();
+        ShoppingCartRequest request = FakerService.fakeShoppingCartRequest();
 
         // Generate token have role member
         User user = fakeMemberUser();
@@ -515,7 +515,7 @@ public class ShoppingCartControllerTest {
         String token = tokenAuthenticationService.createToken(user);
 
         // Mock shopping cart
-        ShoppingCart shoppingCart = FakerUtil.fakeShoppingCart();
+        ShoppingCart shoppingCart = FakerService.fakeShoppingCart();
         ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
 
         // Mock method

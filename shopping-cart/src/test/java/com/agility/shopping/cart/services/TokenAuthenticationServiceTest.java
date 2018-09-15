@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashSet;
 
-import static com.agility.shopping.cart.utils.FakerUtil.fakeAdminUser;
+import static com.agility.shopping.cart.utils.FakerService.fakeAdminUser;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 

@@ -1,9 +1,11 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
+import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemUpdate;
+import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.mappers.CartItemMapper;
 import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
@@ -13,8 +15,10 @@ import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.agility.shopping.cart.utils.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,20 +26,25 @@ import org.mockito.internal.util.collections.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETAIL_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
-import static com.agility.shopping.cart.utils.FakerUtil.*;
+import static com.agility.shopping.cart.utils.FakerService.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -55,8 +64,12 @@ public class CartItemControllerTest {
     private static final Faker faker = new Faker();
     private User memberUser;
     private User adminUser;
-    private String adminToken;
     private String memberToken;
+    private String adminToken;
+    private Product product;
+    private ShoppingCart shoppingCart;
+    private CartItemRequest cartItemRequest;
+    private CartItem cartItem;
     private MockMvc mockMvc;
 
     @Autowired
@@ -74,6 +87,9 @@ public class CartItemControllerTest {
     @Autowired
     private TokenAuthenticationService tokenAuthenticationService;
 
+    @Autowired
+    private FakerService fakerService;
+
     @MockBean
     private ShoppingCartRepository shoppingCartRepository;
 
@@ -85,238 +101,191 @@ public class CartItemControllerTest {
 
     @Before
     public void setUp() {
-        memberUser = fakeUser();
+        memberUser = fakerService.fakeUser(RoleType.MEMBER);
+        adminUser = fakerService.fakeUser(RoleType.ADMIN);
+        memberToken = tokenAuthenticationService.createToken(memberUser);
+        adminToken = tokenAuthenticationService.createToken(adminUser);
+        product = fakerService.fakeProduct();
+        shoppingCart = fakerService.fakeShoppingCart();
+        cartItem = fakerService.fakeCartItem();
+        cartItemRequest = fakerService.fakeCartItemRequest();
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)
             .build();
     }
 
-    // =========================================================
+    // =================================================================================
     // Test Create Cart Item
-    // =========================================================
+    // =================================================================================
 
     /**
      * Test create cart item throw forbidden exception for admin user
      */
     @Test
     public void testCreateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
-        // Generate token have role admin
-        User user = fakeAdminUser();
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isForbidden());
+        testResponseData(post(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
     }
 
     /**
-     * Test create cart item throw resource not found exception
-     * when no shopping cart by given shopping cart id and user id
+     * Test response data for API request
+     *
+     * @param request    API Request
+     * @param token      Token request
+     * @param body       Body request
+     * @param httpStatus Expected response status
+     */
+    private void testResponseData(MockHttpServletRequestBuilder request,
+                                  String token,
+                                  Object body,
+                                  HttpStatus httpStatus,
+                                  Map<String, Object> jsonMap
+    ) throws Exception {
+        ResultActions resultActions = mockMvc.perform(request
+            .header(securityConfig.getHeaderString(), token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(body)))
+            .andDo(print())
+            .andExpect(status().is(httpStatus.value()));
+
+        if (jsonMap != null) {
+            for (val entry : jsonMap.entrySet()) {
+                resultActions.andExpect(jsonPath(entry.getKey(), is(entry.getValue())));
+            }
+        }
+
+    }
+
+    /**
+     * Create json map with custom error code
+     *
+     * @param customError Custom error contain error code
+     * @return Json map contain error code
+     */
+    private Map<String, Object> createJsonMapError(CustomError customError) {
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.code", customError.code());
+        return jsonMap;
+    }
+
+    /**
+     * Test create cart item throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testCreateCartItemThrowResourceNotFoundExceptionWhenNoShoppingCartByGivenShoppingCartIdAndUserId()
+    public void testCreateCartItem_ShouldThrowResourceNotFound_WhenShoppingCartNotFound()
         throws Exception {
+        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).thenReturn(null);
 
-        // Mock member user
-        User user = fakeMemberUser();
+        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.NOT_FOUND,
+            createJsonMapError(SHOPPING_CART_NOT_FOUND));
 
-        // Fake token
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Mock cart item
-        CartItemRequest cartItemRequest = fakeCartItemRequest();
-
-        // Mock method
-        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(null);
-
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code", is(SHOPPING_CART_NOT_FOUND.code())));
-
-        verify(shoppingCartRepository, times(1)).
-            findOne(cartItemRequest.getShoppingCartId(), user.getId());
+        verify(shoppingCartRepository, times(1))
+            .findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 
     /**
-     * Test create cart item throw resource not found exception when shopping cart done
+     * Test create cart item throw bad request exception when shopping cart done
      */
     @Test
-    public void testCreatedCartItemThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
-        // Mock member user
-        User user = fakeMemberUser();
+    public void testCreatedCartItem_ShouldThrowBadRequestException_WhenShoppingCartDone() throws Exception {
+        shoppingCart.setStatus(ShoppingCartStatus.DONE.name());
+        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId()))
+            .thenReturn(shoppingCart);
 
-        // Fake token
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Mock cart item request and shopping cart with status DONE
-        CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.DONE);
-
-        // Mock method
-        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
-
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code", is(SHOPPING_CART_DONE.code())));
+        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.BAD_REQUEST,
+            createJsonMapError(SHOPPING_CART_DONE));
 
         verify(shoppingCartRepository, times(1)).
-            findOne(cartItemRequest.getShoppingCartId(), user.getId());
+            findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 
     /**
-     * Test create cart item throw resource not found exception when product id not exist
+     * Test create cart item throw resource not found exception when product not found
      */
     @Test
-    public void testCreateCartItemThrowResourceNotFoundExceptionWhenProductIdNotExist() throws Exception {
-        // Mock member user
-        User user = fakeMemberUser();
-
-        // Fake token
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Mock data
-        CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
-
-        // Mock method
-        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
+    public void testCreateCartItem_ShouldThrowResourceNotFound_WhenProductNotFound() throws Exception {
+        shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.name());
+        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).
+            thenReturn(shoppingCart);
         when(productRepository.findOne(cartItemRequest.getProductId())).thenReturn(null);
 
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code", is(PRODUCT_NOT_FOUND.code())));
+        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.NOT_FOUND,
+            createJsonMapError(PRODUCT_NOT_FOUND));
 
         verify(shoppingCartRepository, times(1)).
-            findOne(cartItemRequest.getShoppingCartId(), user.getId());
+            findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
         verify(productRepository, times(1)).
             findOne(cartItemRequest.getProductId());
-        verifyNoMoreInteractions(shoppingCartRepository);
-        verifyNoMoreInteractions(productRepository);
+        verifyNoMoreInteractions(shoppingCartRepository, productRepository);
     }
 
     /**
-     * Test create cart item success when cart item with given shopping cart id and product id not exists
+     * Test create cart item success when cart item not found
      */
     @Test
-    public void testCreateCartItemSuccessWhenCartItemNotExist() throws Exception {
-        // Mock member user
-        User user = fakeMemberUser();
-
-        // Generate token
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Mock cart item request, shopping cart, product
-        CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
-        Product product = fakeProduct();
-        Long quantity = faker.number().randomNumber();
-        CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
-        cartItem.setQuantity(quantity);
-        cartItem.setShoppingCart(shoppingCart);
-        cartItem.setProduct(product);
+    public void testCreateCartItem_ShouldSuccess_WhenCartItemNotFound() throws Exception {
+        // Set status IN_PROGRESS for shopping cart
+        shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
 
         // Mock method
-        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
+        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId()))
+            .thenReturn(shoppingCart);
         when(productRepository.findOne(cartItemRequest.getProductId())).thenReturn(product);
         when(cartItemRepository.findOne(cartItemRequest.getShoppingCartId(), cartItemRequest.getProductId()))
             .thenReturn(null);
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
 
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.quantity", is(quantity.intValue())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())));
+        // Perform request and test response data
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.quantity", cartItem.getQuantity());
+        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.OK, jsonMap);
 
+        // Verify called method
         verify(shoppingCartRepository, times(1)).
-            findOne(cartItemRequest.getShoppingCartId(), user.getId());
-        verify(productRepository, times(1)).
-            findOne(cartItemRequest.getProductId());
+            findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
+        verify(productRepository, times(1)).findOne(cartItemRequest.getProductId());
         verify(cartItemRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), cartItemRequest.getProductId());
-        verify(cartItemRepository, times(1)).
-            save(any(CartItem.class));
-        verifyNoMoreInteractions(shoppingCartRepository);
-        verifyNoMoreInteractions(productRepository);
-        verifyNoMoreInteractions(cartItemRepository);
+        verify(cartItemRepository, times(1)).save(any(CartItem.class));
+        verifyNoMoreInteractions(shoppingCartRepository, productRepository, cartItemRepository);
     }
 
     /**
-     * Test create cart item success when cart item with given shopping cart id and product id already exists
+     * Test create cart item success when cart item found
      */
-    // FIXME:: Refactor test case
     @Test
-    public void testCreateCartItemSuccessWhenCartItemExist() throws Exception {
-        // Mock member user
-        User user = fakeMemberUser();
-
-        // Generate token
-        String token = tokenAuthenticationService.createToken(user);
-
-        // Mock cart item request, shopping cart, product
-        CartItemRequest cartItemRequest = fakeCartItemRequest();
-        ShoppingCart shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
-        Product product = fakeProduct();
-        long quantity = faker.number().randomNumber();
-        CartItem cartItem = cartItemMapper.toCartItem(cartItemRequest);
-        cartItem.setQuantity(quantity);
-        cartItem.setShoppingCart(shoppingCart);
-        cartItem.setProduct(product);
+    public void testCreateCartItem_ShouldSuccess_WhenCartItemFound() throws Exception {
+        // Set status IN_PROGRESS for shopping cart
+        shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
+        long quantity = cartItem.getQuantity();
 
         // Mock method
-        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), user.getId())).thenReturn(shoppingCart);
+        when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).
+            thenReturn(shoppingCart);
         when(productRepository.findOne(cartItemRequest.getProductId())).thenReturn(product);
         when(cartItemRepository.findOne(cartItemRequest.getShoppingCartId(), cartItemRequest.getProductId()))
             .thenReturn(cartItem);
-        when(cartItemRepository.save(any(CartItem.class))).thenReturn(cartItem);
+        when(cartItemRepository.save(cartItem)).thenReturn(cartItem);
 
-        // Call api
-        mockMvc.perform(post(CART_ITEM_URL)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(cartItemRequest)))
-            .andExpect(status().isOk())
-            .andDo(print())
-            .andExpect(jsonPath("$.quantity", is(quantity + cartItemRequest.getQuantity())))
-            .andExpect(jsonPath("$.shoppingCart.id", is(cartItem.getShoppingCart().getId().intValue())))
-            .andExpect(jsonPath("$.product.id", is(cartItem.getProduct().getId().intValue())));
+        // Perform request and test response data
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.quantity", quantity + cartItemRequest.getQuantity());
+        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.OK, jsonMap);
 
         verify(shoppingCartRepository, times(1)).
-            findOne(cartItemRequest.getShoppingCartId(), user.getId());
-        verify(productRepository, times(1)).
-            findOne(cartItemRequest.getProductId());
+            findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
+        verify(productRepository, times(1)).findOne(cartItemRequest.getProductId());
         verify(cartItemRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), cartItemRequest.getProductId());
-        verify(cartItemRepository, times(1)).
-            save(any(CartItem.class));
-        verifyNoMoreInteractions(shoppingCartRepository);
-        verifyNoMoreInteractions(productRepository);
-        verifyNoMoreInteractions(cartItemRepository);
+        verify(cartItemRepository, times(1)).save(cartItem);
+        verifyNoMoreInteractions(shoppingCartRepository, productRepository, cartItemRepository);
     }
 
-    // =========================================================
+    // ===================================================================
     // Test Get All Cart Item By Shopping Cart Id
-    // =========================================================
+    // ===================================================================
 
     /**
      * Test find all cart item throw forbidden exception for admin user

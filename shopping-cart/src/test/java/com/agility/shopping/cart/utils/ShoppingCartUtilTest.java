@@ -7,8 +7,8 @@ import org.mockito.internal.util.collections.Sets;
 
 import java.util.Set;
 
-import static com.agility.shopping.cart.utils.FakerUtil.fakeCartItemWithQuantityAndPrice;
-import static com.agility.shopping.cart.utils.FakerUtil.fakeShoppingCart;
+import static com.agility.shopping.cart.utils.FakerService.fakeCartItemWithQuantityAndPrice;
+import static com.agility.shopping.cart.utils.FakerService.fakeShoppingCart;
 import static org.junit.Assert.*;
 
 /**
