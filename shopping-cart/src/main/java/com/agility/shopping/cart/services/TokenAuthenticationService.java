@@ -33,35 +33,6 @@ public class TokenAuthenticationService {
     }
 
     /**
-     * Create token with given username and roles
-     *
-     * @param username
-     * @param roles
-     * @return Token generated from username and roles info
-     */
-    public String createToken(String username, Set<String> roles) {
-        log.debug("Generate token");
-        Claims claims = Jwts.claims().setSubject(username);
-
-        if (username != null && username.length() > 0) {
-            claims.put("roles", roles);
-        }
-
-        // Generate the token
-        String token = Jwts.builder()
-            .setClaims(claims)
-            .setExpiration(new Date(System.currentTimeMillis() + securityConfig.getExpirationTime()))
-            .signWith(SignatureAlgorithm.HS512, securityConfig.getSecret())
-            .compact();
-
-        log.debug("Current time: {}", new Date(System.currentTimeMillis()));
-        log.debug("Set expiration time: {}", new Date(System.currentTimeMillis()
-            + securityConfig.getExpirationTime()));
-
-        return securityConfig.getTokenPrefix() + " " + token;
-    }
-
-    /**
      * Create token from given user
      *
      * @param user User info

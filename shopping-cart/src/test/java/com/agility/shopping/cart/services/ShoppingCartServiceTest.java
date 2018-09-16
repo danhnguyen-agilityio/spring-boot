@@ -13,11 +13,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Set;
 
 /**
- * ShoppingCartUtilTest class
+ * ShoppingCartServiceTest class
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ShoppingCartUtilTest {
+public class ShoppingCartServiceTest {
 
     @Autowired
     private FakerService fakerService;

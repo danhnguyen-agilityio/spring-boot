@@ -5,7 +5,6 @@ import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.User;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashSet;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
@@ -38,14 +35,11 @@ public class TokenAuthenticationServiceTest {
     private TokenAuthenticationService tokenAuthenticationService;
 
     /**
-     * Test create token success
+     * Test create token
      */
     @Test
     public void testCreateToken() {
-        String username = "admin";
-        val roles = new HashSet<String>();
-        roles.add(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeUser(RoleType.ADMIN));
 
         assertNotNull(token);
         assertThat(token, containsString(securityConfig.getTokenPrefix()));
@@ -55,27 +49,24 @@ public class TokenAuthenticationServiceTest {
      * Test get authentication success from valid token
      */
     @Test
-    public void testGetAuthenticationSuccessFromValidToken() {
-        String username = "admin";
-        val roles = new HashSet<String>();
-        roles.add(RoleType.ADMIN.getName());
-
+    public void testGetAuthentication_ShouldSuccess_WhenTokenValid() {
         // Create token
-        String token = tokenAuthenticationService.createToken(username, roles);
+        User user = fakerService.fakeUser(RoleType.ADMIN);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeUser(RoleType.ADMIN));
 
         // Get authentication from token
         Authentication authentication =
             tokenAuthenticationService.getAuthentication(token);
 
         assertNotNull(authentication);
-        assertEquals(authentication.getName(), username);
+        assertEquals(authentication.getName(), user.getUsername());
     }
 
     /**
      * Test get authentication fail from null token
      */
     @Test
-    public void testGetAuthenticationFailFromNullToken() {
+    public void testGetAuthentication_ShouldFail_WhenTokenIsNull() {
         // Get authentication from token
         Authentication authentication =
             tokenAuthenticationService.getAuthentication(null);
@@ -87,7 +78,7 @@ public class TokenAuthenticationServiceTest {
      * Test get authentication fail when token has expired
      */
     @Test(expected = ExpiredJwtException.class)
-    public void testGetAuthenticationFailWhenTokenHasExpired() throws Exception {
+    public void testGetAuthentication_ShouldThrowExpiredJwtException_WhenTokenHasExpired() throws Exception {
         // Mock data
         User user = fakerService.fakeAdminUser();
 
@@ -97,18 +88,15 @@ public class TokenAuthenticationServiceTest {
         // Wait time
         Thread.sleep(securityConfig.getExpirationTime());
 
-        // Get authentication from token
-        Authentication authentication =
-            tokenAuthenticationService.getAuthentication(token);
-
-        assertNotNull(authentication);
+        // Get authentication
+        tokenAuthenticationService.getAuthentication(token);
     }
 
     /**
-     * Test get user id from valid token
+     * Test get user id should return user id when token is valid
      */
     @Test
-    public void testGetUserIdFromToken() {
+    public void testGetUserId_ShouldReturnUserId_WhenTokenIsValid() {
         log.debug("testGetUserIdFromToken: {}", securityConfig.getHeaderString());
 
         // Mock data
@@ -125,10 +113,10 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * Test get user id from null token
+     * Test get user id should return null when token is null
      */
     @Test
-    public void testGetUserIdFromNullToken() {
+    public void testGetUserId_ShouldReturnNull_WhenTokenIsNull() {
         // Get user id from token
         Long userId = tokenAuthenticationService.getUserId(null);
 

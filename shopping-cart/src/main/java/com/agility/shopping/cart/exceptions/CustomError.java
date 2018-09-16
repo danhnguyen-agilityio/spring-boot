@@ -1,7 +1,5 @@
 package com.agility.shopping.cart.exceptions;
 
-import lombok.Getter;
-
 /**
  * CustomError enum define code and message error
  */
