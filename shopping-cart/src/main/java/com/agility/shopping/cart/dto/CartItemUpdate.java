@@ -1,7 +1,6 @@
 package com.agility.shopping.cart.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -11,12 +10,16 @@ import javax.validation.constraints.NotNull;
  */
 @Getter
 @Setter
+@ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CartItemUpdate {
 
     @NotNull
-    private long shoppingCartId;
+    private Long shoppingCartId;
 
     @NotNull
     @Min(1)
-    private long quantity;
+    private Long quantity;
 }
