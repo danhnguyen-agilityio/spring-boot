@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class is used to fake data
@@ -225,10 +226,10 @@ public class FakerService {
      * @return Cart item update
      */
     public static CartItemUpdate fakeCartItemUpdate() {
-        CartItemUpdate cartItemUpdate = new CartItemUpdate();
-        cartItemUpdate.setShoppingCartId(faker.number().randomNumber());
-        cartItemUpdate.setQuantity(faker.number().numberBetween(1, Long.MAX_VALUE));
-        return cartItemUpdate;
+        return CartItemUpdate.builder()
+            .shoppingCartId(faker.number().randomNumber())
+            .quantity(faker.number().numberBetween(1, Long.MAX_VALUE))
+            .build();
     }
 
     /**
@@ -238,6 +239,16 @@ public class FakerService {
      */
     public static List<CartItem> fakeListCartItem() {
         return Arrays.asList(fakeCartItem(), fakeCartItem(), fakeCartItem());
+    }
+
+    /**
+     * Fake list cart item with given size
+     *
+     * @param size Size list cart item
+     * @return List cart item with given size
+     */
+    public List<CartItem> fakeListCartItem(int size) {
+        return Stream.generate(() -> fakeCartItem()).limit(size).collect(Collectors.toList());
     }
 
     /**

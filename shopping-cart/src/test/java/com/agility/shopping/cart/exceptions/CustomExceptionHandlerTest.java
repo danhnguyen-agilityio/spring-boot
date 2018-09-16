@@ -83,7 +83,7 @@ public class CustomExceptionHandlerTest {
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound())
             .andDo(print());
-            // FIXME:: Not throw exception in env test
+            // FIXMEFIXME:: Not throw exception in env test
 //            .andExpect(jsonPath("$.errors[0]", containsString("No handler found")));
     }
 

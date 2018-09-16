@@ -222,14 +222,4 @@ public class UserControllerTest {
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
     }
-
-    /**
-     * Test user can access to api when token is expired
-     */
-    // TODO:: Create another profile (application-test.yml)
-    @Test
-    public void shouldNotAllowAccessWhenExpiredToken() {
-    }
-
-
 }
