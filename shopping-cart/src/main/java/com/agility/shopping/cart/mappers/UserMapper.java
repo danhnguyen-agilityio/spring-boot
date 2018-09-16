@@ -5,8 +5,7 @@ import com.agility.shopping.cart.models.User;
 import org.mapstruct.Mapper;
 
 /**
- * UserMapper interface is used to map between different object models
- * that relate to user
+ * UserMapper interface is used to map between different object models that relate to user
  */
 @Mapper(componentModel = "spring")
 public interface UserMapper {

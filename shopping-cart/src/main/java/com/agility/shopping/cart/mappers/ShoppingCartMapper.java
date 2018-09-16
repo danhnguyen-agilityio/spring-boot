@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * ShoppingCartMapper interface is used to map between different object models
- * that relate to Product
+ * ShoppingCartMapper interface is used to map between different object models that relate to ShoppingCart
  */
 @Mapper(componentModel = "spring")
 public interface ShoppingCartMapper {

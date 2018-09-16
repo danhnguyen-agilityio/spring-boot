@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -130,4 +131,16 @@ public class TokenAuthenticationService {
 
         return Long.parseLong(claims.getId());
     }
+
+    /**
+     * Get user id from request
+     *
+     * @param request Api request
+     * @return User id
+     */
+    public Long getUserId(HttpServletRequest request) {
+        String token = request.getHeader(securityConfig.getHeaderString());
+        return getUserId(token);
+    }
+
 }

@@ -16,6 +16,7 @@ import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
+import com.agility.shopping.cart.services.ShoppingCartService;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,9 @@ public class CartItemController {
     private TokenAuthenticationService tokenAuthenticationService;
 
     @Autowired
+    private ShoppingCartService shoppingCartService;
+
+    @Autowired
     private SecurityConfig securityConfig;
 
     /**
@@ -69,7 +73,7 @@ public class CartItemController {
                                    HttpServletRequest request) {
         log.debug("POST /cart-items, body = {}", cartItemRequest);
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), userId);
@@ -80,7 +84,7 @@ public class CartItemController {
         }
 
         // Throw bad request exception when shopping cart is already done
-        if (isShoppingCartDone(shoppingCart)) {
+        if (shoppingCartService.haveStatus(shoppingCart, ShoppingCartStatus.DONE)) {
             throw new BadRequestException(SHOPPING_CART_DONE);
         }
 
@@ -126,7 +130,7 @@ public class CartItemController {
                                           HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -157,7 +161,7 @@ public class CartItemController {
                                     @RequestParam(value = "shoppingCartId") long shoppingCartId,
                                     HttpServletRequest request) {
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -193,7 +197,7 @@ public class CartItemController {
                                    @Valid @RequestBody CartItemUpdate cartItemUpdate,
                                    HttpServletRequest request) {
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), userId);
@@ -204,7 +208,7 @@ public class CartItemController {
         }
 
         // Throw bad request exception when shopping cart is already done
-        if (isShoppingCartDone(shoppingCart)) {
+        if (shoppingCartService.haveStatus(shoppingCart, ShoppingCartStatus.DONE)) {
             throw new BadRequestException(SHOPPING_CART_DONE);
         }
 
@@ -240,7 +244,7 @@ public class CartItemController {
         log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
 
         // Get user id from request
-        long userId = tokenAuthenticationService.getUserId(getToken(request));
+        long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(shoppingCartId, userId);
@@ -270,25 +274,5 @@ public class CartItemController {
         shoppingCartRepository.save(shoppingCart);
 
         return MessageConstant.CART_ITEM_DELETE_SUCCESS;
-    }
-
-    /**
-     * Get token from request
-     *
-     * @param request Request from user
-     * @return Token string
-     */
-    private String getToken(HttpServletRequest request) {
-        return request.getHeader(securityConfig.getHeaderString());
-    }
-
-    /**
-     * Check whether or not shopping cart is done
-     *
-     * @param shoppingCart Shopping cart need check
-     * @return true if shopping cart is done, else return false
-     */
-    private boolean isShoppingCartDone(ShoppingCart shoppingCart) {
-        return ShoppingCartStatus.DONE.getName().equals(shoppingCart.getStatus());
     }
 }

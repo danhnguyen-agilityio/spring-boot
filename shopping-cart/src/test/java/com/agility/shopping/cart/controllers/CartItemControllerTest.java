@@ -136,78 +136,6 @@ public class CartItemControllerTest {
     }
 
     /**
-     * Test response data for API request
-     *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     * @param params     Params map
-     */
-    private void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap,
-                                  Map<String, Object> params) throws Exception {
-        MultiValueMap<String, String> multiValueMapParam = new LinkedMultiValueMap<>();
-        if (params != null) {
-            for (val param : params.entrySet()) {
-                multiValueMapParam.add(param.getKey(), param.getValue().toString());
-            }
-        }
-
-        ResultActions resultActions = mockMvc.perform(request.params(multiValueMapParam)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(body)))
-            .andDo(print())
-            .andExpect(status().is(httpStatus.value()));
-
-        if (jsonMap != null) {
-            for (val entry : jsonMap.entrySet()) {
-                if (entry.getValue() instanceof Matcher) {
-                    resultActions.andExpect(jsonPath(entry.getKey(), (Matcher) entry.getValue()));
-
-                } else {
-                    resultActions.andExpect(jsonPath(entry.getKey(), is(entry.getValue())));
-                }
-
-            }
-        }
-    }
-
-    /**
-     * Test response data for API request
-     *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     */
-    private void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap) throws Exception {
-        testResponseData(request, token, body, httpStatus, jsonMap, null);
-    }
-
-    /**
-     * Create json map with custom error code
-     *
-     * @param customError Custom error contain error code
-     * @return Json map contain error code
-     */
-    private Map<String, Object> createJsonMapError(CustomError customError) {
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("$.code", customError.code());
-        return jsonMap;
-    }
-
-    /**
      * Test create cart item throw resource not found exception when shopping cart not found
      */
     @Test
@@ -664,5 +592,77 @@ public class CartItemControllerTest {
             findOneByCartItemIdAndShoppingCartId(cartItem.getId(), shoppingCart.getId());
         verify(shoppingCartRepository, times(1)).save(shoppingCart);
         verifyNoMoreInteractions(shoppingCartRepository, cartItemRepository);
+    }
+
+    /**
+     * Test response data for API request
+     *
+     * @param request    API Request
+     * @param token      Token request
+     * @param body       Body request
+     * @param httpStatus Expected response status
+     * @param jsonMap    Json map
+     * @param params     Params map
+     */
+    private void testResponseData(MockHttpServletRequestBuilder request,
+                                  String token,
+                                  Object body,
+                                  HttpStatus httpStatus,
+                                  Map<String, Object> jsonMap,
+                                  Map<String, Object> params) throws Exception {
+        MultiValueMap<String, String> multiValueMapParam = new LinkedMultiValueMap<>();
+        if (params != null) {
+            for (val param : params.entrySet()) {
+                multiValueMapParam.add(param.getKey(), param.getValue().toString());
+            }
+        }
+
+        ResultActions resultActions = mockMvc.perform(request.params(multiValueMapParam)
+            .header(securityConfig.getHeaderString(), token)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(body)))
+            .andDo(print())
+            .andExpect(status().is(httpStatus.value()));
+
+        if (jsonMap != null) {
+            for (val entry : jsonMap.entrySet()) {
+                if (entry.getValue() instanceof Matcher) {
+                    resultActions.andExpect(jsonPath(entry.getKey(), (Matcher) entry.getValue()));
+
+                } else {
+                    resultActions.andExpect(jsonPath(entry.getKey(), is(entry.getValue())));
+                }
+
+            }
+        }
+    }
+
+    /**
+     * Test response data for API request
+     *
+     * @param request    API Request
+     * @param token      Token request
+     * @param body       Body request
+     * @param httpStatus Expected response status
+     * @param jsonMap    Json map
+     */
+    private void testResponseData(MockHttpServletRequestBuilder request,
+                                  String token,
+                                  Object body,
+                                  HttpStatus httpStatus,
+                                  Map<String, Object> jsonMap) throws Exception {
+        testResponseData(request, token, body, httpStatus, jsonMap, null);
+    }
+
+    /**
+     * Create json map with custom error code
+     *
+     * @param customError Custom error contain error code
+     * @return Json map contain error code
+     */
+    private Map<String, Object> createJsonMapError(CustomError customError) {
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.code", customError.code());
+        return jsonMap;
     }
 }

@@ -14,6 +14,7 @@ import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
+import com.agility.shopping.cart.services.ShoppingCartService;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,9 @@ public class ShoppingCartController {
     @Autowired
     private TokenAuthenticationService tokenAuthenticationService;
 
+    @Autowired
+    private ShoppingCartService shoppingCartService;
+
     /**
      * Create shopping cart
      *
@@ -72,7 +76,7 @@ public class ShoppingCartController {
         }
 
         // Get user id;
-        long userId = tokenAuthenticationService.getUserId(getToken(request));
+        long userId = tokenAuthenticationService.getUserId(request);
 
         // Get user by user id
         User user = userRepository.findOne(userId);
@@ -126,7 +130,7 @@ public class ShoppingCartController {
     public ShoppingCartResponse findOne(@PathVariable long id, HttpServletRequest request) {
         log.debug("GET /shopping-carts/{}", id);
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -155,7 +159,7 @@ public class ShoppingCartController {
                                        HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -190,7 +194,7 @@ public class ShoppingCartController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, HttpServletRequest request) {
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -220,7 +224,7 @@ public class ShoppingCartController {
     public String checkout(@PathVariable long id, HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(getToken(request));
+        Long userId = tokenAuthenticationService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -231,12 +235,12 @@ public class ShoppingCartController {
         }
 
         // Throw Bad request exception when shopping cart done
-        if (isShoppingCartWithStatus(shoppingCart, ShoppingCartStatus.DONE)) {
+        if (shoppingCartService.haveStatus(shoppingCart, ShoppingCartStatus.DONE)) {
             throw new BadRequestException(SHOPPING_CART_DONE);
         }
 
         // Throw Bad request exception when shopping cart empty
-        if (isShoppingCartWithStatus(shoppingCart, ShoppingCartStatus.EMPTY)) {
+        if (shoppingCartService.haveStatus(shoppingCart, ShoppingCartStatus.EMPTY)) {
             throw new BadRequestException(SHOPPING_CART_EMPTY);
         }
 
@@ -245,27 +249,6 @@ public class ShoppingCartController {
         shoppingCartRepository.save(shoppingCart);
 
         return MessageConstant.SHOPPING_CART_CHECKOUT_SUCCESS;
-    }
-
-    /**
-     * Get token from request
-     *
-     * @param request Request from user
-     * @return Token string
-     */
-    private String getToken(HttpServletRequest request) {
-        return request.getHeader(securityConfig.getHeaderString());
-    }
-
-    /**
-     * Check whether or not shopping cart have given shopping cart status
-     *
-     * @param shoppingCart Shopping cart need check
-     * @param status       Status shopping cart
-     * @return true if shopping cart have given status, else return false
-     */
-    private boolean isShoppingCartWithStatus(ShoppingCart shoppingCart, ShoppingCartStatus status) {
-        return status.getName().equals(shoppingCart.getStatus());
     }
 
 }

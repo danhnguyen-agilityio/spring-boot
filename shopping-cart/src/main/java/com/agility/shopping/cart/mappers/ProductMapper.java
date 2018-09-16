@@ -10,8 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * ProductMapper interface is used to map between different object models
- * (Product, ProductRequest, ProductResponse)
+ * ProductMapper interface is used to map between different object models that relate to Product
  */
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
