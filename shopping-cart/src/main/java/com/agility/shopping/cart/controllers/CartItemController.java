@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
+import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemResponse;
@@ -268,7 +269,7 @@ public class CartItemController {
         // Save shopping cart
         shoppingCartRepository.save(shoppingCart);
 
-        return "Delete cart item successfully";
+        return MessageConstant.CART_ITEM_DELETE_SUCCESS;
     }
 
     /**

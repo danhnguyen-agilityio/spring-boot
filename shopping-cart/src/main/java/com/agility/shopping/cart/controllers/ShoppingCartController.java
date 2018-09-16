@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
+import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.dto.ShoppingCartResponse;
@@ -202,7 +203,7 @@ public class ShoppingCartController {
         // Delete shopping cart when authenticated user own shopping cart with given id
         shoppingCartRepository.delete(shoppingCart);
 
-        return "Delete shopping cart successfully";
+        return MessageConstant.SHOPPING_CART_DELETE_SUCCESS;
     }
 
 
@@ -243,7 +244,7 @@ public class ShoppingCartController {
         shoppingCart.setStatus(ShoppingCartStatus.DONE.getName());
         shoppingCartRepository.save(shoppingCart);
 
-        return "Checkout shopping cart successfully";
+        return MessageConstant.SHOPPING_CART_CHECKOUT_SUCCESS;
     }
 
     /**

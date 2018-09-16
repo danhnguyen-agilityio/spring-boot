@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
+import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
@@ -651,7 +652,7 @@ public class CartItemControllerTest {
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
         Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("$", "Delete cart item successfully");
+        jsonMap.put("$", MessageConstant.CART_ITEM_DELETE_SUCCESS);
         testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.OK, jsonMap, params);
 
         // Verify status shopping cart is EMPTY when no cart item for shopping cart after delete cart item

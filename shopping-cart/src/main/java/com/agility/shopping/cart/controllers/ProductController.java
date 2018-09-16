@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
 import com.agility.shopping.cart.exceptions.CustomError;
@@ -149,6 +150,6 @@ public class ProductController {
         // Delete product
         productRepository.delete(id);
 
-        return "Delete product successfully";
+        return MessageConstant.PRODUCT_DELETE_SUCCESS;
     }
 }
