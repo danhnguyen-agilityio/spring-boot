@@ -103,10 +103,7 @@ public class ProductControllerTest {
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
-        // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.existsByName(product.getName())).thenReturn(false);
@@ -128,9 +125,7 @@ public class ProductControllerTest {
         throws Exception {
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock product
         Product product = Product.builder()
@@ -164,9 +159,7 @@ public class ProductControllerTest {
         throws Exception {
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock list product
         Product product1 = Product.builder()
@@ -215,9 +208,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
@@ -235,9 +226,7 @@ public class ProductControllerTest {
     public void testFindProductFailNotFoundWhenProductIdNotExist() throws Exception {
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock id of product
         long productId = 1L;
@@ -367,9 +356,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
@@ -397,9 +384,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String username = "admin";
-        Set<String> roles = Sets.newSet(RoleType.ADMIN.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(null);

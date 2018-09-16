@@ -25,6 +25,8 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.agility.shopping.cart.exceptions.CustomError.*;
+
 /**
  * This class handles custom exception
  */
@@ -68,7 +70,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getLocalizedMessage(), errors);
+        ApiError apiError = new ApiError(METHOD_ARGUMENT_NOT_VALID.code(), ex.getLocalizedMessage(), errors);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -94,7 +96,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                                                                           WebRequest request) {
         String error = ex.getParameterName() + " parameter is missing";
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(), ex.getLocalizedMessage(), error);
+        ApiError apiError = new ApiError(MISSING_REQUEST_PARAM.code(), ex.getLocalizedMessage(), error);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -137,8 +139,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         log.debug("MethodArgumentTypeMismatchException");
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(),
-            ex.getLocalizedMessage(), error);
+        ApiError apiError = new ApiError(METHOD_ARGUMENT_TYPE_MISMATCH.code(), ex.getLocalizedMessage(), error);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -153,8 +154,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         log.debug("Handler NoHandlerFoundException");
         String error = "No handler found for " + ex.getHttpMethod() + " " + ex.getRequestURL();
 
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(),
-            ex.getLocalizedMessage(), error);
+        ApiError apiError = new ApiError(NO_HANDLER_FOUND.code(), ex.getLocalizedMessage(), error);
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -171,8 +171,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(" method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
 
-        ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED.value(),
-            ex.getLocalizedMessage(), builder.toString());
+        ApiError apiError = new ApiError(METHOD_NOT_ALLOWED.code(), ex.getLocalizedMessage(), builder.toString());
         return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
@@ -189,7 +188,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
 
-        ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(),
+        ApiError apiError = new ApiError(UNSUPPORTED_MEDIA_TYPE.code(),
             ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
         return new ResponseEntity<>(apiError, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }

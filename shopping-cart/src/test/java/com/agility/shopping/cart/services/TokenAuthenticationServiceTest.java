@@ -52,7 +52,7 @@ public class TokenAuthenticationServiceTest {
     public void testGetAuthentication_ShouldSuccess_WhenTokenValid() {
         // Create token
         User user = fakerService.fakeUser(RoleType.ADMIN);
-        String token = tokenAuthenticationService.createToken(fakerService.fakeUser(RoleType.ADMIN));
+        String token = tokenAuthenticationService.createToken(user);
 
         // Get authentication from token
         Authentication authentication =
@@ -113,12 +113,12 @@ public class TokenAuthenticationServiceTest {
     }
 
     /**
-     * Test get user id should return null when token is null
+     * Test get user id should return null when empty token
      */
     @Test
     public void testGetUserId_ShouldReturnNull_WhenTokenIsNull() {
         // Get user id from token
-        Long userId = tokenAuthenticationService.getUserId(null);
+        Long userId = tokenAuthenticationService.getUserId("");
 
         assertNull(userId);
     }

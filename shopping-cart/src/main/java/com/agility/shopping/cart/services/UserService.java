@@ -36,30 +36,4 @@ public class UserService implements UserDetailsService {
             user.getUsername(), user.getPassword(), new HashSet<>()
         );
     }
-
-    /**
-     * Get roles of user by username
-     * @param username
-     * @return List role of user with given name
-     */
-    public Set<Role> getRolesByUsername(String username) {
-         User user = userRepository.findByUsername(username);
-
-         if (user == null) {
-             return new HashSet<>();
-         } else {
-             return user.getRoles();
-         }
-    }
-
-    /**
-     * Get name roles of user by username
-     * @param username
-     * @return List name role of user with given name
-     */
-    public Set<String> getNameRolesByUsername(String username) {
-        return getRolesByUsername(username).stream()
-            .map(role -> role.getName())
-            .collect(Collectors.toSet());
-    }
 }

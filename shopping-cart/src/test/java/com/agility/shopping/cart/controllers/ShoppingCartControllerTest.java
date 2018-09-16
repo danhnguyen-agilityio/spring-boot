@@ -206,12 +206,11 @@ public class ShoppingCartControllerTest {
             fakerService.fakeShoppingCart());
 
         // Generate token have role member
-        String username = "user";
-        Set<String> roles = Sets.newSet(RoleType.MEMBER.getName());
-        String token = tokenAuthenticationService.createToken(username, roles);
+        User user = fakerService.fakeMemberUser();
+        String token = tokenAuthenticationService.createToken(user);
 
         // Mock method
-        when(shoppingCartRepository.findAllByUsername(username))
+        when(shoppingCartRepository.findAllByUsername(user.getUsername()))
             .thenReturn(shoppingCarts);
 
         mockMvc.perform(get("/shopping-carts")
@@ -222,7 +221,7 @@ public class ShoppingCartControllerTest {
             .andExpect(jsonPath("$[1].name",
                 is(shoppingCarts.get(1).getName())));
 
-        verify(shoppingCartRepository, times(1)).findAllByUsername(username);
+        verify(shoppingCartRepository, times(1)).findAllByUsername(user.getUsername());
         verifyNoMoreInteractions(shoppingCartRepository);
     }
 

@@ -20,7 +20,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
+import static com.agility.shopping.cart.exceptions.CustomError.METHOD_ARGUMENT_TYPE_MISMATCH;
+import static com.agility.shopping.cart.exceptions.CustomError.METHOD_NOT_ALLOWED;
+import static com.agility.shopping.cart.exceptions.CustomError.UNSUPPORTED_MEDIA_TYPE;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -74,6 +78,7 @@ public class CustomExceptionHandlerTest {
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isBadRequest())
             .andDo(print())
+            .andExpect(jsonPath("$.code", is(METHOD_ARGUMENT_TYPE_MISMATCH.code())))
             .andExpect(jsonPath("$.errors[0]", containsString("should be of type")));
     }
 
@@ -99,6 +104,7 @@ public class CustomExceptionHandlerTest {
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isMethodNotAllowed())
             .andDo(print())
+            .andExpect(jsonPath("$.code", is(METHOD_NOT_ALLOWED.code())))
             .andExpect(jsonPath("$.errors[0]", containsString("Supported methods are")));
     }
 
@@ -112,6 +118,7 @@ public class CustomExceptionHandlerTest {
             .content(ConvertUtil.convertObjectToJsonBytes(test)))
             .andExpect(status().isUnsupportedMediaType())
             .andDo(print())
+            .andExpect(jsonPath("$.code", is(UNSUPPORTED_MEDIA_TYPE.code())))
             .andExpect(jsonPath("$.errors[0]", containsString("media type is not supported")));
     }
 }
