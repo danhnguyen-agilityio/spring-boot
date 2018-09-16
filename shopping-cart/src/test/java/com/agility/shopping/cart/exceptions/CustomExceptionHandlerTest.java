@@ -4,7 +4,7 @@ import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.TestModel;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.utils.ConvertUtil;
-import com.agility.shopping.cart.utils.FakerService;
+import com.agility.shopping.cart.services.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -50,12 +50,15 @@ public class CustomExceptionHandlerTest {
     private TokenAuthenticationService tokenAuthenticationService;
 
     @Autowired
+    private FakerService fakerService;
+
+    @Autowired
     private SecurityConfig securityConfig;
 
     @Before
     public void setUp() {
         test = new TestModel(faker.name().name(), faker.name().name());
-        token = tokenAuthenticationService.createToken(FakerService.fakeMemberUser());
+        token = tokenAuthenticationService.createToken(fakerService.fakeMemberUser());
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)
@@ -83,7 +86,7 @@ public class CustomExceptionHandlerTest {
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isNotFound())
             .andDo(print());
-            // FIXMEFIXME:: Not throw exception in env test
+            // FIXME:: Not throw exception in env test
 //            .andExpect(jsonPath("$.errors[0]", containsString("No handler found")));
     }
 

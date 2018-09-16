@@ -5,7 +5,7 @@ import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.utils.ShoppingCartUtil;
+import com.agility.shopping.cart.services.ShoppingCartService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -45,7 +45,8 @@ public interface ShoppingCartMapper {
      * @return Total money from shopping cart
      */
     default Long toTotal(ShoppingCart shoppingCart) {
-        return ShoppingCartUtil.calculateTotal(shoppingCart);
+        ShoppingCartService shoppingCartService = new ShoppingCartService();
+        return shoppingCartService.calculateTotal(shoppingCart);
     }
 
     /**

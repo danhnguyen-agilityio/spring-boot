@@ -15,7 +15,7 @@ import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
-import com.agility.shopping.cart.utils.FakerService;
+import com.agility.shopping.cart.services.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -31,12 +31,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.client.match.JsonPathRequestMatchers;
-import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.result.JsonPathResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -50,7 +47,6 @@ import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETA
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.exceptions.CustomError.*;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
-import static com.agility.shopping.cart.utils.FakerService.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
@@ -513,7 +509,7 @@ public class CartItemControllerTest {
     @Test
     public void testUpdateCartItem_ShouldThrowBadRequest_WhenShoppingCartDone() throws Exception {
         // Mock data and method
-        shoppingCart = fakeShoppingCart(ShoppingCartStatus.DONE);
+        shoppingCart.setStatus(ShoppingCartStatus.DONE.getName());
         when(shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), memberUser.getId()))
             .thenReturn(shoppingCart);
 
@@ -643,7 +639,7 @@ public class CartItemControllerTest {
     @Test
     public void testDeleteCartItem_ShouldSuccess() throws Exception {
         // Mock data and method
-        shoppingCart = fakeShoppingCart(ShoppingCartStatus.IN_PROGRESS);
+        shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         // Set one cart item for shopping cart
         shoppingCart.setCartItems(Sets.newSet(cartItem));
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(shoppingCart);

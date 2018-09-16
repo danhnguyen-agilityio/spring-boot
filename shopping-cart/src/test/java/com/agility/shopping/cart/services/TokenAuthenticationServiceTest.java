@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashSet;
 
-import static com.agility.shopping.cart.utils.FakerService.fakeAdminUser;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
@@ -31,6 +30,9 @@ public class TokenAuthenticationServiceTest {
 
     @Autowired
     private SecurityConfig securityConfig;
+
+    @Autowired
+    private FakerService fakerService;
 
     @Autowired
     private TokenAuthenticationService tokenAuthenticationService;
@@ -87,7 +89,7 @@ public class TokenAuthenticationServiceTest {
     @Test(expected = ExpiredJwtException.class)
     public void testGetAuthenticationFailWhenTokenHasExpired() throws Exception {
         // Mock data
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
 
         // Generate token
         String token = tokenAuthenticationService.createToken(user);
@@ -110,7 +112,7 @@ public class TokenAuthenticationServiceTest {
         log.debug("testGetUserIdFromToken: {}", securityConfig.getHeaderString());
 
         // Mock data
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
 
         // Generate token
         String token = tokenAuthenticationService.createToken(user);

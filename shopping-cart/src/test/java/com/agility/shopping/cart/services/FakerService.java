@@ -1,4 +1,4 @@
-package com.agility.shopping.cart.utils;
+package com.agility.shopping.cart.services;
 
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
@@ -32,7 +32,7 @@ public class FakerService {
      * @param roleTypes List role type of user
      * @return User with given roles
      */
-    public static User fakeUser(List<RoleType> roleTypes) {
+    public User fakeUser(List<RoleType> roleTypes) {
         Set<Role> roles = roleTypes.stream()
             .map(roleType -> new Role(roleType.getName()))
             .collect(Collectors.toSet());
@@ -50,17 +50,16 @@ public class FakerService {
      * @param roleType Role type of user
      * @return User with given role
      */
-    public static User fakeUser(RoleType roleType) {
+    public User fakeUser(RoleType roleType) {
         return fakeUser(Arrays.asList(roleType));
     }
-
 
     /**
      * Fake user
      *
      * @return User
      */
-    public static User fakeUser() {
+    public User fakeUser() {
         User user = new User();
         user.setId(faker.number().randomNumber());
         user.setUsername(faker.name().name());
@@ -73,7 +72,7 @@ public class FakerService {
      *
      * @return Admin user
      */
-    public static User fakeAdminUser() {
+    public User fakeAdminUser() {
         User user = fakeUser();
         Set<Role> roles = Sets.newSet(new Role(RoleType.ADMIN.getName()));
         user.setRoles(roles);
@@ -85,7 +84,7 @@ public class FakerService {
      *
      * @return Member user
      */
-    public static User fakeMemberUser() {
+    public User fakeMemberUser() {
         User user = fakeUser();
         Set<Role> roles = Sets.newSet(new Role(RoleType.MEMBER.getName()));
         user.setRoles(roles);
@@ -93,21 +92,11 @@ public class FakerService {
     }
 
     /**
-     * Fake user with given username
-     *
-     * @param username Username of created user
-     * @return User
-     */
-    public static User fakeUser(String username) {
-        return new User(username, faker.internet().password());
-    }
-
-    /**
      * Fake product
      *
      * @return Product
      */
-    public static Product fakeProduct() {
+    public Product fakeProduct() {
         return Product.builder()
             .id(faker.number().randomNumber())
             .name(faker.name().name())
@@ -120,7 +109,7 @@ public class FakerService {
      *
      * @return Product request
      */
-    public static ProductRequest fakeProductRequest() {
+    public ProductRequest fakeProductRequest() {
         ProductRequest request = new ProductRequest();
         request.setName(faker.name().name());
         request.setPrice(faker.number().randomNumber());
@@ -134,7 +123,7 @@ public class FakerService {
      * @param shoppingCartStatus Shopping cart status
      * @return Shopping cart with given status
      */
-    public static ShoppingCart fakeShoppingCart(ShoppingCartStatus shoppingCartStatus) {
+    public ShoppingCart fakeShoppingCart(ShoppingCartStatus shoppingCartStatus) {
         ShoppingCart shoppingCart = fakeShoppingCart();
         shoppingCart.setStatus(shoppingCartStatus.getName());
         return shoppingCart;
@@ -145,7 +134,7 @@ public class FakerService {
      *
      * @return Shopping cart object
      */
-    public static ShoppingCart fakeShoppingCart() {
+    public ShoppingCart fakeShoppingCart() {
         return ShoppingCart.builder()
             .id(faker.number().randomNumber())
             .name(faker.lorem().characters(4, 30))
@@ -160,7 +149,7 @@ public class FakerService {
      *
      * @return Shopping cart object
      */
-    public static ShoppingCart fakeShoppingCart(User user) {
+    public ShoppingCart fakeShoppingCart(User user) {
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setId(faker.number().randomNumber());
         shoppingCart.setName(faker.lorem().characters(4, 30));
@@ -175,7 +164,7 @@ public class FakerService {
      *
      * @return Shopping cart request
      */
-    public static ShoppingCartRequest fakeShoppingCartRequest() {
+    public ShoppingCartRequest fakeShoppingCartRequest() {
         return new ShoppingCartRequest(faker.lorem().characters(4, 30), faker.lorem().characters(10, 30));
     }
 
@@ -184,7 +173,7 @@ public class FakerService {
      *
      * @return Cart item
      */
-    public static CartItem fakeCartItem() {
+    public CartItem fakeCartItem() {
         CartItem cartItem = new CartItem();
         cartItem.setId(faker.number().randomNumber());
         cartItem.setQuantity(faker.number().numberBetween(1, Long.MAX_VALUE));
@@ -200,7 +189,7 @@ public class FakerService {
      * @param price    Price of product
      * @return Cart item
      */
-    public static CartItem fakeCartItemWithQuantityAndPrice(long quantity, long price) {
+    public CartItem fakeCartItemWithQuantityAndPrice(long quantity, long price) {
         CartItem cartItem = fakeCartItem();
         cartItem.setQuantity(quantity);
         cartItem.getProduct().setPrice(price);
@@ -212,7 +201,7 @@ public class FakerService {
      *
      * @return Cart item request
      */
-    public static CartItemRequest fakeCartItemRequest() {
+    public CartItemRequest fakeCartItemRequest() {
         CartItemRequest cartItemRequest = new CartItemRequest();
         cartItemRequest.setShoppingCartId(faker.number().randomNumber());
         cartItemRequest.setProductId(faker.number().randomNumber());
@@ -225,20 +214,11 @@ public class FakerService {
      *
      * @return Cart item update
      */
-    public static CartItemUpdate fakeCartItemUpdate() {
+    public CartItemUpdate fakeCartItemUpdate() {
         return CartItemUpdate.builder()
             .shoppingCartId(faker.number().randomNumber())
             .quantity(faker.number().numberBetween(1, Long.MAX_VALUE))
             .build();
-    }
-
-    /**
-     * Fake list 3 element cart item
-     *
-     * @return List cart item
-     */
-    public static List<CartItem> fakeListCartItem() {
-        return Arrays.asList(fakeCartItem(), fakeCartItem(), fakeCartItem());
     }
 
     /**

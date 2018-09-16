@@ -1,11 +1,13 @@
-package com.agility.shopping.cart.utils;
+package com.agility.shopping.cart.services;
 
 import com.agility.shopping.cart.models.ShoppingCart;
+import org.springframework.stereotype.Service;
 
 /**
- * ShoppingCartUtil class
+ * ShoppingCartService class
  */
-public class ShoppingCartUtil {
+@Service
+public class ShoppingCartService {
 
     /**
      * Calculate total from shopping cart
@@ -13,7 +15,7 @@ public class ShoppingCartUtil {
      * @param shoppingCart Shopping cart
      * @return Total money from all product in shopping cart
      */
-    public static long calculateTotal(ShoppingCart shoppingCart) {
+    public long calculateTotal(ShoppingCart shoppingCart) {
         if (shoppingCart.getCartItems() == null) return 0;
         return shoppingCart.getCartItems().stream()
             .mapToLong(cartItem -> cartItem.getQuantity() * cartItem.getProduct().getPrice())

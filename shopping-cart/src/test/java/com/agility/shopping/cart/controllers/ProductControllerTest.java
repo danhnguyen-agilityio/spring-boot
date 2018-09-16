@@ -10,9 +10,9 @@ import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.agility.shopping.cart.services.UserService;
+import com.agility.shopping.cart.services.FakerService;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.agility.shopping.cart.utils.FakerService.*;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Before;
@@ -69,6 +69,9 @@ public class ProductControllerTest {
 
     @Autowired
     private SecurityConfig securityConfig;
+
+    @Autowired
+    private FakerService fakerService;
 
     @MockBean
     private UserService userService;
@@ -257,11 +260,11 @@ public class ProductControllerTest {
     @Test
     public void testUpdateProductThrowResourceNotFoundExceptionWhenProductExist() throws Exception {
         // Generate token have role admin
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
         String token = tokenAuthenticationService.createToken(user);
 
         // Generate data
-        Product product = fakeProduct();
+        Product product = fakerService.fakeProduct();
         ProductRequest request = productMapper.toProductRequest(product);
 
         // Mock method
@@ -282,12 +285,12 @@ public class ProductControllerTest {
     @Test
     public void testUpdateProductSuccessWhenProductWithGivenIdContainNewName() throws Exception {
         // Generate token have role admin
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
         String token = tokenAuthenticationService.createToken(user);
 
         // Generate data
-        Product product = fakeProduct();
-        ProductRequest request = fakeProductRequest();
+        Product product = fakerService.fakeProduct();
+        ProductRequest request = fakerService.fakeProductRequest();
         request.setName(product.getName());
 
         // Mock method
@@ -306,12 +309,12 @@ public class ProductControllerTest {
     @Test
     public void testUpdateProductThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
         // Generate token have role admin
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
         String token = tokenAuthenticationService.createToken(user);
 
         // Fake differ product and product request
-        Product product = fakeProduct();
-        ProductRequest request = fakeProductRequest();
+        Product product = fakerService.fakeProduct();
+        ProductRequest request = fakerService.fakeProductRequest();
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
@@ -330,12 +333,12 @@ public class ProductControllerTest {
     @Test
     public void testUpdateProductSuccessWhenNewNameNotExist() throws Exception {
         // Generate token have role admin
-        User user = fakeAdminUser();
+        User user = fakerService.fakeAdminUser();
         String token = tokenAuthenticationService.createToken(user);
 
         // Fake differ product and product request
-        Product product = fakeProduct();
-        ProductRequest request = fakeProductRequest();
+        Product product = fakerService.fakeProduct();
+        ProductRequest request = fakerService.fakeProductRequest();
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
