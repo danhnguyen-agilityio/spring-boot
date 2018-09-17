@@ -71,6 +71,7 @@ public interface ShoppingCartMapper {
      * @param shoppingCarts List shopping cart
      * @return List shopping cart response
      */
+    // FIXME:: Consider get list cart item of shopping cart when get list
     List<ShoppingCartResponse> toShoppingCartResponse(
         List<ShoppingCart> shoppingCarts);
 

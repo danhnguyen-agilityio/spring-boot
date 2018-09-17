@@ -129,7 +129,13 @@ public class TokenAuthenticationService {
 
         log.debug("User id {}", claims.getId());
 
-        return Long.parseLong(claims.getId());
+        try {
+            return Long.parseLong(claims.getId());
+        } catch (NumberFormatException exception) {
+            // FIXME:: Consider return null or default value, declare new exception
+            return 0L;
+        }
+
     }
 
     /**
