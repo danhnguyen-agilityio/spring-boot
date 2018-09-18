@@ -18,8 +18,9 @@ public enum CustomError {
     SHOPPING_CART_NOT_FOUND(431, "Shopping cart not found"),
     SHOPPING_CART_DONE(433, "Shopping cart is already done"),
     SHOPPING_CART_EMPTY(434, "Shopping cart empty"),
-    CART_ITEM_NOT_FOUND(440, "Cart item not found");
-
+    CART_ITEM_NOT_FOUND(440, "Cart item not found"),
+    BAD_CREDENTIALS(451, "Invalid username/password supplied"),
+    INVALID_JWT_AUTHENTICATION(452, "Expired or invalid JWT token");
 
     private int code;
     private String message;

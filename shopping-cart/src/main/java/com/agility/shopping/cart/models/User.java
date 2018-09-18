@@ -1,10 +1,15 @@
 package com.agility.shopping.cart.models;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * User entity class
@@ -17,11 +22,8 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @Builder
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
-    /**
-     * Constructor with give username and password
-     */
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -32,7 +34,7 @@ public class User implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
@@ -48,4 +50,32 @@ public class User implements Serializable {
 
     @OneToMany(mappedBy = "user")
     private Set<ShoppingCart> shoppingCarts;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+            .map(role -> role.getName())
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

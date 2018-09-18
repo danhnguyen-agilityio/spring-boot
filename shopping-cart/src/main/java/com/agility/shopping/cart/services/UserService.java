@@ -3,6 +3,7 @@ package com.agility.shopping.cart.services;
 import com.agility.shopping.cart.models.Role;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,22 +19,16 @@ import java.util.stream.Collectors;
  * and link it to the security
  */
 @Service
+@Slf4j
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(name);
-
-        if (user == null) {
-            throw new UsernameNotFoundException(name);
-            // FIXME:: Return error code to client when invalid username or password
-        }
-
-        return new org.springframework.security.core.userdetails.User(
-            user.getUsername(), user.getPassword(), new HashSet<>()
-        );
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.debug("Load user by name: {}", username );
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User name: " + username + " not found"));
     }
 }

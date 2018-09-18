@@ -1,10 +1,8 @@
 package com.agility.shopping.cart.configs;
 
 import com.agility.shopping.cart.constants.RoleType;
-import com.agility.shopping.cart.filters.JWTAuthenticationFilter;
-import com.agility.shopping.cart.filters.JWTAuthorizationFilter;
-import com.agility.shopping.cart.repositories.UserRepository;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.agility.shopping.cart.securities.JwtConfigurer;
+import com.agility.shopping.cart.securities.JwtTokenProvider;
 import com.agility.shopping.cart.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -46,22 +45,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private UserService userService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    JWTAuthenticationFilter jwtAuthenticationFilter;
-
-    @Bean
-    public JWTAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-        return new JWTAuthorizationFilter(authenticationManager());
-    }
+    private JwtTokenProvider jwtTokenProvider;
 
     /**
      * Authenticate credential that user login with username and password
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     /**
@@ -69,7 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
+        http
+            .httpBasic().disable()
+            .csrf().disable().authorizeRequests()
+            .antMatchers("/v1/auths").permitAll()
             // Authenticated user can access to api get product and list product
             .antMatchers(HttpMethod.GET, "/products/**").authenticated()
             // Only user admin can access to api create, update, delete product
@@ -78,12 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(CART_ITEM_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
-            // The authentication filter
-            .addFilter(jwtAuthenticationFilter)
-            // The authorization filter
-            .addFilter(jwtAuthorizationFilter())
-            // Disables session creation on spring security
+            .apply(new JwtConfigurer(jwtTokenProvider))
+            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
     }
 }
