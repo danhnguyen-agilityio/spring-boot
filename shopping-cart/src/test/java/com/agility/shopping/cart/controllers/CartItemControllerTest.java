@@ -15,7 +15,8 @@ import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.agility.shopping.cart.repositories.UserRepository;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.services.FakerService;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETAIL_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
@@ -91,7 +93,7 @@ public class CartItemControllerTest {
     private SecurityConfig securityConfig;
 
     @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private FakerService fakerService;
@@ -105,18 +107,26 @@ public class CartItemControllerTest {
     @MockBean
     private CartItemRepository cartItemRepository;
 
+    @MockBean
+    private UserRepository userRepository;
+
     @Before
     public void setUp() {
         memberUser = fakerService.fakeUser(RoleType.MEMBER);
         adminUser = fakerService.fakeUser(RoleType.ADMIN);
-        memberToken = tokenAuthenticationService.createToken(memberUser);
-        adminToken = tokenAuthenticationService.createToken(adminUser);
+        adminUser.setUsername(memberUser.getUsername());
+        memberToken = jwtTokenService.createToken(memberUser);
+        adminToken = jwtTokenService.createToken(adminUser);
         product = fakerService.fakeProduct();
         shoppingCart = fakerService.fakeShoppingCart();
         cartItem = fakerService.fakeCartItem();
         cartItemRequest = fakerService.fakeCartItemRequest();
         cartItems = fakerService.fakeListCartItem(3);
         cartItemUpdate = fakerService.fakeCartItemUpdate();
+
+        // Return member user when mock method findByUsername
+        when(userRepository.findByUsername(memberUser.getUsername())).thenReturn(Optional.ofNullable(memberUser));
+
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)
@@ -132,6 +142,8 @@ public class CartItemControllerTest {
      */
     @Test
     public void testCreateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
+
         testResponseData(post(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
     }
 
@@ -259,6 +271,7 @@ public class CartItemControllerTest {
      */
     @Test
     public void testFindAllCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
         testResponseData(get(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
     }
 
@@ -318,6 +331,8 @@ public class CartItemControllerTest {
      */
     @Test
     public void testFindOneCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
+
         testResponseData(get(CART_ITEM_DETAIL_URL, faker.number().randomNumber()), adminToken, null,
             HttpStatus.FORBIDDEN, null);
     }
@@ -405,6 +420,8 @@ public class CartItemControllerTest {
      */
     @Test
     public void testUpdateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
+
         // Test response data for request
         testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), adminToken, cartItemRequest,
             HttpStatus.FORBIDDEN, null);
@@ -513,10 +530,11 @@ public class CartItemControllerTest {
     // =========================================================
 
     /**
-     * Test delete cart item throw forbidden exception for admin user
+     * Test delete cart item throw forbidden exception when admin user access
      */
     @Test
-    public void testDeleteCartItemThrowForbiddenExceptionForAdminUser() throws Exception {
+    public void testDeleteCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
         testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), adminToken, null, HttpStatus.FORBIDDEN, null);
     }
 

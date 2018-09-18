@@ -14,8 +14,8 @@ import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.services.ShoppingCartService;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,7 +49,7 @@ public class ShoppingCartController {
     private SecurityConfig securityConfig;
 
     @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private ShoppingCartService shoppingCartService;
@@ -76,7 +76,7 @@ public class ShoppingCartController {
         }
 
         // Get user id;
-        long userId = tokenAuthenticationService.getUserId(request);
+        long userId = jwtTokenService.getUserId(request);
 
         // Get user by user id
         User user = userRepository.findOne(userId);
@@ -130,7 +130,7 @@ public class ShoppingCartController {
     public ShoppingCartResponse findOne(@PathVariable long id, HttpServletRequest request) {
         log.debug("GET /shopping-carts/{}", id);
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(request);
+        Long userId = jwtTokenService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -159,7 +159,7 @@ public class ShoppingCartController {
                                        HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(request);
+        Long userId = jwtTokenService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -194,7 +194,7 @@ public class ShoppingCartController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id, HttpServletRequest request) {
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(request);
+        Long userId = jwtTokenService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);
@@ -224,7 +224,7 @@ public class ShoppingCartController {
     public String checkout(@PathVariable long id, HttpServletRequest request) {
 
         // Get user id from request
-        Long userId = tokenAuthenticationService.getUserId(request);
+        Long userId = jwtTokenService.getUserId(request);
 
         // Get shopping cart by shopping cart id and user id
         ShoppingCart shoppingCart = shoppingCartRepository.findOne(id, userId);

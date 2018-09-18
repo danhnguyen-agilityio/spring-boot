@@ -1,8 +1,9 @@
-package com.agility.shopping.cart.services;
+package com.agility.shopping.cart.securities;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.services.FakerService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -17,14 +18,13 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.*;
 
 /**
- * This class test TokenAuthenticationService class
+ * This class test JwtTokenService class
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @Slf4j
-public class TokenAuthenticationServiceTest {
-
+public class JwtTokenServiceTest {
     @Autowired
     private SecurityConfig securityConfig;
 
@@ -32,14 +32,14 @@ public class TokenAuthenticationServiceTest {
     private FakerService fakerService;
 
     @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    private JwtTokenService jwtTokenService;
 
     /**
      * Test create token
      */
     @Test
     public void testCreateToken() {
-        String token = tokenAuthenticationService.createToken(fakerService.fakeUser(RoleType.ADMIN));
+        String token = jwtTokenService.createToken(fakerService.fakeUser(RoleType.ADMIN));
 
         assertNotNull(token);
         assertThat(token, containsString(securityConfig.getTokenPrefix()));
@@ -52,11 +52,11 @@ public class TokenAuthenticationServiceTest {
     public void testGetAuthentication_ShouldSuccess_WhenTokenValid() {
         // Create token
         User user = fakerService.fakeUser(RoleType.ADMIN);
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Get authentication from token
         Authentication authentication =
-            tokenAuthenticationService.getAuthentication(token);
+            jwtTokenService.getAuthentication(token);
 
         assertNotNull(authentication);
         assertEquals(authentication.getName(), user.getUsername());
@@ -69,7 +69,7 @@ public class TokenAuthenticationServiceTest {
     public void testGetAuthentication_ShouldFail_WhenTokenIsNull() {
         // Get authentication from token
         Authentication authentication =
-            tokenAuthenticationService.getAuthentication(null);
+            jwtTokenService.getAuthentication(null);
 
         assertNull(authentication);
     }
@@ -83,13 +83,13 @@ public class TokenAuthenticationServiceTest {
         User user = fakerService.fakeAdminUser();
 
         // Generate token
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Wait time
         Thread.sleep(securityConfig.getExpirationTime());
 
         // Get authentication
-        tokenAuthenticationService.getAuthentication(token);
+        jwtTokenService.getAuthentication(token);
     }
 
     /**
@@ -103,10 +103,10 @@ public class TokenAuthenticationServiceTest {
         User user = fakerService.fakeAdminUser();
 
         // Generate token
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Get user id from token
-        Long userId = tokenAuthenticationService.getUserId(token);
+        Long userId = jwtTokenService.getUserId(token);
 
         assertNotNull(userId);
         assertEquals(user.getId().toString(), userId.toString());
@@ -118,7 +118,7 @@ public class TokenAuthenticationServiceTest {
     @Test
     public void testGetUserId_ShouldReturnNull_WhenTokenIsNull() {
         // Get user id from token
-        Long userId = tokenAuthenticationService.getUserId("");
+        Long userId = jwtTokenService.getUserId("");
 
         assertNull(userId);
     }

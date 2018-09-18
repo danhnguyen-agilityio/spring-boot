@@ -2,7 +2,7 @@ package com.agility.shopping.cart.exceptions;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.TestModel;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.utils.ConvertUtil;
 import com.agility.shopping.cart.services.FakerService;
 import com.github.javafaker.Faker;
@@ -51,7 +51,7 @@ public class CustomExceptionHandlerTest {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private FakerService fakerService;
@@ -62,7 +62,7 @@ public class CustomExceptionHandlerTest {
     @Before
     public void setUp() {
         test = new TestModel(faker.name().name(), faker.name().name());
-        token = tokenAuthenticationService.createToken(fakerService.fakeMemberUser());
+        token = jwtTokenService.createToken(fakerService.fakeMemberUser());
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
             .addFilter(filterChainProxy)

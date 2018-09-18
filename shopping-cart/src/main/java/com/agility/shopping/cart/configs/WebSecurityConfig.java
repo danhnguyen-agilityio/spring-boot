@@ -2,8 +2,7 @@ package com.agility.shopping.cart.configs;
 
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.securities.JwtConfigurer;
-import com.agility.shopping.cart.securities.JwtTokenProvider;
-import com.agility.shopping.cart.services.UserService;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtTokenService jwtTokenService;
 
     /**
      * Authenticate credential that user login with username and password
@@ -75,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(CART_ITEM_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
-            .apply(new JwtConfigurer(jwtTokenProvider))
+            .apply(new JwtConfigurer(jwtTokenService))
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

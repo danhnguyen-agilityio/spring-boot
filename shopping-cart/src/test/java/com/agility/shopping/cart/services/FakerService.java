@@ -7,10 +7,8 @@ import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.models.*;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
 import com.github.javafaker.Faker;
 import org.mockito.internal.util.collections.Sets;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

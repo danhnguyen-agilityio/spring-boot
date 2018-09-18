@@ -5,7 +5,7 @@ import com.agility.shopping.cart.exceptions.BadAccountCredentialException;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.AuthenticationRequest;
-import com.agility.shopping.cart.securities.JwtTokenProvider;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,7 +27,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,7 +51,7 @@ public class AuthController {
                 data.getPassword()));
             User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-            String token = jwtTokenProvider.createToken(user);
+            String token = jwtTokenService.createToken(user);
 
             return ResponseEntity.ok().header(securityConfig.getHeaderString(),token).body(null);
         } catch (BadCredentialsException e) {

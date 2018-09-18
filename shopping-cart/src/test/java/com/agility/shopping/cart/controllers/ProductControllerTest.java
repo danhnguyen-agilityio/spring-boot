@@ -1,14 +1,14 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.configs.SecurityConfig;
-import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.repositories.ProductRepository;
-import com.agility.shopping.cart.services.TokenAuthenticationService;
+import com.agility.shopping.cart.repositories.UserRepository;
+import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.services.UserService;
 import com.agility.shopping.cart.services.FakerService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.util.collections.Sets;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,7 +33,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.mockito.Matchers.any;
@@ -65,7 +64,7 @@ public class ProductControllerTest {
     private ProductMapper productMapper;
 
     @Autowired
-    private TokenAuthenticationService tokenAuthenticationService;
+    private JwtTokenService jwtTokenService;
 
     @Autowired
     private SecurityConfig securityConfig;
@@ -74,7 +73,7 @@ public class ProductControllerTest {
     private FakerService fakerService;
 
     @MockBean
-    private UserService userService;
+    private UserRepository userRepository;
 
     @MockBean
     private ProductRepository productRepository;
@@ -103,7 +102,7 @@ public class ProductControllerTest {
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.existsByName(product.getName())).thenReturn(false);
@@ -125,7 +124,7 @@ public class ProductControllerTest {
         throws Exception {
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock product
         Product product = Product.builder()
@@ -159,7 +158,7 @@ public class ProductControllerTest {
         throws Exception {
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock list product
         Product product1 = Product.builder()
@@ -208,7 +207,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
@@ -226,7 +225,7 @@ public class ProductControllerTest {
     public void testFindProductFailNotFoundWhenProductIdNotExist() throws Exception {
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock id of product
         long productId = 1L;
@@ -250,7 +249,7 @@ public class ProductControllerTest {
     public void testUpdateProductThrowResourceNotFoundExceptionWhenProductExist() throws Exception {
         // Generate token have role admin
         User user = fakerService.fakeAdminUser();
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Generate data
         Product product = fakerService.fakeProduct();
@@ -275,7 +274,7 @@ public class ProductControllerTest {
     public void testUpdateProductSuccessWhenProductWithGivenIdContainNewName() throws Exception {
         // Generate token have role admin
         User user = fakerService.fakeAdminUser();
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Generate data
         Product product = fakerService.fakeProduct();
@@ -299,7 +298,7 @@ public class ProductControllerTest {
     public void testUpdateProductThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
         // Generate token have role admin
         User user = fakerService.fakeAdminUser();
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Fake differ product and product request
         Product product = fakerService.fakeProduct();
@@ -323,7 +322,7 @@ public class ProductControllerTest {
     public void testUpdateProductSuccessWhenNewNameNotExist() throws Exception {
         // Generate token have role admin
         User user = fakerService.fakeAdminUser();
-        String token = tokenAuthenticationService.createToken(user);
+        String token = jwtTokenService.createToken(user);
 
         // Fake differ product and product request
         Product product = fakerService.fakeProduct();
@@ -356,7 +355,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
@@ -384,7 +383,7 @@ public class ProductControllerTest {
             .build();
 
         // Generate token have role admin
-        String token = tokenAuthenticationService.createToken(fakerService.fakeAdminUser());
+        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
 
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(null);

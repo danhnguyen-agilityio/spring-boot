@@ -21,7 +21,7 @@ import static com.agility.shopping.cart.exceptions.CustomError.INVALID_JWT_AUTHE
 
 @Service
 @Slf4j
-public class JwtTokenProvider {
+public class JwtTokenService {
 
     @Autowired
     private SecurityConfig securityConfig;
