@@ -1,63 +1,27 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.MessageConstant;
-import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
-import com.agility.shopping.cart.dto.CartItemRequest;
-import com.agility.shopping.cart.dto.CartItemUpdate;
-import com.agility.shopping.cart.exceptions.CustomError;
-import com.agility.shopping.cart.mappers.CartItemMapper;
 import com.agility.shopping.cart.models.CartItem;
-import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.models.ShoppingCart;
-import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.CartItemRepository;
-import com.agility.shopping.cart.repositories.ProductRepository;
-import com.agility.shopping.cart.repositories.ShoppingCartRepository;
-import com.agility.shopping.cart.repositories.UserRepository;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import com.agility.shopping.cart.services.FakerService;
-import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.hamcrest.Matcher;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_DETAIL_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.exceptions.CustomError.*;
-import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * This class test RESTful api for cart item
@@ -65,73 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
-public class CartItemControllerTest {
-
-    private static final Faker faker = new Faker();
-    private User memberUser;
-    private User adminUser;
-    private String memberToken;
-    private String adminToken;
-    private Product product;
-    private ShoppingCart shoppingCart;
-    private CartItemRequest cartItemRequest;
-    private CartItem cartItem;
-    private CartItemUpdate cartItemUpdate;
-    private List<CartItem> cartItems;
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private FilterChainProxy filterChainProxy;
-
-    @Autowired
-    private CartItemMapper cartItemMapper;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private FakerService fakerService;
-
-    @MockBean
-    private ShoppingCartRepository shoppingCartRepository;
-
-    @MockBean
-    private ProductRepository productRepository;
-
-    @MockBean
-    private CartItemRepository cartItemRepository;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @Before
-    public void setUp() {
-        memberUser = fakerService.fakeUser(RoleType.MEMBER);
-        adminUser = fakerService.fakeUser(RoleType.ADMIN);
-        adminUser.setUsername(memberUser.getUsername());
-        memberToken = jwtTokenService.createToken(memberUser);
-        adminToken = jwtTokenService.createToken(adminUser);
-        product = fakerService.fakeProduct();
-        shoppingCart = fakerService.fakeShoppingCart();
-        cartItem = fakerService.fakeCartItem();
-        cartItemRequest = fakerService.fakeCartItemRequest();
-        cartItems = fakerService.fakeListCartItem(3);
-        cartItemUpdate = fakerService.fakeCartItemUpdate();
-
-        // Return member user when mock method findByUsername
-        when(userRepository.findByUsername(memberUser.getUsername())).thenReturn(Optional.ofNullable(memberUser));
-
-        mockMvc = MockMvcBuilders
-            .webAppContextSetup(webApplicationContext)
-            .addFilter(filterChainProxy)
-            .build();
-    }
+public class CartItemControllerTest extends BaseControllerTest {
 
     // =================================================================
     // Test Create Cart Item
@@ -141,7 +39,7 @@ public class CartItemControllerTest {
      * Test create cart item throw forbidden exception for admin user
      */
     @Test
-    public void testCreateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+    public void testCreateCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
         testResponseData(post(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
@@ -151,7 +49,7 @@ public class CartItemControllerTest {
      * Test create cart item throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testCreateCartItem_ShouldThrowResourceNotFound_WhenShoppingCartNotFound()
+    public void testCreateCartItemShouldThrowResourceNotFoundWhenShoppingCartNotFound()
         throws Exception {
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).thenReturn(null);
 
@@ -167,7 +65,7 @@ public class CartItemControllerTest {
      * Test create cart item throw bad request exception when shopping cart done
      */
     @Test
-    public void testCreatedCartItem_ShouldThrowBadRequestException_WhenShoppingCartDone() throws Exception {
+    public void testCreatedCartItemShouldThrowBadRequestExceptionWhenShoppingCartDone() throws Exception {
         shoppingCart.setStatus(ShoppingCartStatus.DONE.name());
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId()))
             .thenReturn(shoppingCart);
@@ -184,7 +82,7 @@ public class CartItemControllerTest {
      * Test create cart item throw resource not found exception when product not found
      */
     @Test
-    public void testCreateCartItem_ShouldThrowResourceNotFound_WhenProductNotFound() throws Exception {
+    public void testCreateCartItemShouldThrowResourceNotFoundWhenProductNotFound() throws Exception {
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.name());
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).
             thenReturn(shoppingCart);
@@ -204,7 +102,7 @@ public class CartItemControllerTest {
      * Test create cart item success when cart item not found
      */
     @Test
-    public void testCreateCartItem_ShouldSuccess_WhenCartItemNotFound() throws Exception {
+    public void testCreateCartItemShouldSuccessWhenCartItemNotFound() throws Exception {
         // Set status IN_PROGRESS for shopping cart
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
 
@@ -235,7 +133,7 @@ public class CartItemControllerTest {
      * Test create cart item success when cart item found
      */
     @Test
-    public void testCreateCartItem_ShouldSuccess_WhenCartItemFound() throws Exception {
+    public void testCreateCartItemShouldSuccessWhenCartItemFound() throws Exception {
         // Set status IN_PROGRESS for shopping cart
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         long quantity = cartItem.getQuantity();
@@ -270,7 +168,7 @@ public class CartItemControllerTest {
      * Test find all cart item throw forbidden exception when admin user access
      */
     @Test
-    public void testFindAllCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+    public void testFindAllCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
         testResponseData(get(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
     }
@@ -279,7 +177,7 @@ public class CartItemControllerTest {
      * Test find all cart item should throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testFindAllCartItem_ShouldThrowResourceNotFound_WhenShoppingCartNotFound()
+    public void testFindAllCartItemShouldThrowResourceNotFoundWhenShoppingCartNotFound()
         throws Exception {
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(null);
@@ -300,7 +198,7 @@ public class CartItemControllerTest {
      * Test find all cart item success
      */
     @Test
-    public void testFindAllCartItem_ShouldSuccess() throws Exception {
+    public void testFindAllCartItemShouldSuccess() throws Exception {
         // Mock data and method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(shoppingCart);
         when(cartItemRepository.findAllByShoppingCartId(shoppingCart.getId())).thenReturn(cartItems);
@@ -330,7 +228,7 @@ public class CartItemControllerTest {
      * Test find one cart item throw forbidden exception for admin user access
      */
     @Test
-    public void testFindOneCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+    public void testFindOneCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
         testResponseData(get(CART_ITEM_DETAIL_URL, faker.number().randomNumber()), adminToken, null,
@@ -362,7 +260,7 @@ public class CartItemControllerTest {
      * Test find one cart item throw resource not found exception when cart item not found
      */
     @Test
-    public void testFindOneCartItem_ShouldThrowResourceNotFound_WhenCartItemNotFound()
+    public void testFindOneCartItemShouldThrowResourceNotFoundWhenCartItemNotFound()
         throws Exception {
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(shoppingCart);
@@ -387,7 +285,7 @@ public class CartItemControllerTest {
      * Test fine one cart item success
      */
     @Test
-    public void testFindOneCartItem_ShouldSuccess() throws Exception {
+    public void testFindOneCartItemShouldSuccess() throws Exception {
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(shoppingCart);
         when(cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItem.getId(), shoppingCart.getId()))
@@ -419,7 +317,7 @@ public class CartItemControllerTest {
      * Test update cart item throw forbidden exception when admin user access
      */
     @Test
-    public void testUpdateCartItem_ShouldThrowForbidden_WhenAdminUserAccess() throws Exception {
+    public void testUpdateCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
         // Test response data for request
@@ -431,7 +329,7 @@ public class CartItemControllerTest {
      * Test update cart item throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testUpdateCartItem_ShouldThrowResourceNotFound_WhenShoppingCartNotFound()
+    public void testUpdateCartItemShouldThrowResourceNotFoundWhenShoppingCartNotFound()
         throws Exception {
         log.debug("Test update cart item success");
         log.debug("Cart item update: {}", cartItemUpdate);
@@ -453,7 +351,7 @@ public class CartItemControllerTest {
      * Test update cart item throw resource not found exception when shopping cart done
      */
     @Test
-    public void testUpdateCartItem_ShouldThrowBadRequest_WhenShoppingCartDone() throws Exception {
+    public void testUpdateCartItemShouldThrowBadRequestWhenShoppingCartDone() throws Exception {
         // Mock data and method
         shoppingCart.setStatus(ShoppingCartStatus.DONE.getName());
         when(shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), memberUser.getId()))
@@ -473,7 +371,7 @@ public class CartItemControllerTest {
      * Test update cart item throw resource not found exception when cart item not found
      */
     @Test
-    public void testUpdateCartItem_ShouldThrowResourceNotFoundE_WhenCartItemNotFound()
+    public void testUpdateCartItemShouldThrowResourceNotFoundEWhenCartItemNotFound()
         throws Exception {
         // Mock method and data
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
@@ -498,7 +396,7 @@ public class CartItemControllerTest {
      * Test update cart item success
      */
     @Test
-    public void testUpdateCartItem_ShouldSuccess() throws Exception {
+    public void testUpdateCartItemShouldSuccess() throws Exception {
         // Mock data and method
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         cartItemUpdate.setShoppingCartId(shoppingCart.getId());
@@ -542,7 +440,7 @@ public class CartItemControllerTest {
      * Test delete cart item throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testDeleteCartItem_ShouldThrowResourceNotFound_WhenShoppingCartNotFound() throws Exception {
+    public void testDeleteCartItemShouldThrowResourceNotFoundWhenShoppingCartNotFound() throws Exception {
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(null);
 
@@ -561,7 +459,7 @@ public class CartItemControllerTest {
      * when no cart item with given cart item id and shopping cart id
      */
     @Test
-    public void testDeleteCartItem_ShouldThrowResourceNotFound_WhenCartItemNotFound() throws Exception {
+    public void testDeleteCartItemShouldThrowResourceNotFoundWhenCartItemNotFound() throws Exception {
         // Mock method
         when(shoppingCartRepository.findOne(shoppingCart.getId(), memberUser.getId())).thenReturn(shoppingCart);
         when(cartItemRepository.findOneByCartItemIdAndShoppingCartId(cartItem.getId(), shoppingCart.getId()))
@@ -584,7 +482,7 @@ public class CartItemControllerTest {
      * Test delete cart item success
      */
     @Test
-    public void testDeleteCartItem_ShouldSuccess() throws Exception {
+    public void testDeleteCartItemShouldSuccess() throws Exception {
         // Mock data and method
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         // Set one cart item for shopping cart
@@ -610,77 +508,5 @@ public class CartItemControllerTest {
             findOneByCartItemIdAndShoppingCartId(cartItem.getId(), shoppingCart.getId());
         verify(shoppingCartRepository, times(1)).save(shoppingCart);
         verifyNoMoreInteractions(shoppingCartRepository, cartItemRepository);
-    }
-
-    /**
-     * Test response data for API request
-     *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     * @param params     Params map
-     */
-    private void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap,
-                                  Map<String, Object> params) throws Exception {
-        MultiValueMap<String, String> multiValueMapParam = new LinkedMultiValueMap<>();
-        if (params != null) {
-            for (val param : params.entrySet()) {
-                multiValueMapParam.add(param.getKey(), param.getValue().toString());
-            }
-        }
-
-        ResultActions resultActions = mockMvc.perform(request.params(multiValueMapParam)
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(body)))
-            .andDo(print())
-            .andExpect(status().is(httpStatus.value()));
-
-        if (jsonMap != null) {
-            for (val entry : jsonMap.entrySet()) {
-                if (entry.getValue() instanceof Matcher) {
-                    resultActions.andExpect(jsonPath(entry.getKey(), (Matcher) entry.getValue()));
-
-                } else {
-                    resultActions.andExpect(jsonPath(entry.getKey(), is(entry.getValue())));
-                }
-
-            }
-        }
-    }
-
-    /**
-     * Test response data for API request
-     *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     */
-    private void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap) throws Exception {
-        testResponseData(request, token, body, httpStatus, jsonMap, null);
-    }
-
-    /**
-     * Create json map with custom error code
-     *
-     * @param customError Custom error contain error code
-     * @return Json map contain error code
-     */
-    private Map<String, Object> createJsonMapError(CustomError customError) {
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("$.code", customError.code());
-        return jsonMap;
     }
 }
