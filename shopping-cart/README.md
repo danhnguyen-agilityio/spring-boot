@@ -45,7 +45,16 @@ see [github](https://github.com/DiUS/java-faker)
 
 ##### jackson-datatype-jsr310
 see [github](https://github.com/FasterXML/jackson-datatype-jsr310)
-> Support for Java 8 date/time types
+> Support for serialize and deserialize and Java 8 date/time types
+
+## REST APIs
+
+##### REST APIs for Product resource
+
+URI|Request|Response|Description
+---|---|---|---
+/products|GET|200, [{id:1, name:'shoes'},{id:2, name:'dish'}]|Get all product
+/products|POST {name: 'title', url:http://show.png}|200, [{id:1, name:'shoes'},{id:2, name:'dish'}]|Create a new product
 
 ## Run app
 `mvn clean spring-boot:run -Dspring.profiles.active=dev`
