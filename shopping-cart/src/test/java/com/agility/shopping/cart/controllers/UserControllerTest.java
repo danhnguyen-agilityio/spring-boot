@@ -8,13 +8,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
+import static java.util.stream.Collectors.toList;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,14 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Slf4j
 public class UserControllerTest extends BaseControllerTest {
-
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders
-            .webAppContextSetup(webApplicationContext)
-            .addFilter(filterChainProxy)
-            .build();
-    }
 
     /**
      * Test login with correct credential
@@ -190,5 +187,22 @@ public class UserControllerTest extends BaseControllerTest {
         mockMvc.perform(get("/admin")
             .header(securityConfig.getHeaderString(), token))
             .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test get current user should success when token valid
+     */
+    @Test
+    public void testGetCurrentUserShouldSuccessWhenTokenIsValid() throws Exception {
+        // Mock method
+        when(userRepository.findByUsername(memberUser.getUsername())).thenReturn(Optional.ofNullable(memberUser));
+
+        // Create jsonMap to map response data
+        Map<Object, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.username", memberUser.getUsername());
+        jsonMap.put("$.roles[0]", memberUser.getRoles().stream().collect(toList()).get(0).getName());
+
+        // Test response data for request
+        testResponseData(get("/me"), memberToken, null, HttpStatus.OK, null);
     }
 }
