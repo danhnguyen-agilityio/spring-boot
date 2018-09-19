@@ -41,7 +41,8 @@ public class Product extends AbstractAuditableEntity<Long> {
     private String name;
 
     @URL
-    @JsonView(Views.Member.class)
+    // Use view Member or ObjectDetail will serialize this field
+    @JsonView({Views.Member.class, Views.ObjectDetail.class})
     private String url;
 
     @Column(name = "price", nullable = false)

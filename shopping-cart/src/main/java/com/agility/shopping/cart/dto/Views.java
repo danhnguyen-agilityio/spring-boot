@@ -6,15 +6,19 @@ package com.agility.shopping.cart.dto;
  */
 public class Views {
 
-    public static class Member {
+    public interface Member {
     }
 
-    public static class Admin extends Member {
+    public interface Admin extends Member {
     }
 
-    public static class ObjectList {
+    public interface ObjectList {
     }
 
-    public static class ObjectDetail extends ObjectList {
+    public interface ObjectDetail extends ObjectList {
     }
+
+    public interface MemberAndObjectDetail extends Member, ObjectDetail {
+    }
+
 }

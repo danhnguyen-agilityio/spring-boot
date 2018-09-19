@@ -1,14 +1,10 @@
 package com.agility.shopping.cart.models;
 
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.io.Serializable;
-import java.time.Instant;
 
 /**
  * CartItem entity class save cart item info in shopping cart
