@@ -1,35 +1,18 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.exceptions.CustomError;
-import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.ProductRepository;
-import com.agility.shopping.cart.repositories.UserRepository;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import com.agility.shopping.cart.services.UserService;
-import com.agility.shopping.cart.services.FakerService;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
-
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -47,44 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
-public class ProductControllerTest {
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private FilterChainProxy filterChainProxy;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private FakerService fakerService;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private ProductRepository productRepository;
-
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders
-            .webAppContextSetup(webApplicationContext)
-            .addFilter(filterChainProxy)
-            .build();
-    }
+public class ProductControllerTest extends BaseControllerTest {
 
     /**
      * Test create product success

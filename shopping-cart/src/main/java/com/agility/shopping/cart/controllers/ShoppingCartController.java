@@ -1,6 +1,5 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
@@ -9,15 +8,9 @@ import com.agility.shopping.cart.exceptions.BadRequestException;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
-import com.agility.shopping.cart.mappers.ShoppingCartMapper;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.ShoppingCartRepository;
-import com.agility.shopping.cart.repositories.UserRepository;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import com.agility.shopping.cart.services.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,25 +27,7 @@ import static com.agility.shopping.cart.exceptions.CustomError.*;
 @RestController
 @RequestMapping("/shopping-carts")
 @Slf4j
-public class ShoppingCartController {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ShoppingCartMapper shoppingCartMapper;
-
-    @Autowired
-    private ShoppingCartRepository shoppingCartRepository;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private ShoppingCartService shoppingCartService;
+public class ShoppingCartController extends BaseController {
 
     /**
      * Create shopping cart

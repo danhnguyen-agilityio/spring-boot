@@ -1,32 +1,16 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
-import com.agility.shopping.cart.mappers.ShoppingCartMapper;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.ShoppingCartRepository;
-import com.agility.shopping.cart.repositories.UserRepository;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import com.agility.shopping.cart.services.FakerService;
-import com.agility.shopping.cart.services.ShoppingCartService;
-import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -49,48 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
-public class ShoppingCartControllerTest {
-
-    private static final Faker faker = new Faker();
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private FilterChainProxy filterChainProxy;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ShoppingCartMapper shoppingCartMapper;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private FakerService fakerService;
-
-    @Autowired ShoppingCartService shoppingCartService;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private ShoppingCartRepository shoppingCartRepository;
-
-    @Before
-    public void setUp() {
-        mockMvc = MockMvcBuilders
-            .webAppContextSetup(webApplicationContext)
-            .addFilter(filterChainProxy)
-            .build();
-    }
+public class ShoppingCartControllerTest extends BaseControllerTest {
 
     // ============================================================
     // Test create shopping cart

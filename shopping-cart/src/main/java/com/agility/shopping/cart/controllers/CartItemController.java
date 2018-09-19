@@ -1,6 +1,5 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.CartItemRequest;
@@ -9,17 +8,10 @@ import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.exceptions.BadRequestException;
 import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
-import com.agility.shopping.cart.mappers.CartItemMapper;
 import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
-import com.agility.shopping.cart.repositories.CartItemRepository;
-import com.agility.shopping.cart.repositories.ProductRepository;
-import com.agility.shopping.cart.repositories.ShoppingCartRepository;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import com.agility.shopping.cart.services.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,28 +28,8 @@ import static com.agility.shopping.cart.exceptions.CustomError.*;
 @RequestMapping("/cart-items")
 // FIXME:: Consider apply RequiredArgsConstructor
 @Slf4j
-public class CartItemController {
+public class CartItemController extends BaseController {
 
-    @Autowired
-    private ShoppingCartRepository shoppingCartRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private CartItemRepository cartItemRepository;
-
-    @Autowired
-    private CartItemMapper cartItemMapper;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private ShoppingCartService shoppingCartService;
-
-    @Autowired
-    private SecurityConfig securityConfig;
 
     /**
      * Create cart item from given request data

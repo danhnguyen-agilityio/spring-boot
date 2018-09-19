@@ -1,14 +1,9 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.exceptions.BadAccountCredentialException;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.AuthenticationRequest;
-import com.agility.shopping.cart.securities.JwtTokenService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,20 +16,7 @@ import static com.agility.shopping.cart.exceptions.CustomError.BAD_CREDENTIALS;
 
 @RestController
 @RequestMapping("v1/auths")
-public class AuthController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtTokenService jwtTokenService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
+public class AuthController extends BaseController {
     /**
      * Signin app
      *

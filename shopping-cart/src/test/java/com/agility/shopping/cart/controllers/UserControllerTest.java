@@ -1,27 +1,16 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.models.User;
-import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.AuthenticationRequest;
-import com.agility.shopping.cart.services.UserService;
-import com.agility.shopping.cart.services.FakerService;
-import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -36,32 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
-public class UserControllerTest {
-
-    private static final Faker faker = new Faker();
-
-    private MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private FilterChainProxy filterChainProxy;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private SecurityConfig securityConfig;
-
-    @Autowired
-    private FakerService fakerService;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private UserRepository userRepository;
+public class UserControllerTest extends BaseControllerTest {
 
     @Before
     public void setUp() {

@@ -6,6 +6,8 @@ import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.mappers.CartItemMapper;
+import com.agility.shopping.cart.mappers.ProductMapper;
+import com.agility.shopping.cart.mappers.ShoppingCartMapper;
 import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
@@ -16,6 +18,8 @@ import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.services.FakerService;
+import com.agility.shopping.cart.services.ShoppingCartService;
+import com.agility.shopping.cart.services.UserService;
 import com.github.javafaker.Faker;
 import lombok.val;
 import org.hamcrest.Matcher;
@@ -24,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -70,16 +75,28 @@ public class BaseControllerTest {
     protected FilterChainProxy filterChainProxy;
 
     @Autowired
-    protected CartItemMapper cartItemMapper;
+    protected SecurityConfig securityConfig;
 
     @Autowired
-    protected SecurityConfig securityConfig;
+    protected UserService userService;
+
+    @Autowired
+    protected ShoppingCartService shoppingCartService;
+
+    @Autowired
+    protected PasswordEncoder passwordEncoder;
 
     @Autowired
     protected JwtTokenService jwtTokenService;
 
     @Autowired
     protected FakerService fakerService;
+
+    @Autowired
+    protected ProductMapper productMapper;
+
+    @Autowired
+    protected ShoppingCartMapper shoppingCartMapper;
 
     @MockBean
     protected ShoppingCartRepository shoppingCartRepository;

@@ -6,11 +6,8 @@ import com.agility.shopping.cart.dto.ProductResponse;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
-import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.repositories.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,13 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @Slf4j
-public class ProductController {
-
-    @Autowired
-    private ProductMapper productMapper;
-
-    @Autowired
-    private ProductRepository productRepository;
+public class ProductController extends BaseController {
 
     /**
      * Create product
