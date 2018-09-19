@@ -1,5 +1,8 @@
 package com.agility.shopping.cart.models;
 
+import com.agility.shopping.cart.dto.Views;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.URL;
@@ -29,19 +32,24 @@ public class Product extends AbstractAuditableEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
+    @JsonView(Views.Member.class)
     private Long id;
 
     @Column(name = "name", unique = true)
     @NotBlank
+    @JsonView(Views.Member.class)
     private String name;
 
     @URL
+    @JsonView(Views.Member.class)
     private String url;
 
     @Column(name = "price", nullable = false)
     @Min(0)
+    @JsonView(Views.Member.class)
     private Long price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<CartItem> cartItems;
 }

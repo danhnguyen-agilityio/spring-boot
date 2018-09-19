@@ -12,14 +12,19 @@ import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.net.URI;
 import java.util.List;
 
 import static com.agility.shopping.cart.exceptions.CustomError.*;
+import static org.springframework.http.ResponseEntity.*;
 
 /**
  * This class implement api that relate to Cart Item data
@@ -41,7 +46,7 @@ public class CartItemController extends BaseController {
      * @throws ResourceForbiddenException if authenticated user not own shopping cart by given id
      */
     @PostMapping
-    public CartItemResponse create(@Valid @RequestBody CartItemRequest cartItemRequest,
+    public ResponseEntity create(@Valid @RequestBody CartItemRequest cartItemRequest,
                                    HttpServletRequest request) {
         log.debug("POST /cart-items, body = {}", cartItemRequest);
         // Get user id from request
@@ -85,8 +90,10 @@ public class CartItemController extends BaseController {
         cartItem.getShoppingCart().setStatus(ShoppingCartStatus.IN_PROGRESS.getName());
         cartItem = cartItemRepository.save(cartItem);
 
-        // Convert cart item to cart item response and return it
-        return cartItemMapper.toCartItemResponse(cartItem);
+        URI createdItemUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(cartItem.getId())
+            .toUri();
+        return created(createdItemUri ).build();
     }
 
     /**
@@ -98,7 +105,7 @@ public class CartItemController extends BaseController {
      * @throws ResourceNotFoundException if shopping cart with given id of authenticated user not exist
      */
     @GetMapping
-    public List<CartItemResponse> findAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
+    public ResponseEntity<List<CartItemResponse>> findAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
                                           HttpServletRequest request) {
 
         // Get user id from request
@@ -116,7 +123,7 @@ public class CartItemController extends BaseController {
         List<CartItem> cartItems = cartItemRepository.findAllByShoppingCartId(shoppingCartId);
 
         // Convert to list cart item response and return it
-        return cartItemMapper.toCartItemResponse(cartItems);
+        return ok().body(cartItemMapper.toCartItemResponse(cartItems));
     }
 
     /**
@@ -129,7 +136,7 @@ public class CartItemController extends BaseController {
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @GetMapping("/{id}")
-    public CartItemResponse findOne(@PathVariable("id") long cartItemId,
+    public ResponseEntity<CartItemResponse> findOne(@PathVariable("id") long cartItemId,
                                     @RequestParam(value = "shoppingCartId") long shoppingCartId,
                                     HttpServletRequest request) {
         // Get user id from request
@@ -151,7 +158,7 @@ public class CartItemController extends BaseController {
             throw new ResourceNotFoundException(CART_ITEM_NOT_FOUND);
         }
 
-        return cartItemMapper.toCartItemResponse(cartItem);
+        return new ResponseEntity<>(cartItemMapper.toCartItemResponse(cartItem), HttpStatus.OK);
     }
 
     /**
@@ -165,7 +172,8 @@ public class CartItemController extends BaseController {
      * @throws BadRequestException       if shopping cart already DONE
      */
     @PutMapping("/{id}")
-    public CartItemResponse update(@PathVariable("id") long cartItemId,
+    // FIXME:: Should return content or no
+    public ResponseEntity<CartItemResponse> update(@PathVariable("id") long cartItemId,
                                    @Valid @RequestBody CartItemUpdate cartItemUpdate,
                                    HttpServletRequest request) {
         // Get user id from request
@@ -197,7 +205,7 @@ public class CartItemController extends BaseController {
         cartItem.setQuantity(cartItemUpdate.getQuantity());
         cartItem = cartItemRepository.save(cartItem);
 
-        return cartItemMapper.toCartItemResponse(cartItem);
+        return status(HttpStatus.OK).body(cartItemMapper.toCartItemResponse(cartItem));
     }
 
     /**
@@ -210,7 +218,7 @@ public class CartItemController extends BaseController {
      * @throws ResourceNotFoundException if shopping cart or cart item not exist
      */
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long cartItemId,
+    public ResponseEntity delete(@PathVariable("id") long cartItemId,
                          @RequestParam long shoppingCartId,
                          HttpServletRequest request) {
         log.debug("Delete /cart-items/{}?shoppingCartId={}", cartItemId, shoppingCartId);
@@ -245,6 +253,6 @@ public class CartItemController extends BaseController {
         // Save shopping cart
         shoppingCartRepository.save(shoppingCart);
 
-        return MessageConstant.CART_ITEM_DELETE_SUCCESS;
+        return noContent().build();
     }
 }

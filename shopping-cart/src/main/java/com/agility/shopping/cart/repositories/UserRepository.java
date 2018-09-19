@@ -2,7 +2,6 @@ package com.agility.shopping.cart.repositories;
 
 import com.agility.shopping.cart.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

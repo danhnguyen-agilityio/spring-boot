@@ -3,10 +3,12 @@ package com.agility.shopping.cart.controllers;
 import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
+import com.agility.shopping.cart.dto.Views;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.models.Product;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,9 +57,34 @@ public class ProductController extends BaseController {
      * @return List product
      */
     @GetMapping
-    public List<ProductResponse> findAll() {
+    public List<Product> findAll() {
         List<Product> products = productRepository.findAll();
-        return productMapper.toProductResponse(products);
+        return products;
+    }
+
+    /**
+     * Get all product info by member view
+     *
+     * @return All product
+     */
+    // FIXME:: Consider this name in here
+    @JsonView(Views.Member.class)
+    @GetMapping("/memberview")
+    public List<Product> findAllByMemberUser() {
+        List<Product> products = productRepository.findAll();
+        return products;
+    }
+
+    /**
+     * Get all product info by admin view
+     *
+     * @return All product
+     */
+    @JsonView(Views.Admin.class)
+    @GetMapping("/adminview")
+    public List<Product> findAllByAdminUser() {
+        List<Product> products = productRepository.findAll();
+        return products;
     }
 
     /**
@@ -82,10 +109,10 @@ public class ProductController extends BaseController {
     /**
      * Update product by given id
      *
-     * @param id Product id
+     * @param id      Product id
      * @param request Product request
      * @return Product response
-     * @throws ResourceNotFoundException if product with given id not exist
+     * @throws ResourceNotFoundException      if product with given id not exist
      * @throws ResourceAlreadyExistsException if new name in request exists in other product
      */
     @PutMapping(value = "/{id}")

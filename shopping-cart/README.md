@@ -53,8 +53,11 @@ see [github](https://github.com/FasterXML/jackson-datatype-jsr310)
 
 URI|Request|Response|Description
 ---|---|---|---
-/products|GET|200, [{id:1, name:'shoes'},{id:2, name:'dish'}]|Get all product
-/products|POST {name: 'title', url:http://show.png}|200, [{id:1, name:'shoes'},{id:2, name:'dish'}]|Create a new product
+/cart-items|GET|200, [{id:1, name:'shoes'},{id:2, name:'dish'}]|Get all cart item
+/cart-items|POST {productId: 5, shoppingCartIid: 7, quantity: 10}|201, no content in body, the value of HTTP response header **Location** is the uri of the new created cart item|Create a new cart item
+/cart-items/{id}?shoppingCartId={shoppingCartId}|GET|200, {quantity: 7, product: ..., shoppingCart: ...}|Get a cart item by id 
+/cart-items/{id}|PUT {shoppingCartIid: 7, quantity: 10}|204, no content in body|Update a cart item by id
+/cart-items/{id}?shoppingCartId={shoppingCartId}|DELETE|204, no content|Delete a cart item by id
 
 ## Run app
 `mvn clean spring-boot:run -Dspring.profiles.active=dev`
@@ -73,7 +76,8 @@ URI|Request|Response|Description
 - [Date format in the json output using spring boot](https://stackoverflow.com/questions/45662820/how-to-set-format-of-string-for-java-time-instant-using-objectmapper)
 - [Define bean for filter in security](https://stackoverflow.com/questions/34233856/spring-security-authenticationmanager-must-be-specified-for-custom-filter)
 - [Spring response entity](https://www.baeldung.com/spring-response-entity)
-- [Date API `not read`](https://docs.oracle.com/javase/7/docs/api/java/util/Date.html)
+- [Custom login api](https://github.com/hantsy/springboot-jwt-sample)
+[Date API `not read`](https://docs.oracle.com/javase/7/docs/api/java/util/Date.html)
 - [Automatic Spring data jpa auditing saving `not read`](https://programmingmitra.blogspot.com/2017/02/automatic-spring-data-jpa-auditing-saving-CreatedBy-createddate-lastmodifiedby-lastmodifieddate-automatically.html)
 - [Use enum validator in spring `not read`](https://funofprograming.wordpress.com/2016/09/29/java-enum-validator/)
 - [Spring jwt `not read`](https://www.linkedin.com/pulse/json-web-token-jwt-spring-security-real-world-example-boris-trivic)

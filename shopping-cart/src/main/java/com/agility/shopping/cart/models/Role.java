@@ -3,6 +3,7 @@ package com.agility.shopping.cart.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -31,6 +32,7 @@ public class Role implements Serializable {
     private Long id;
 
     @Column(name = "name", nullable = false)
+    @NotNull
     private String name;
 
     @ManyToMany(mappedBy = "roles")

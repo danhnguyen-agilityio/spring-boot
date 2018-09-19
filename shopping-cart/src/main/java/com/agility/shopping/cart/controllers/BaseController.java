@@ -13,7 +13,7 @@ import com.agility.shopping.cart.services.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 
-public class BaseController {
+public abstract class BaseController {
 
     @Autowired
     protected AuthenticationManager authenticationManager;

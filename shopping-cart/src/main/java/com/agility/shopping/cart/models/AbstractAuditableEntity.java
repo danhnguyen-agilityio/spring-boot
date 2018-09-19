@@ -1,5 +1,7 @@
 package com.agility.shopping.cart.models;
 
+import com.agility.shopping.cart.dto.Views;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,9 +21,11 @@ public abstract class AbstractAuditableEntity<ID> extends AbstractPersistableEnt
 
     @Column(name = "created_at", updatable = false)
     @CreatedDate
+    @JsonView(Views.Admin.class)
     private Instant createdAt;
 
     @Column(name = "updated_at")
     @LastModifiedDate
+    @JsonView(Views.Admin.class)
     private Instant updatedAt;
 }
