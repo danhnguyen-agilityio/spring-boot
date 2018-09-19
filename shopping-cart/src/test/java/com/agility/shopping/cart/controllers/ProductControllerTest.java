@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,8 +42,6 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
@@ -78,8 +75,6 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
         ProductRequest request = productMapper.toProductRequest(product);
 
@@ -112,16 +107,12 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
         Product product2 = Product.builder()
             .id(1L)
             .name("dish")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
         List<Product> products = Arrays.asList(product1, product2);
 
@@ -148,8 +139,6 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
 
         // Generate token have role admin
@@ -296,8 +285,6 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
 
         // Generate token have role admin
@@ -324,8 +311,6 @@ public class ProductControllerTest extends BaseControllerTest {
             .name("clothes")
             .url("localhost://url.com")
             .price(1000000L)
-            .createdAt(Instant.now())
-            .updatedAt(Instant.now())
             .build();
 
         // Generate token have role admin

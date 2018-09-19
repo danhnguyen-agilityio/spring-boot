@@ -21,7 +21,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-public class CartItem implements Serializable {
+public class CartItem extends AbstractAuditableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,13 +39,5 @@ public class CartItem implements Serializable {
     @Column(name = "quantity", nullable = false)
     @Min(1)
     private Long quantity;
-
-    @Column(name = "created_at", updatable = false)
-    @CreatedDate
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private Instant updatedAt;
 
 }

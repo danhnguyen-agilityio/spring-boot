@@ -72,6 +72,7 @@ URI|Request|Response|Description
 - [Date format in the json output using spring boot](http://lewandowski.io/2016/02/formatting-java-time-with-spring-boot-using-json/)
 - [Date format in the json output using spring boot](https://stackoverflow.com/questions/45662820/how-to-set-format-of-string-for-java-time-instant-using-objectmapper)
 - [Define bean for filter in security](https://stackoverflow.com/questions/34233856/spring-security-authenticationmanager-must-be-specified-for-custom-filter)
+- [Spring response entity](https://www.baeldung.com/spring-response-entity)
 - [Date API `not read`](https://docs.oracle.com/javase/7/docs/api/java/util/Date.html)
 - [Automatic Spring data jpa auditing saving `not read`](https://programmingmitra.blogspot.com/2017/02/automatic-spring-data-jpa-auditing-saving-CreatedBy-createddate-lastmodifiedby-lastmodifieddate-automatically.html)
 - [Use enum validator in spring `not read`](https://funofprograming.wordpress.com/2016/09/29/java-enum-validator/)

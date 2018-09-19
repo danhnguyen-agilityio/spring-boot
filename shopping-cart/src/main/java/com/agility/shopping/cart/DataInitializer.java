@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -76,6 +77,7 @@ public class DataInitializer implements CommandLineRunner {
         }
 
         log.debug("Printing all users....");
-        userRepository.findAll().forEach(v -> log.debug(" User :", v.toString() ));
+        // TODO: Why this code run fail
+        // userRepository.findAll().forEach(v -> log.debug(" User :", v.toString() ));
     }
 }

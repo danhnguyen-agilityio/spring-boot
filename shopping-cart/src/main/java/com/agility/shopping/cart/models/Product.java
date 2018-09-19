@@ -24,12 +24,11 @@ import java.util.Set;
 @AllArgsConstructor
 @ToString
 @Builder
-@EntityListeners(AuditingEntityListener.class)
-public class Product implements Serializable {
+public class Product extends AbstractAuditableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     private Long id;
 
     @Column(name = "name", unique = true)
@@ -42,14 +41,6 @@ public class Product implements Serializable {
     @Column(name = "price", nullable = false)
     @Min(0)
     private Long price;
-
-    @Column(name = "created_at", updatable = false)
-    @CreatedDate
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    @LastModifiedDate
-    private Instant updatedAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems;

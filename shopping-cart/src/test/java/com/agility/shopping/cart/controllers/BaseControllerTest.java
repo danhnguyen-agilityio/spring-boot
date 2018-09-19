@@ -111,7 +111,7 @@ public class BaseControllerTest {
     protected UserRepository userRepository;
 
     @Before
-    protected void setUp() {
+    public void setUp() {
         memberUser = fakerService.fakeUser(RoleType.MEMBER);
         adminUser = fakerService.fakeUser(RoleType.ADMIN);
         adminUser.setUsername(memberUser.getUsername());
