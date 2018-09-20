@@ -53,6 +53,10 @@ spring:
             write_dates_as_timestamps: false
         # Controls the inclusion of properties during serialization
         default-property-inclusion: non_null
+        mapper:
+            # Controls properties that have no view associated are serialized
+            default_view_inclusion: true
+
 
 # LEVEL LOGGING
 logging:
