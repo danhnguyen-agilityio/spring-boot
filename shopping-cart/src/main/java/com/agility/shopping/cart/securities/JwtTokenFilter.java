@@ -3,11 +3,8 @@ package com.agility.shopping.cart.securities;
 import com.agility.shopping.cart.exceptions.ApiError;
 import com.agility.shopping.cart.exceptions.BaseCustomException;
 import com.agility.shopping.cart.utils.ConvertUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,7 +40,6 @@ public class JwtTokenFilter extends GenericFilterBean {
 
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                    ;
                 }
             }
             filterChain.doFilter(request, response);
@@ -61,7 +57,7 @@ public class JwtTokenFilter extends GenericFilterBean {
      * @throws IOException if convert object to json throw exception
      */
     private void setErrorResponse(HttpServletResponse response, BaseCustomException e) throws IOException {
-        response.setContentType("application/json");
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE);
         response.setStatus(e.getHttpStatus().value());
         ApiError apiError = new ApiError(e.getCode(), e.getMessage());
         response.getWriter().write(ConvertUtil.convertObjectToJsonString(apiError));
