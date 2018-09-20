@@ -117,7 +117,8 @@ public class JwtTokenService {
             }
             return true;
         } catch (JwtException e) {
-            throw new InvalidJwtAuthenticationException(INVALID_JWT_AUTHENTICATION);
+            // throw new InvalidJwtAuthenticationException(INVALID_JWT_AUTHENTICATION);
+            return false;
         }
     }
 

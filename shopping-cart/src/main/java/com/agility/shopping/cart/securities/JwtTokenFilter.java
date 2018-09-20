@@ -31,7 +31,8 @@ public class JwtTokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
         throws IOException, ServletException {
 
-        try {
+        // FIXME:: We can catch exception and set error to body
+        /*try {
             log.debug("Implement doFilter");
 
             String token = jwtTokenService.resolveToken((HttpServletRequest) request);
@@ -46,7 +47,16 @@ public class JwtTokenFilter extends GenericFilterBean {
         } catch (InvalidJwtAuthenticationException e) {
             log.debug("Error get authentication filter");
             setErrorResponse((HttpServletResponse) response, e);
+        }*/
+
+        String token = jwtTokenService.resolveToken((HttpServletRequest) request);
+        if (token != null && jwtTokenService.validateToken(token)) {
+            Authentication authentication = jwtTokenService.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(null);
         }
+        filterChain.doFilter(request, response);
     }
 
     /**

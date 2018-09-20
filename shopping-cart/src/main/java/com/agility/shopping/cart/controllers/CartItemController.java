@@ -93,7 +93,7 @@ public class CartItemController extends BaseController {
         URI createdItemUri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(cartItem.getId())
             .toUri();
-        return created(createdItemUri ).build();
+        return created(createdItemUri).body(cartItemMapper.toCartItemResponse(cartItem));
     }
 
     /**
