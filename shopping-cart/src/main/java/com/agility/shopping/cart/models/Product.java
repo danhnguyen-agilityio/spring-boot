@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Set;
@@ -31,13 +32,13 @@ public class Product extends AbstractAuditableEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    @JsonView(Views.Member.class)
+    @Column(name = "id")
+    @NotNull
     private Long id;
 
     @Column(name = "name", unique = true)
     @NotBlank
-    @JsonView(Views.Member.class)
+    @JsonView({Views.Member.class})
     private String name;
 
     @URL
@@ -45,9 +46,10 @@ public class Product extends AbstractAuditableEntity<Long> {
     @JsonView({Views.Member.class, Views.ObjectDetail.class})
     private String url;
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "price")
     @Min(0)
-    @JsonView(Views.Member.class)
+    @NotNull
+    @JsonView({Views.Member.class})
     private Long price;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

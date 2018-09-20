@@ -9,6 +9,7 @@ import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
 import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.JwtTokenService;
+import com.agility.shopping.cart.securities.SecurityService;
 import com.agility.shopping.cart.services.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,9 @@ public abstract class BaseController {
 
     @Autowired
     protected JwtTokenService jwtTokenService;
+
+    @Autowired
+    protected SecurityService securityService;
 
     @Autowired
     protected UserRepository userRepository;

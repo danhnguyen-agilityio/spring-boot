@@ -21,7 +21,7 @@ public class UserController {
         Map<Object, Object> model = new HashMap<>();
         model.put("username", userDetails.getUsername());
         model.put("roles", userDetails.getAuthorities().stream()
-            .map(a -> ((GrantedAuthority) a).getAuthority())
+            .map(grantedAuthority -> grantedAuthority.getAuthority())
             .collect(toList()));
         return ok(model);
     }

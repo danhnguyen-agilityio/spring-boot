@@ -9,8 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * UserService class manages the user stored in the database
- * and link it to the security
+ * UserService class manages the user stored in the database and link it to the security
  */
 @Service
 @Slf4j

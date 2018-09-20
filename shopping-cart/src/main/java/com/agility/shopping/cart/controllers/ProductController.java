@@ -1,6 +1,7 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.MessageConstant;
+import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
 import com.agility.shopping.cart.dto.Views;
@@ -8,10 +9,17 @@ import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.models.Product;
+import com.agility.shopping.cart.models.User;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.RoleStatus;
+import javax.swing.text.View;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -63,28 +71,23 @@ public class ProductController extends BaseController {
     }
 
     /**
-     * Get all product info by member view
+     * Get all product info by view specified by role of user
      *
      * @return All product
      */
     // FIXME:: Consider this name in here
-    @JsonView(Views.Member.class)
-    @GetMapping("/memberview")
-    public List<Product> findAllByMemberUser() {
+    @GetMapping("/view")
+    public MappingJacksonValue findAllByMemberUser() {
         List<Product> products = productRepository.findAll();
-        return products;
-    }
+        MappingJacksonValue result = new MappingJacksonValue(products);
 
-    /**
-     * Get all product info by admin view
-     *
-     * @return All product
-     */
-    @JsonView(Views.Admin.class)
-    @GetMapping("/adminview")
-    public List<Product> findAllByAdminUser() {
-        List<Product> products = productRepository.findAll();
-        return products;
+        // Get view for current user
+        Class view = securityService.getViewForCurrentUser();
+
+        // Serialize with obtained view
+        result.setSerializationView(view);
+
+        return result;
     }
 
     /**
