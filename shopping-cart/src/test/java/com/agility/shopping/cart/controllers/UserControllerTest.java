@@ -42,10 +42,6 @@ public class UserControllerTest extends BaseControllerTest {
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
-            ));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         mockMvc.perform(post("/login")
@@ -68,10 +64,6 @@ public class UserControllerTest extends BaseControllerTest {
         // Fake password
         credential.setPassword(faker.internet().password());
 
-        when(userService.loadUserByUsername(credential.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
-            ));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         mockMvc.perform(post("/login")
@@ -101,10 +93,6 @@ public class UserControllerTest extends BaseControllerTest {
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
-            ));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         String token = mockMvc.perform(post("/login")
@@ -131,10 +119,6 @@ public class UserControllerTest extends BaseControllerTest {
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
-            ));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         String token = mockMvc.perform(post("/login")
@@ -165,10 +149,6 @@ public class UserControllerTest extends BaseControllerTest {
         credential.setUsername(user.getUsername());
         credential.setPassword(user.getPassword());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-            .thenReturn(new org.springframework.security.core.userdetails.User(
-                user.getUsername(), passwordEncoder.encode(user.getPassword()), new HashSet<>()
-            ));
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         String token = mockMvc.perform(post("/login")

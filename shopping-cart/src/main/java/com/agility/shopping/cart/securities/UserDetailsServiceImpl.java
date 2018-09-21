@@ -1,4 +1,4 @@
-package com.agility.shopping.cart.services;
+package com.agility.shopping.cart.securities;
 
 import com.agility.shopping.cart.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,11 +9,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 /**
- * UserService class manages the user stored in the database and link it to the security
+ * UserDetailsServiceImpl class manages the user stored in the database and link it to the security
  */
 @Service
 @Slf4j
-public class UserService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
