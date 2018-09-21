@@ -1,25 +1,18 @@
 package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.MessageConstant;
-import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.ProductRequest;
 import com.agility.shopping.cart.dto.ProductResponse;
-import com.agility.shopping.cart.dto.Views;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.exceptions.ResourceAlreadyExistsException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.models.User;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.agility.shopping.cart.securities.RoleConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.json.MappingJacksonValue;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import javax.management.relation.RoleStatus;
-import javax.swing.text.View;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -39,6 +32,7 @@ public class ProductController extends BaseController {
      * @throws ResourceAlreadyExistsException if product is already exists
      */
     @PostMapping
+    @Secured(RoleConstant.ADMIN)
     public ProductResponse create(@Valid @RequestBody ProductRequest request) {
         log.debug("POST /products, body={}", request);
 
@@ -119,6 +113,7 @@ public class ProductController extends BaseController {
      * @throws ResourceAlreadyExistsException if new name in request exists in other product
      */
     @PutMapping(value = "/{id}")
+    @Secured(RoleConstant.ADMIN)
     public ProductResponse update(@PathVariable long id, @Valid @RequestBody ProductRequest request) {
 
         // Get product by id
@@ -159,6 +154,7 @@ public class ProductController extends BaseController {
      * @return Message success
      * @throws ResourceNotFoundException if product doesn't exist with given id
      */
+    @Secured(RoleConstant.ADMIN)
     @DeleteMapping(value = "/{id}")
     public String delete(@PathVariable long id) {
         Product product = productRepository.findOne(id);

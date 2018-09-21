@@ -10,7 +10,9 @@ import com.agility.shopping.cart.exceptions.ResourceForbiddenException;
 import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.securities.RoleConstant;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ import static com.agility.shopping.cart.exceptions.CustomError.*;
 @RestController
 @RequestMapping("/shopping-carts")
 @Slf4j
+@Secured(RoleConstant.MEMBER)
 public class ShoppingCartController extends BaseController {
 
     /**

@@ -17,14 +17,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.SessionManagementFilter;
 
 /**
  * WebSecurityConfig class config security feature
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String SHOPPING_CART_URL = "/shopping-carts";
@@ -76,19 +75,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/v1/auths").permitAll()
-            // Authenticated user can access to api get product and list product
-            .antMatchers(HttpMethod.GET, "/products/**").authenticated()
-            // Only user admin can access to api create, update, delete product
-            .antMatchers("/products/**").hasAuthority(RoleType.ADMIN.getName())
-            .antMatchers(SHOPPING_CART_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
-            .antMatchers(CART_ITEM_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-//            .addFilterBefore(new CORSFilter(), SessionManagementFilter.class)
+            // .addFilterBefore(new CORSFilter(), SessionManagementFilter.class)
             .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

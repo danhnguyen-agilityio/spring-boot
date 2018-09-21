@@ -65,6 +65,7 @@ public class JwtTokenService {
         log.debug("Get authentication");
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+        // TODO:: Check condition if user null, test for that case
 
         // Return an authenticated user with the list of Roles attached
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

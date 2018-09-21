@@ -11,9 +11,12 @@ import com.agility.shopping.cart.exceptions.ResourceNotFoundException;
 import com.agility.shopping.cart.models.CartItem;
 import com.agility.shopping.cart.models.Product;
 import com.agility.shopping.cart.models.ShoppingCart;
+import com.agility.shopping.cart.securities.RoleConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -33,8 +36,8 @@ import static org.springframework.http.ResponseEntity.*;
 @RequestMapping("/cart-items")
 // FIXME:: Consider apply RequiredArgsConstructor
 @Slf4j
+@Secured(RoleConstant.MEMBER)
 public class CartItemController extends BaseController {
-
 
     /**
      * Create cart item from given request data
@@ -105,6 +108,7 @@ public class CartItemController extends BaseController {
      * @throws ResourceNotFoundException if shopping cart with given id of authenticated user not exist
      */
     @GetMapping
+//    @PreAuthorize("hasAuthority('ROLE_MEMBER')")
     public ResponseEntity<List<CartItemResponse>> findAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
                                           HttpServletRequest request) {
 
