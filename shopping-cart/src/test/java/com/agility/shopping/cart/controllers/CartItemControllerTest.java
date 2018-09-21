@@ -1,8 +1,8 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.constants.MessageConstant;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.models.CartItem;
+import com.agility.shopping.cart.models.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +42,12 @@ public class CartItemControllerTest extends BaseControllerTest {
     public void testCreateCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
-        testResponseData(post(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(adminToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
@@ -53,8 +58,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         throws Exception {
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId())).thenReturn(null);
 
-        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.NOT_FOUND,
-            createJsonMapError(SHOPPING_CART_NOT_FOUND));
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(memberToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(SHOPPING_CART_NOT_FOUND))
+            .build());
 
         verify(shoppingCartRepository, times(1))
             .findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
@@ -70,8 +80,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         when(shoppingCartRepository.findOne(cartItemRequest.getShoppingCartId(), memberUser.getId()))
             .thenReturn(shoppingCart);
 
-        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.BAD_REQUEST,
-            createJsonMapError(SHOPPING_CART_DONE));
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(memberToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .jsonMap(createJsonMapError(SHOPPING_CART_DONE))
+            .build());
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
@@ -88,8 +103,13 @@ public class CartItemControllerTest extends BaseControllerTest {
             thenReturn(shoppingCart);
         when(productRepository.findOne(cartItemRequest.getProductId())).thenReturn(null);
 
-        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.NOT_FOUND,
-            createJsonMapError(PRODUCT_NOT_FOUND));
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(memberToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(PRODUCT_NOT_FOUND))
+            .build());
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
@@ -117,7 +137,14 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Perform request and test response data
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("$.quantity", cartItem.getQuantity());
-        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.OK, jsonMap);
+
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(memberToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.CREATED)
+            .jsonMap(jsonMap)
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -149,7 +176,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Perform request and test response data
         Map<String, Object> jsonMap = new HashMap<>();
         jsonMap.put("$.quantity", quantity + cartItemRequest.getQuantity());
-        testResponseData(post(CART_ITEM_URL), memberToken, cartItemRequest, HttpStatus.OK, jsonMap);
+        testResponseData(RequestInfo.builder()
+            .request(post(CART_ITEM_URL))
+            .token(memberToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.CREATED)
+            .jsonMap(jsonMap)
+            .build());
 
         verify(shoppingCartRepository, times(1)).
             findOne(cartItemRequest.getShoppingCartId(), memberUser.getId());
@@ -170,7 +203,15 @@ public class CartItemControllerTest extends BaseControllerTest {
     @Test
     public void testFindAllCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
-        testResponseData(get(CART_ITEM_URL), adminToken, null, HttpStatus.FORBIDDEN, null);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("shoppingCartId", shoppingCart.getId());
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_URL))
+            .params(params)
+            .token(adminToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
@@ -185,8 +226,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        testResponseData(get(CART_ITEM_URL), memberToken, null, HttpStatus.NOT_FOUND,
-            createJsonMapError(SHOPPING_CART_NOT_FOUND), params);
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_URL))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(SHOPPING_CART_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -211,8 +257,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         jsonPath.put("$", hasSize(cartItems.size()));
         jsonPath.put("$[0].quantity", cartItems.get(0).getQuantity());
         // Test response data for request
-        testResponseData(get(CART_ITEM_URL), memberToken, null, HttpStatus.OK,
-            jsonPath, params);
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_URL))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonPath)
+            .build());
 
         verify(shoppingCartRepository, times(1))
             .findOne(shoppingCart.getId(), memberUser.getId());
@@ -231,8 +282,16 @@ public class CartItemControllerTest extends BaseControllerTest {
     public void testFindOneCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
-        testResponseData(get(CART_ITEM_DETAIL_URL, faker.number().randomNumber()), adminToken, null,
-            HttpStatus.FORBIDDEN, null);
+        Map<String, Object> params = new HashMap<>();
+        params.put("shoppingCartId", shoppingCart.getId());
+
+        // Test response data for request
+        testResponseData(RequestInfo.builder()
+            .request((get(CART_ITEM_DETAIL_URL, faker.number().randomNumber())))
+            .params(params)
+            .token(adminToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
@@ -247,8 +306,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        testResponseData(get(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.NOT_FOUND,
-            createJsonMapError(SHOPPING_CART_NOT_FOUND), params);
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(SHOPPING_CART_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -270,8 +334,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        testResponseData(get(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.NOT_FOUND,
-            createJsonMapError(CART_ITEM_NOT_FOUND), params);
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(CART_ITEM_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -298,8 +367,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // FIXME: can not compare Long number
         // jsonMap.put("$.id", cartItem.getId());
         // jsonMap.put("$.quantity", cartItem.getQuantity().intValue());
-        testResponseData(get(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.OK,
-            jsonMap, params);
+        testResponseData(RequestInfo.builder()
+            .request(get(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonMap)
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -321,8 +395,12 @@ public class CartItemControllerTest extends BaseControllerTest {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
         // Test response data for request
-        testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), adminToken, cartItemRequest,
-            HttpStatus.FORBIDDEN, null);
+        testResponseData(RequestInfo.builder()
+            .request(put(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .token(adminToken)
+            .body(cartItemRequest)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
@@ -338,8 +416,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         when(shoppingCartRepository.findOne(cartItemUpdate.getShoppingCartId(), memberUser.getId())).thenReturn(null);
 
         // Test response data for request
-        testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, cartItemUpdate,
-            HttpStatus.NOT_FOUND, createJsonMapError(SHOPPING_CART_NOT_FOUND));
+        testResponseData(RequestInfo.builder()
+            .request(put(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .token(memberToken)
+            .body(cartItemUpdate)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(SHOPPING_CART_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -358,8 +441,13 @@ public class CartItemControllerTest extends BaseControllerTest {
             .thenReturn(shoppingCart);
 
         // Test response data for request
-        testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, cartItemUpdate,
-            HttpStatus.BAD_REQUEST, createJsonMapError(SHOPPING_CART_DONE));
+        testResponseData(RequestInfo.builder()
+            .request(put(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .token(memberToken)
+            .body(cartItemUpdate)
+            .httpStatus(HttpStatus.BAD_REQUEST)
+            .jsonMap(createJsonMapError(SHOPPING_CART_DONE))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -381,8 +469,13 @@ public class CartItemControllerTest extends BaseControllerTest {
             .thenReturn(null);
 
         // Test response data for request
-        testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, cartItemUpdate,
-            HttpStatus.NOT_FOUND, createJsonMapError(CART_ITEM_NOT_FOUND));
+        testResponseData(RequestInfo.builder()
+            .request(put(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .token(memberToken)
+            .body(cartItemUpdate)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(CART_ITEM_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -411,8 +504,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // FIXME:: Can not compare Long number
         // jsonMap.put("$.id", 0 + cartItem.getId());
         // jsonMap.put("$.quantity", 0 + cartItemUpdate.getQuantity());
-        testResponseData(put(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, cartItemUpdate,
-            HttpStatus.OK, jsonMap);
+        testResponseData(RequestInfo.builder()
+            .request(put(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .token(memberToken)
+            .body(cartItemUpdate)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonMap)
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).
@@ -433,7 +531,17 @@ public class CartItemControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteCartItemShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
         when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
-        testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), adminToken, null, HttpStatus.FORBIDDEN, null);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("shoppingCartId", shoppingCart.getId());
+
+        // Test response data for request
+        testResponseData(RequestInfo.builder()
+            .request(delete(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(adminToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
@@ -447,8 +555,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.NOT_FOUND,
-            createJsonMapError(SHOPPING_CART_NOT_FOUND), params);
+        testResponseData(RequestInfo.builder()
+            .request(delete(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(SHOPPING_CART_NOT_FOUND))
+            .build());
 
         verify(shoppingCartRepository, times(1)).findOne(shoppingCart.getId(), memberUser.getId());
         verifyNoMoreInteractions(shoppingCartRepository);
@@ -468,8 +581,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.NOT_FOUND,
-            createJsonMapError(CART_ITEM_NOT_FOUND), params);
+        testResponseData(RequestInfo.builder()
+            .request(delete(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(CART_ITEM_NOT_FOUND))
+            .build());
 
         // Verify called method
         verify(shoppingCartRepository, times(1)).findOne(shoppingCart.getId(), memberUser.getId());
@@ -495,9 +613,13 @@ public class CartItemControllerTest extends BaseControllerTest {
         // Test response data for request
         Map<String, Object> params = new HashMap<>();
         params.put("shoppingCartId", shoppingCart.getId());
-        Map<String, Object> jsonMap = new HashMap<>();
-        jsonMap.put("$", MessageConstant.CART_ITEM_DELETE_SUCCESS);
-        testResponseData(delete(CART_ITEM_DETAIL_URL, cartItem.getId()), memberToken, null, HttpStatus.OK, jsonMap, params);
+
+        testResponseData(RequestInfo.builder()
+            .request(delete(CART_ITEM_DETAIL_URL, cartItem.getId()))
+            .params(params)
+            .token(memberToken)
+            .httpStatus(HttpStatus.NO_CONTENT)
+            .build());
 
         // Verify status shopping cart is EMPTY when no cart item for shopping cart after delete cart item
         assertEquals(shoppingCart.getStatus(), ShoppingCartStatus.EMPTY.getName());

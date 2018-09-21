@@ -1,5 +1,6 @@
 package com.agility.shopping.cart.controllers;
 
+import com.agility.shopping.cart.models.RequestInfo;
 import com.agility.shopping.cart.models.User;
 import com.agility.shopping.cart.securities.AuthenticationRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.agility.shopping.cart.configs.WebSecurityConfig.CART_ITEM_URL;
 import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
 import static java.util.stream.Collectors.toList;
 import static org.mockito.Mockito.when;
@@ -183,6 +185,10 @@ public class UserControllerTest extends BaseControllerTest {
         jsonMap.put("$.roles[0]", memberUser.getRoles().stream().collect(toList()).get(0).getName());
 
         // Test response data for request
-        testResponseData(get("/me"), memberToken, null, HttpStatus.OK, null);
+        testResponseData(RequestInfo.builder()
+            .request(get("/me"))
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .build());
     }
 }

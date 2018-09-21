@@ -112,6 +112,7 @@ public class CartItemController extends BaseController {
     public ResponseEntity<List<CartItemResponse>> findAll(@RequestParam(value = "shoppingCartId") long shoppingCartId,
                                           HttpServletRequest request) {
 
+        // TODO:: Use @Principle to get detail user
         // Get user id from request
         Long userId = jwtTokenService.getUserId(request);
 

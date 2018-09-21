@@ -5,13 +5,9 @@ import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemUpdate;
 import com.agility.shopping.cart.exceptions.CustomError;
-import com.agility.shopping.cart.mappers.CartItemMapper;
 import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
-import com.agility.shopping.cart.models.CartItem;
-import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.models.ShoppingCart;
-import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.models.*;
 import com.agility.shopping.cart.repositories.CartItemRepository;
 import com.agility.shopping.cart.repositories.ProductRepository;
 import com.agility.shopping.cart.repositories.ShoppingCartRepository;
@@ -19,20 +15,17 @@ import com.agility.shopping.cart.repositories.UserRepository;
 import com.agility.shopping.cart.securities.JwtTokenService;
 import com.agility.shopping.cart.services.FakerService;
 import com.agility.shopping.cart.services.ShoppingCartService;
-import com.agility.shopping.cart.services.UserService;
 import com.github.javafaker.Faker;
-import lombok.val;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -53,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * BaseControllerTest class used to define common data and method mock
  */
+@Slf4j
 public class BaseControllerTest {
 
     protected static final Faker faker = new Faker();
@@ -78,13 +72,7 @@ public class BaseControllerTest {
     protected SecurityConfig securityConfig;
 
     @Autowired
-    protected UserService userService;
-
-    @Autowired
     protected ShoppingCartService shoppingCartService;
-
-    @Autowired
-    protected PasswordEncoder passwordEncoder;
 
     @Autowired
     protected JwtTokenService jwtTokenService;
@@ -134,37 +122,27 @@ public class BaseControllerTest {
     }
 
     /**
-     * Test response data for API request
+     * Test response data when perform request
      *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     * @param params     Params map
+     * @param requestInfo Request info
      */
-    protected void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap,
-                                  Map<String, Object> params) throws Exception {
+    protected void testResponseData(RequestInfo requestInfo) throws Exception {
         MultiValueMap<String, String> multiValueMapParam = new LinkedMultiValueMap<>();
-        if (params != null) {
-            for (val param : params.entrySet()) {
+        if (requestInfo.getParams() != null) {
+            for (val param : requestInfo.getParams().entrySet()) {
                 multiValueMapParam.add(param.getKey(), param.getValue().toString());
             }
         }
 
-        ResultActions resultActions = mockMvc.perform(request.params(multiValueMapParam)
-            .header(securityConfig.getHeaderString(), token)
+        ResultActions resultActions = mockMvc.perform(requestInfo.getRequest().params(multiValueMapParam)
+            .header(securityConfig.getHeaderString(), requestInfo.getToken())
             .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(body)))
+            .content(convertObjectToJsonBytes(requestInfo.getBody())))
             .andDo(print())
-            .andExpect(status().is(httpStatus.value()));
+            .andExpect(status().is(requestInfo.getHttpStatus().value()));
 
-        if (jsonMap != null) {
-            for (val entry : jsonMap.entrySet()) {
+        if (requestInfo.getJsonMap() != null) {
+            for (val entry : requestInfo.getJsonMap().entrySet()) {
                 if (entry.getValue() instanceof Matcher) {
                     resultActions.andExpect(jsonPath(entry.getKey(), (Matcher) entry.getValue()));
 
@@ -174,23 +152,6 @@ public class BaseControllerTest {
 
             }
         }
-    }
-
-    /**
-     * Test response data for API request
-     *
-     * @param request    API Request
-     * @param token      Token request
-     * @param body       Body request
-     * @param httpStatus Expected response status
-     * @param jsonMap    Json map
-     */
-    protected void testResponseData(MockHttpServletRequestBuilder request,
-                                  String token,
-                                  Object body,
-                                  HttpStatus httpStatus,
-                                  Map<String, Object> jsonMap) throws Exception {
-        testResponseData(request, token, body, httpStatus, jsonMap, null);
     }
 
     /**
@@ -204,4 +165,5 @@ public class BaseControllerTest {
         jsonMap.put("$.code", customError.code());
         return jsonMap;
     }
+
 }
