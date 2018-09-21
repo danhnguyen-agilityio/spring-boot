@@ -1,8 +1,7 @@
 package com.agility.shopping.cart.configs;
 
 import com.agility.shopping.cart.constants.RoleType;
-import com.agility.shopping.cart.securities.JwtConfigurer;
-import com.agility.shopping.cart.securities.JwtTokenService;
+import com.agility.shopping.cart.securities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.SessionManagementFilter;
 
 /**
  * WebSecurityConfig class config security feature
@@ -49,10 +50,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtTokenService jwtTokenService;
 
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+
     /**
      * Authenticate credential that user login with username and password
      */
-    // TODO:: When use this, when not use it
+    // TODO:: When use this method or globalUserDetails
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
@@ -63,9 +72,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-            .httpBasic().disable()
-            .csrf().disable().authorizeRequests()
+        http.cors().and().csrf().disable()
+            .authorizeRequests()
+            .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .antMatchers("/v1/auths").permitAll()
             // Authenticated user can access to api get product and list product
             .antMatchers(HttpMethod.GET, "/products/**").authenticated()
@@ -75,8 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(CART_ITEM_URL + "/**").hasAuthority(RoleType.MEMBER.getName())
             .anyRequest().authenticated()
             .and()
-            .apply(new JwtConfigurer(jwtTokenService))
+            .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .addFilterBefore(new CORSFilter(), SessionManagementFilter.class)
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
