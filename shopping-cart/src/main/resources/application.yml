@@ -1,5 +1,20 @@
 server:
-    port: 8080
+    port: 9000
+
+security:
+    # Tell Spring security to require request over HTTPS
+    require-ssl: true
+
+server:
+    ssl:
+        # The format used for the keystore
+        key-store-type: PKCS12
+        # The path to the keystore containing the certificate
+        key-store: classpath:keystore.p12
+        # The password used to generate the certificate
+        key-store-password: 123456
+        # The alias mapped to the certificate
+        key-alias: tomcat
 
 spring:
     # Specify which profiles are active
