@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.agility.shopping.cart.exceptions.CustomError.BAD_CREDENTIALS;
 
@@ -39,5 +36,10 @@ public class AuthController extends BaseController {
         } catch (BadCredentialsException e) {
             throw new BadAccountCredentialException(BAD_CREDENTIALS);
         }
+    }
+
+    @GetMapping
+    public String test() {
+        return "Test";
     }
 }
