@@ -2,6 +2,7 @@ package com.agility.shopping.cart.securities;
 
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.Views;
+import com.agility.shopping.cart.models.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,15 @@ public class SecurityService {
         return userDetails.getAuthorities().stream()
             .map(grantedAuthority -> grantedAuthority.getAuthority())
             .anyMatch(role -> roleType.getName().equals(role));
+    }
+
+    /**
+     * Get current user logged in
+     *
+     * @return User
+     */
+    public User getCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user;
     }
 }

@@ -36,39 +36,26 @@ public class ShoppingCartController extends BaseController {
      * Create shopping cart
      *
      * @param shoppingCartRequest Shopping cart request
-     * @param request Request from user
      * @return Shopping cart response
      */
+    // TODO: Test this API
     @PostMapping
-    public ShoppingCartResponse create(@Valid @RequestBody ShoppingCartRequest shoppingCartRequest,
-                                       HttpServletRequest request) {
+    public ShoppingCartResponse create(@Valid @RequestBody ShoppingCartRequest shoppingCartRequest) {
 
         log.debug("POST /shopping-carts, body = {}", shoppingCartRequest);
 
-        boolean existedName = shoppingCartRepository.
-            existsByName(shoppingCartRequest.getName());
+        boolean existedName = shoppingCartRepository.existsByName(shoppingCartRequest.getName());
 
-        // Throw resource exist exception product name already exists
+        // Throw resource exist exception shopping cart name already exists
         if (existedName) {
             throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
-        }
-
-        // Get user id;
-        long userId = jwtTokenService.getUserId(request);
-
-        // Get user by user id
-        User user = userRepository.findOne(userId);
-
-        // Throw not found exception when user null
-        if (user == null) {
-            throw new ResourceNotFoundException(USER_NOT_FOUND);
         }
 
         // Convert to shopping cart
         ShoppingCart shoppingCart = shoppingCartMapper.toShoppingCart(shoppingCartRequest);
 
         // Set user info for shopping cart
-        shoppingCart.setUser(user);
+        shoppingCart.setUser(securityService.getCurrentUser());
 
         // Save database
         shoppingCart = shoppingCartRepository.save(shoppingCart);
@@ -84,14 +71,11 @@ public class ShoppingCartController extends BaseController {
     @GetMapping
     public List<ShoppingCartResponse> findAll() {
 
-        // Get username from request
-        String username = SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getName();
+        User user = securityService.getCurrentUser();
 
         // Get list shopping cart
         List<ShoppingCart> shoppingCarts =
-            shoppingCartRepository.findAllByUsername(username);
+            shoppingCartRepository.findAllByUsername(user.getUsername());
 
         return shoppingCartMapper.toShoppingCartResponse(shoppingCarts);
     }

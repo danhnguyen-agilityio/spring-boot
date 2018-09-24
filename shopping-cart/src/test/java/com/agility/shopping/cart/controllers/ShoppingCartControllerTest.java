@@ -2,6 +2,7 @@ package com.agility.shopping.cart.controllers;
 
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.dto.ShoppingCartRequest;
+import com.agility.shopping.cart.models.RequestInfo;
 import com.agility.shopping.cart.models.ShoppingCart;
 import com.agility.shopping.cart.models.User;
 import lombok.extern.slf4j.Slf4j;
@@ -9,11 +10,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_CHECKOUT_URL;
 import static com.agility.shopping.cart.configs.WebSecurityConfig.SHOPPING_CART_DETAIL_URL;
@@ -35,102 +39,68 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public class ShoppingCartControllerTest extends BaseControllerTest {
 
+    private static final String SHOPPING_CART_ENDPOINT = "/shopping-carts";
+    private static final String SHOPPING_CART_DETAIL_ENDPOINT = "/shopping-carts/{id}";
+
     // ============================================================
     // Test create shopping cart
     // ============================================================
 
     /**
-     * Test create shopping cart success
+     * Test create shopping cart throw forbidden exception when admin user access
+     */
+    @Test
+    public void testCreateShoppingCartShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
+        // Test response data for request
+        testResponseData(RequestInfo.builder()
+            .request(post(SHOPPING_CART_ENDPOINT))
+            .token(adminToken)
+            .body(shoppingCartRequest)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
+    }
+
+    /**
+     * Test create shopping cart fail resource exists when shopping cart name is already existed
+     */
+    @Test
+    public void testCreateShoppingCartShouldThrowResourceExistsWhenNameExisted() throws Exception {
+        // Mock method
+        when(shoppingCartRepository.existsByName(shoppingCartRequest.getName())).thenReturn(true);
+
+        testResponseData(RequestInfo.builder()
+            .request(post(SHOPPING_CART_ENDPOINT))
+            .token(memberToken)
+            .body(shoppingCartRequest)
+            .httpStatus(HttpStatus.CONFLICT)
+            .build());
+
+        verify(shoppingCartRepository, times(1)).existsByName(shoppingCartRequest.getName());
+        verifyNoMoreInteractions(shoppingCartRepository);
+    }
+
+    /**
+     * Test create shopping cart should correct
      */
     @Test
     public void testCreateShoppingCartSuccess() throws Exception {
-        // Mock shopping cart
-        ShoppingCart shoppingCart = fakerService.fakeShoppingCart();
-        ShoppingCartRequest request = shoppingCartMapper.toShoppingCartRequest(shoppingCart);
-
-        // Generate member token
-        User user = fakerService.fakeMemberUser();
-        String token = jwtTokenService.createToken(user);
-
         // Mock method
-        when(shoppingCartRepository.existsByName(request.getName())).thenReturn(false);
-        when(userRepository.findOne(user.getId())).thenReturn(user);
-        when(shoppingCartRepository.save(any(ShoppingCart.class)))
-            .thenReturn(shoppingCart);
+        when(shoppingCartRepository.existsByName(shoppingCartRequest.getName())).thenReturn(false);
+        when(shoppingCartRepository.save(any(ShoppingCart.class))).thenReturn(shoppingCart);
 
-        mockMvc.perform(post("/shopping-carts")
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(shoppingCart.getName())));
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.user.username", memberUser.getUsername());
+        testResponseData(RequestInfo.builder()
+            .request(post(SHOPPING_CART_ENDPOINT))
+            .token(memberToken)
+            .body(shoppingCartRequest)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonMap)
+            .build());
 
-        verify(shoppingCartRepository, times(1)).existsByName(request.getName());
-        verify(userRepository, times(1)).findOne(user.getId());
+        verify(shoppingCartRepository, times(1)).existsByName(shoppingCartRequest.getName());
         verify(shoppingCartRepository, times(1)).save(any(ShoppingCart.class));
         verifyNoMoreInteractions(shoppingCartRepository);
-        verifyNoMoreInteractions(userRepository);
-    }
-
-    /**
-     * Test create shopping cart fail resource exists
-     * when product name is already existed
-     */
-    @Test
-    public void testCreateShoppingCartFailResourceExistsWhenProductNameExists()
-        throws Exception {
-
-        // Mock shopping cart
-        ShoppingCartRequest request = fakerService.fakeShoppingCartRequest();
-
-        // Generate member token
-        User user = fakerService.fakeMemberUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Mock method
-        when(shoppingCartRepository.existsByName(request.getName()))
-            .thenReturn(true);
-
-        mockMvc.perform(post("/shopping-carts")
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isConflict());
-
-        verify(shoppingCartRepository, times(1)).existsByName(request.getName());
-        verifyNoMoreInteractions(shoppingCartRepository);
-    }
-
-    /**
-     * Test create shopping cart fail user not found
-     * when username does not exist
-     */
-    @Test
-    public void testCreateShoppingCartFailUserNotFoundWhenUsernameNotExist()
-        throws Exception {
-
-        // Mock shopping cart request
-        ShoppingCartRequest request = fakerService.fakeShoppingCartRequest();
-
-        // Generate member token
-        User user = fakerService.fakeMemberUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Mock method
-        when(shoppingCartRepository.existsByName(request.getName())).thenReturn(false);
-        when(userRepository.findOne(user.getId())).thenReturn(null);
-
-        mockMvc.perform(post("/shopping-carts")
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code", is(USER_NOT_FOUND.code())));
-
-        verify(shoppingCartRepository, times(1)).existsByName(request.getName());
-        verify(userRepository, times(1)).findOne(user.getId());
-        verifyNoMoreInteractions(shoppingCartRepository);
-        verifyNoMoreInteractions(userRepository);
     }
 
     // ============================================================
@@ -138,46 +108,34 @@ public class ShoppingCartControllerTest extends BaseControllerTest {
     // ============================================================
 
     /**
-     * Test find all shopping cart success
+     * Test fina all shopping cart throw forbidden exception when admin user access
      */
     @Test
-    public void testFindAllShoppingCartSuccess() throws Exception {
-        // Mock list shopping cart
-        List<ShoppingCart> shoppingCarts = Arrays.asList(fakerService.fakeShoppingCart(),
-            fakerService.fakeShoppingCart());
-
-        // Generate token have role member
-        User user = fakerService.fakeMemberUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Mock method
-        when(shoppingCartRepository.findAllByUsername(user.getUsername()))
-            .thenReturn(shoppingCarts);
-
-        mockMvc.perform(get("/shopping-carts")
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name",
-                is(shoppingCarts.get(0).getName())))
-            .andExpect(jsonPath("$[1].name",
-                is(shoppingCarts.get(1).getName())));
-
-        verify(shoppingCartRepository, times(1)).findAllByUsername(user.getUsername());
-        verifyNoMoreInteractions(shoppingCartRepository);
+    public void testFindAllShoppingCartShouldThrowForbiddenWhenAdminUserAccess() throws Exception {
+        // Test response data for request
+        testResponseData(RequestInfo.builder()
+            .request(get(SHOPPING_CART_ENDPOINT))
+            .token(adminToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
-     * Test find all shopping cart fail forbidden for admin user
+     * Test find all shopping cart should correct
      */
     @Test
-    public void testFindAllShoppingCartFailForbiddenForAdminUser() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
+    public void testFindAllShoppingCartShouldCorrect() throws Exception {
+        // Mock method
+        when(shoppingCartRepository.findAllByUsername(memberUser.getUsername())).thenReturn(shoppingCarts);
 
-        mockMvc.perform(get("/shopping-carts")
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isForbidden());
+        testResponseData(RequestInfo.builder()
+            .request(get(SHOPPING_CART_ENDPOINT))
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .build());
+
+        verify(shoppingCartRepository, times(1)).findAllByUsername(memberUser.getUsername());
+        verifyNoMoreInteractions(shoppingCartRepository);
     }
 
     // ============================================================
@@ -188,22 +146,19 @@ public class ShoppingCartControllerTest extends BaseControllerTest {
      * Test find one shopping cart throw forbidden exception for admin user
      */
     @Test
-    public void testFindOneShoppingCartThrowForbiddenExceptionForAdminUser() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Call api
-        mockMvc.perform(get(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber())
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isForbidden());
+    public void testFindOneShoppingCartShouldThrowForbiddenExceptionForAdminUserAccess() throws Exception {
+        testResponseData(RequestInfo.builder()
+            .request(get(SHOPPING_CART_DETAIL_URL, faker.number().randomNumber()))
+            .token(adminToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
-     * Test find one shopping cart throw resource not found exception when shopping cart not exist
+     * Test find one shopping cart should throw resource not found exception when shopping cart not found
      */
     @Test
-    public void testFineOneShoppingCartThrowResourceNotFoundExceptionWhenShoppingCartNotExist() throws Exception {
+    public void testFineOneShoppingCartShouldThrowResourceNotFoundWhenShoppingCartNotFound() throws Exception {
         // Mock member user
         User user = fakerService.fakeMemberUser();
 

@@ -1,27 +1,23 @@
 package com.agility.shopping.cart.controllers;
 
-import com.agility.shopping.cart.dto.ProductRequest;
-import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.models.Product;
-import com.agility.shopping.cart.models.User;
+import com.agility.shopping.cart.models.RequestInfo;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.hamcrest.Matchers.is;
+import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_EXIST;
+import static com.agility.shopping.cart.exceptions.CustomError.PRODUCT_NOT_FOUND;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.Arrays;
-import java.util.List;
 
-import static com.agility.shopping.cart.utils.ConvertUtil.convertObjectToJsonBytes;
+import java.util.*;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * This class test RESTful api for product
@@ -31,297 +27,249 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public class ProductControllerTest extends BaseControllerTest {
 
+    private static final String PRODUCT_ENDPOINT = "/products";
+    private static final String PRODUCT_DETAIL_ENDPOINT = "/products/{id}";
+
+    // --------------------------------------------------------------------
+    // Create product
+    // --------------------------------------------------------------------
+
     /**
-     * Test create product success
+     * Test create product throw forbidden exception when member user access
      */
     @Test
-    public void testCreateProductSuccess() throws Exception {
-        // Mock product
-        Product product = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-        ProductRequest request = productMapper.toProductRequest(product);
-
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
-        // Mock method
-        when(productRepository.existsByName(product.getName())).thenReturn(false);
-        when(productRepository.save(any(Product.class))).thenReturn(product);
-
-        mockMvc.perform(post("/products")
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(product.getName())));
+    public void testCreateProductShouldThrowForbiddenWhenMemberUserAccess() throws Exception {
+        testResponseData(RequestInfo.builder()
+            .request(post(PRODUCT_ENDPOINT))
+            .token(memberToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
-     * Test create product fail resource exists exception when name product exists
+     * Test create product should throw resource exists exception when product exists
      */
     @Test
-    public void testCreateProductFailResourceExistsWhenNameProductExists()
-        throws Exception {
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
-        // Mock product
-        Product product = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-        ProductRequest request = productMapper.toProductRequest(product);
-
+    public void testCreateProductShouldThrowResourceExistsWhenProductExists() throws Exception {
         // Mock method
-        when(productRepository.existsByName(product.getName())).thenReturn(true);
+        when(productRepository.existsByName(productRequest.getName())).thenReturn(true);
+
+        testResponseData(RequestInfo.builder()
+            .request(post(PRODUCT_ENDPOINT))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.CONFLICT)
+            .jsonMap(createJsonMapError(PRODUCT_EXIST))
+            .build());
+    }
+
+    /**
+     * Test create product should correct
+     */
+    @Test
+    public void testCreateProductShouldCorrect() throws Exception {
+        when(productRepository.existsByName(productRequest.getName())).thenReturn(false);
         when(productRepository.save(any(Product.class))).thenReturn(product);
 
-        mockMvc.perform(post("/products")
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isConflict())
-            .andExpect(jsonPath("$.code",
-                is(CustomError.PRODUCT_EXIST.code())));
+        testResponseData(RequestInfo.builder()
+            .request(post(PRODUCT_ENDPOINT))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.OK)
+            .build());
     }
+
+    // --------------------------------------------------------------------
+    // Find all product
+    // --------------------------------------------------------------------
 
     /**
      * Test find all product
      */
+    // TODO:: How to test with multiple role
     @Test
-    public void testFindAllProduct()
-        throws Exception {
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
-        // Mock list product
-        Product product1 = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-        Product product2 = Product.builder()
-            .id(1L)
-            .name("dish")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-        List<Product> products = Arrays.asList(product1, product2);
-
+    public void testFindAllProduct() throws Exception {
         // Mock method
         when(productRepository.findAll()).thenReturn(products);
 
-        mockMvc.perform(get("/products")
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].name",
-                is(product1.getName())))
-            .andExpect(jsonPath("$[1].name",
-                is(product2.getName())));
+        testResponseData(RequestInfo.builder()
+            .request(get(PRODUCT_ENDPOINT))
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .build());
+    }
+
+    // --------------------------------------------------------------------
+    // Find one product
+    // --------------------------------------------------------------------
+
+    /**
+     * Test find product should throw not found exception when product not found
+     */
+    @Test
+    public void testFindProductShouldThrowNotFoundWhenProductIdNotFound() throws Exception {
+        when(productRepository.findOne(product.getId())).thenReturn(null);
+
+        testResponseData(RequestInfo.builder()
+            .request(get(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(memberToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .build());
     }
 
     /**
      * Test find product success
      */
     @Test
-    public void testFindProductSuccess() throws Exception {
-        // Mock product
-        Product product = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
+    public void testFindProductShouldCorrect() throws Exception {
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
 
-        mockMvc.perform(get("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.name", is(product.getName())));
-    }
-
-    /**
-     * Test find product fail not found exception when product id not exist
-     */
-    @Test
-    public void testFindProductFailNotFoundWhenProductIdNotExist() throws Exception {
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
-        // Mock id of product
-        long productId = 1L;
-
-        // Mock method
-        when(productRepository.findOne(productId)).thenReturn(null);
-
-        mockMvc.perform(get("/products/{id}", productId)
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isNotFound());
+        testResponseData(RequestInfo.builder()
+            .request(get(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(memberToken)
+            .httpStatus(HttpStatus.OK)
+            .build());
     }
 
     // ================================================
     // Test update product
     // ================================================
 
-    /***
-     * Test update product throw resource not found exception when product exist
+    /**
+     * Test update product throw forbidden exception when member user access
      */
     @Test
-    public void testUpdateProductThrowResourceNotFoundExceptionWhenProductExist() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Generate data
-        Product product = fakerService.fakeProduct();
-        ProductRequest request = productMapper.toProductRequest(product);
-
-        // Mock method
-        when(productRepository.findOne(product.getId())).thenReturn(null);
-
-        mockMvc.perform(put("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isNotFound())
-            .andExpect(jsonPath("$.code",
-                is(CustomError.PRODUCT_NOT_FOUND.code())));
+    public void testUpdateProductShouldThrowForbiddenWhenMemberUserAccess() throws Exception {
+        testResponseData(RequestInfo.builder()
+            .request(put(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(memberToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /***
-     * Test update product success when product with given id contain new name
+     * Test update product throw resource not found exception when product not found
      */
     @Test
-    public void testUpdateProductSuccessWhenProductWithGivenIdContainNewName() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Generate data
-        Product product = fakerService.fakeProduct();
-        ProductRequest request = fakerService.fakeProductRequest();
-        request.setName(product.getName());
-
+    public void testUpdateProductShouldThrowResourceNotFoundExceptionWhenProductNotFound() throws Exception {
         // Mock method
-        when(productRepository.findOne(product.getId())).thenReturn(product);
+        when(productRepository.findOne(product.getId())).thenReturn(null);
 
-        mockMvc.perform(put("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk());
+        testResponseData(RequestInfo.builder()
+            .request(put(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .jsonMap(createJsonMapError(PRODUCT_NOT_FOUND))
+            .build());
+    }
+
+    /***
+     * Test update product should success when product not update name
+     */
+    @Test
+    public void testUpdateProductShouldSuccessWhenProductNotUpdateName() throws Exception {
+        product.setName(productRequest.getName());
+        when(productRepository.findOne(product.getId())).thenReturn(product);
+        when(productRepository.save(product)).thenReturn(product);
+
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.url", productRequest.getUrl());
+        testResponseData(RequestInfo.builder()
+            .request(put(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonMap)
+            .build());
     }
 
     /***
      * Test update product throw resource exists exception when new name exists
      */
     @Test
-    public void testUpdateProductThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Fake differ product and product request
-        Product product = fakerService.fakeProduct();
-        ProductRequest request = fakerService.fakeProductRequest();
-
+    public void testUpdateProductShouldThrowResourceExistsExceptionWhenNewNameExists() throws Exception {
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
-        when(productRepository.existsByName(request.getName())).thenReturn(true);
+        when(productRepository.existsByName(productRequest.getName())).thenReturn(true);
 
-        mockMvc.perform(put("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isConflict());
+        testResponseData(RequestInfo.builder()
+            .request(put(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.CONFLICT)
+            .build());
     }
 
     /***
-     * Test update product success when new name not exist
+     * Test update product should correct when new name not exist
      */
     @Test
-    public void testUpdateProductSuccessWhenNewNameNotExist() throws Exception {
-        // Generate token have role admin
-        User user = fakerService.fakeAdminUser();
-        String token = jwtTokenService.createToken(user);
-
-        // Fake differ product and product request
-        Product product = fakerService.fakeProduct();
-        ProductRequest request = fakerService.fakeProductRequest();
-
+    public void testUpdateProductShouldCorrectWhenNewNameNotExist() throws Exception {
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(product);
-        when(productRepository.existsByName(request.getName())).thenReturn(false);
+        when(productRepository.existsByName(productRequest.getName())).thenReturn(false);
+        when(productRepository.save(product)).thenReturn(product);
 
-        mockMvc.perform(put("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(request)))
-            .andExpect(status().isOk());
+        Map<String, Object> jsonMap = new HashMap<>();
+        jsonMap.put("$.name", productRequest.getName());
+        jsonMap.put("$.url", productRequest.getUrl());
+        testResponseData(RequestInfo.builder()
+            .request(put(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .body(productRequest)
+            .httpStatus(HttpStatus.OK)
+            .jsonMap(jsonMap)
+            .build());
+    }
+
+    // ================================================
+    // Test delete product
+    // ================================================
+
+    /**
+     * Test delete product throw forbidden exception when member user access
+     */
+    @Test
+    public void testDeleteProductShouldThrowForbiddenWhenMemberUserAccess() throws Exception {
+        testResponseData(RequestInfo.builder()
+            .request(delete(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(memberToken)
+            .httpStatus(HttpStatus.FORBIDDEN)
+            .build());
     }
 
     /**
-     * Test delete product success
+     * Test delete product should throw not found exception when product not found
      */
     @Test
-    public void testDeleteProductSuccess() throws Exception {
-        // Mock product
-        Product product = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
-        // Mock method
-        when(productRepository.findOne(product.getId())).thenReturn(product);
-        doNothing().when(productRepository).delete(product.getId());
-
-        mockMvc.perform(delete("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isOk());
-    }
-
-    /**
-     * Test delete product fail resource not found exception
-     * when product id not exist
-     */
-    @Test
-    public void testDeleteProductFailNotFoundWhenProductIdNotExist() throws Exception {
-        // Mock product
-        Product product = Product.builder()
-            .id(1L)
-            .name("clothes")
-            .url("localhost://url.com")
-            .price(1000000L)
-            .build();
-
-        // Generate token have role admin
-        String token = jwtTokenService.createToken(fakerService.fakeAdminUser());
-
+    public void testDeleteProductShouldThrowNotFoundWhenProductNotFound() throws Exception {
         // Mock method
         when(productRepository.findOne(product.getId())).thenReturn(null);
 
-        mockMvc.perform(delete("/products/{id}", product.getId())
-            .header(securityConfig.getHeaderString(), token))
-            .andExpect(status().isNotFound());
+        testResponseData(RequestInfo.builder()
+            .request(delete(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .httpStatus(HttpStatus.NOT_FOUND)
+            .build());
     }
 
+    /**
+     * Test delete product should correct
+     */
+    @Test
+    public void testDeleteProductShouldCorrect() throws Exception {
+        // Mock method
+        when(productRepository.findOne(product.getId())).thenReturn(product);
+        doNothing().when(productRepository).delete(product);
+
+        testResponseData(RequestInfo.builder()
+            .request(delete(PRODUCT_DETAIL_ENDPOINT, product.getId()))
+            .token(adminToken)
+            .httpStatus(HttpStatus.OK)
+            .build());
+    }
 }

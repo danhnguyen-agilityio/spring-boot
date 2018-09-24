@@ -10,7 +10,6 @@ import org.mockito.internal.util.collections.Sets;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -459,7 +458,7 @@ public class CartItemControllerTest extends BaseControllerTest {
      * Test update cart item throw resource not found exception when cart item not found
      */
     @Test
-    public void testUpdateCartItemShouldThrowResourceNotFoundEWhenCartItemNotFound()
+    public void testUpdateCartItemShouldThrowResourceNotFoundWhenCartItemNotFound()
         throws Exception {
         // Mock method and data
         shoppingCart.setStatus(ShoppingCartStatus.IN_PROGRESS.getName());

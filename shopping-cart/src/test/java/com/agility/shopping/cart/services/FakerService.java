@@ -103,6 +103,16 @@ public class FakerService {
     }
 
     /**
+     * Fake list product with given size
+     *
+     * @param size Size list product
+     * @return List product with given size
+     */
+    public List<Product> fakeListProduct(int size) {
+        return Stream.generate(() -> fakeProduct()).limit(size).collect(Collectors.toList());
+    }
+
+    /**
      * Fake product request
      *
      * @return Product request
@@ -155,6 +165,16 @@ public class FakerService {
         shoppingCart.setUser(user);
         shoppingCart.setStatus(randomEnum(ShoppingCartStatus.class).getName());
         return shoppingCart;
+    }
+
+    /**
+     * Fake list shopping cart with given size
+     *
+     * @param size Size list shopping cart
+     * @return List shopping cart with given size
+     */
+    public List<ShoppingCart> fakeListShoppingCart(int size) {
+        return Stream.generate(() -> fakeShoppingCart()).limit(size).collect(Collectors.toList());
     }
 
     /**

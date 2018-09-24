@@ -124,7 +124,7 @@ public class ProductController extends BaseController {
             throw new ResourceNotFoundException(CustomError.PRODUCT_NOT_FOUND);
         }
 
-        // Set new info and update product if product contain new name
+        // Set new info and update product if product not update name
         if (product.getName() == request.getName()) {
             product.setPrice(request.getPrice());
             product.setUrl(request.getUrl());
@@ -165,7 +165,7 @@ public class ProductController extends BaseController {
         }
 
         // Delete product
-        productRepository.delete(id);
+        productRepository.delete(product);
 
         return MessageConstant.PRODUCT_DELETE_SUCCESS;
     }

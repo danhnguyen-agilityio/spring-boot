@@ -4,6 +4,8 @@ import com.agility.shopping.cart.configs.SecurityConfig;
 import com.agility.shopping.cart.constants.RoleType;
 import com.agility.shopping.cart.dto.CartItemRequest;
 import com.agility.shopping.cart.dto.CartItemUpdate;
+import com.agility.shopping.cart.dto.ProductRequest;
+import com.agility.shopping.cart.dto.ShoppingCartRequest;
 import com.agility.shopping.cart.exceptions.CustomError;
 import com.agility.shopping.cart.mappers.ProductMapper;
 import com.agility.shopping.cart.mappers.ShoppingCartMapper;
@@ -55,7 +57,11 @@ public class BaseControllerTest {
     protected String memberToken;
     protected String adminToken;
     protected Product product;
+    protected ProductRequest productRequest;
+    protected List<Product> products;
     protected ShoppingCart shoppingCart;
+    protected ShoppingCartRequest shoppingCartRequest;
+    protected List<ShoppingCart> shoppingCarts;
     protected CartItemRequest cartItemRequest;
     protected CartItem cartItem;
     protected CartItemUpdate cartItemUpdate;
@@ -102,11 +108,14 @@ public class BaseControllerTest {
     public void setUp() {
         memberUser = fakerService.fakeUser(RoleType.MEMBER);
         adminUser = fakerService.fakeUser(RoleType.ADMIN);
-        adminUser.setUsername(memberUser.getUsername());
         memberToken = jwtTokenService.createToken(memberUser);
         adminToken = jwtTokenService.createToken(adminUser);
         product = fakerService.fakeProduct();
+        productRequest = fakerService.fakeProductRequest();
+        products = fakerService.fakeListProduct(3);
         shoppingCart = fakerService.fakeShoppingCart();
+        shoppingCartRequest = fakerService.fakeShoppingCartRequest();
+        shoppingCarts = fakerService.fakeListShoppingCart(3);
         cartItem = fakerService.fakeCartItem();
         cartItemRequest = fakerService.fakeCartItemRequest();
         cartItems = fakerService.fakeListCartItem(3);
@@ -114,6 +123,7 @@ public class BaseControllerTest {
 
         // Return member user when mock method findByUsername
         when(userRepository.findByUsername(memberUser.getUsername())).thenReturn(Optional.ofNullable(memberUser));
+        when(userRepository.findByUsername(adminUser.getUsername())).thenReturn(Optional.ofNullable(adminUser));
 
         mockMvc = MockMvcBuilders
             .webAppContextSetup(webApplicationContext)
