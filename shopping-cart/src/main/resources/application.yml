@@ -5,7 +5,7 @@ server:
         # The format used for the keystore
         key-store-type: PKCS12
         # The path to the keystore containing the certificate
-        key-store: classpath:keystore.p12
+        key-store: classpath:ssl-key/server.p12
         # The password used to generate the certificate
         key-store-password: 123456
         # The alias mapped to the certificate

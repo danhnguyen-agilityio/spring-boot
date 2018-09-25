@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
             .authorizeRequests()
             .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .antMatchers("/v1/auths").permitAll()
+            .antMatchers("/v1/auths/**").permitAll()
             .anyRequest().authenticated()
             .and()
             // Will response status 403 Forbidden if authentication null and not use this entry point
