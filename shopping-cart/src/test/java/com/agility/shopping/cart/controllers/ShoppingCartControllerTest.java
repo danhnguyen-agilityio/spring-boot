@@ -3,7 +3,6 @@ package com.agility.shopping.cart.controllers;
 import com.agility.shopping.cart.constants.ShoppingCartStatus;
 import com.agility.shopping.cart.models.RequestInfo;
 import com.agility.shopping.cart.models.ShoppingCart;
-import com.agility.shopping.cart.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
