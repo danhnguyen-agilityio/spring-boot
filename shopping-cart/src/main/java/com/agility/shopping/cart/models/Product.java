@@ -33,7 +33,6 @@ public class Product extends AbstractAuditableEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    @NotNull
     private Long id;
 
     @Column(name = "name", unique = true)
