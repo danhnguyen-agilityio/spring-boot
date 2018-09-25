@@ -27,12 +27,12 @@ public class ConnectorConfig {
             }
         };
 
-        tomcat.addAdditionalTomcatConnectors(getHttpConnector());
+        tomcat.addAdditionalTomcatConnectors(initiateHttpConnector());
         return tomcat;
     }
 
-    private Connector getHttpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+    private Connector initiateHttpConnector() {
+        Connector connector = new Connector(TomcatEmbeddedServletContainerFactory.DEFAULT_PROTOCOL);
         connector.setScheme("http");
         connector.setPort(8080);
         connector.setSecure(false);
