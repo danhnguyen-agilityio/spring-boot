@@ -131,14 +131,14 @@ public class ShoppingCartController extends BaseController {
             throw new ResourceNotFoundException(SHOPPING_CART_NOT_FOUND);
         }
 
-        // Throw resource exists exception when shopping cart name belong to other shopping cart (not contain given id)
+        // Throw resource exists exception when new name is already existed
         if (!shoppingCart.getName().equals(shoppingCartRequest.getName())
             && shoppingCartRepository.existsByName(shoppingCartRequest.getName())) {
             throw new ResourceAlreadyExistsException(SHOPPING_CART_EXIST);
         }
 
-        // Update shopping cart when name of shopping cart with given id not change
-        // or shopping cart name does not exist
+        // Update shopping cart when shopping cart name not change
+        // or shopping cart name does not already existed
         shoppingCart.setName(shoppingCartRequest.getName());
         shoppingCart.setDescription(shoppingCartRequest.getDescription());
         shoppingCart = shoppingCartRepository.save(shoppingCart);
@@ -182,6 +182,7 @@ public class ShoppingCartController extends BaseController {
      * @throws ResourceNotFoundException if shopping cart not exist
      * @throws BadRequestException       if shopping cart done or shopping cart empty
      */
+    // FIXME:: Change url
     @PostMapping("/{id}/checkout")
     public String checkout(@PathVariable long id, HttpServletRequest request) {
 
