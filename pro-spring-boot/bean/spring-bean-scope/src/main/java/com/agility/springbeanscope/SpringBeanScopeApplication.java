@@ -43,6 +43,11 @@ public class SpringBeanScopeApplication implements CommandLineRunner {
 
 		Customer customer3 = (Customer) context.getBean("customer3");
 		Customer customer4 = (Customer) context.getBean("customer4");
-		System.out.println("Bean id name1 is singleton: " + (customer3.getName() == customer4.getName()));
+		System.out.println("Bean id name2 is singleton: " + (customer3.getName() == customer4.getName()));
+
+		System.out.println("------------- Check singleton bean inject prototype bean --------------------");
+		Customer customer3_2 = (Customer) context.getBean("customer3");
+		System.out.println("Bean id custom3 is singleton: " + (customer3 == customer3_2));
+		System.out.println("Object name in two custom3 instance is same: " + (customer3.getName() == customer3_2.getName()));
 	}
 }

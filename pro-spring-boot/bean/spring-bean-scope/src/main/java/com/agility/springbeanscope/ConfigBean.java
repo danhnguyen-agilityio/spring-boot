@@ -1,5 +1,6 @@
 package com.agility.springbeanscope;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -8,13 +9,13 @@ import org.springframework.context.annotation.Scope;
 public class ConfigBean {
 
     @Bean
-    @Scope("singleton")
+    @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
     public Name name1() {
         return new Name("Jack", "Smith");
     }
 
     @Bean
-    @Scope("prototype")
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public Name name2() {
         return new Name("Adam", "Johnson");
     }
