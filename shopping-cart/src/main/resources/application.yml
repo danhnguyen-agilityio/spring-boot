@@ -1,0 +1,78 @@
+server:
+    port: 8443
+    ssl:
+        enabled: true
+        # The format used for the keystore
+        key-store-type: PKCS12
+        # The path to the keystore containing the certificate
+        key-store: classpath:ssl-key/server.p12
+        # The password used to generate the certificate
+        key-store-password: 123456
+        # The alias mapped to the certificate
+        key-alias: tomcat
+
+security:
+    # Tell Spring security to require request over HTTPS
+    require-ssl: true
+
+spring:
+    # Specify which profiles are active
+    profiles:
+        active: dev
+
+    # DATASOURCE
+    # Set here configurations for the database connection
+    datasource:
+        # Connection url for the database "shopping_cart"
+        url: jdbc:mysql://localhost:3306/shopping_cart
+
+        # MySQL username and password
+        username: root
+        password: 123456
+
+        # Keep the connection alive if idle for a long time (needed in production)
+        test-while-idle: true
+        validation-query: SELECT 1
+
+    # JPA / HIBERNATE
+    # Use spring.jpa.properties.* for Hibernate native properties
+    jpa:
+        # Show or not log for each sql query
+        show-sql: true
+
+        hibernate:
+            # Hibernate ddl auto (create, create-drop, update): with "update" the database
+            # schema will be automatically updated accordingly to java entities found in
+            # the project
+            ddl-auto: update
+
+        # Automatically generate table from java entities if need
+        generate-ddl: true
+
+        properties:
+            hibernate:
+                # Allows Hibernate to generate SQL optimized for a particular DBMS
+                dialect: org.hibernate.dialect.MySQL5Dialect
+
+    # Throw exception instead of send 404 response
+    mvc:
+        throw-exception-if-no-handler-found: true
+    resources:
+        add-mappings: false
+
+    # JACKSON
+    jackson:
+        serialization:
+            # Disable converting dates to timestamps and instead use a ISO-8601 compliant format
+            write_dates_as_timestamps: false
+        # Controls the inclusion of properties during serialization
+        default-property-inclusion: non_null
+        mapper:
+            # Controls properties that have no view associated are serialized
+            default_view_inclusion: true
+
+
+# LEVEL LOGGING
+logging:
+    level:
+        com.agility.shopping.cart: DEBUG
