@@ -1,5 +1,7 @@
 package com.agility.spring.security.acl;
 
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 public interface BookService {

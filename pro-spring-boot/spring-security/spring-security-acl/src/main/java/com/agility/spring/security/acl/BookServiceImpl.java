@@ -9,6 +9,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.domain.PrincipalSid;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @PostFilter("hasPermission(filterObject, 'read') or hasRole('ADMIN)")
+    @PostFilter("hasPermission(filterObject, 'read') or hasRole('ADMIN')")
     public List<Book> findAllBooks() {
         return new ArrayList<>(books.values());
     }
@@ -51,6 +52,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void grantPermission(String principal, Book book, Permission[] permissions) {
         log.info("Grant {} permission to principal {} on Book {}", permissions, principal, book );
 
