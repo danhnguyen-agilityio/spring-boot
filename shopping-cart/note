@@ -1,5 +1,5 @@
 *********************************************
-***** Not for SSL certificae *******
+***** Not for SSL certificate *******
 *********************************************
 
 - Create RSA key: openssl genrsa -out server.key 2048
@@ -32,3 +32,25 @@
 
 openssl x509 -inform DER -outform PEM -in Certificates.cer -out certificate.pem
 
+
+*********************************************
+*************** Test CORS *******************
+*********************************************
+
+function post() {
+	var req = new XMLHttpRequest();
+	// Set header for request
+	// XMLHttpRequest.setRequestHeader(header, value)
+	req.open("POST", "https://httpbin.org/post", false);
+	req.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+
+	var jsonBody = {
+		"name" : "Lam Pham",
+		"url" : "completejavascript.com"
+	};
+	req.send(jsonBody);
+
+	console.log(req);
+	console.log(req.status);
+	console.log(req.responseText);
+}
