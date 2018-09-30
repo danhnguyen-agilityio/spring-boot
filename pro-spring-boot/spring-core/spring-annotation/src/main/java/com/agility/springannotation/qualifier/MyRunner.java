@@ -7,17 +7,25 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+// http://zetcode.com/articles/springbootqualifier/
+import javax.annotation.Resource;
+
 @Component
 public class MyRunner implements CommandLineRunner {
 
-    @Autowired
+
+//    @Autowired
     // @Qualifier("student")
+    @Resource
     @PersonQ("student")
+//    @Resource(name = "person1")
     Person p1;
 
-    @Autowired
+//    @Autowired()
     // @Qualifier("manager")
+    @Resource
     @PersonQ("manager")
+//    @Resource(name = "person2")
     Person p2;
 
     @Override

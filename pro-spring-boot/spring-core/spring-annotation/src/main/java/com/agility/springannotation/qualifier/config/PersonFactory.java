@@ -11,14 +11,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PersonFactory {
 
-    @Bean
+    @Bean("person1")
 //    @Qualifier("student")
     @PersonQ("student")
     public Person createStudent() {
         return new Student();
     }
 
-    @Bean
+    @Bean("person2")
 //    @Qualifier("manager")
     @PersonQ("manager")
     public Person createManager() {
