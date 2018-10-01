@@ -16,12 +16,13 @@ public class AppConfig {
 //    @Primary
     @ConfigurationProperties(prefix = "datasource")
     public DataSource primaryDataSource() {
-        return DataSourceBuilder.create()
-            .username("sa")
-            .password("")
-            .url("jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE")
-            .driverClassName("org.h2.Driver")
-            .build();
-//        return DataSourceBuilder.create().build();
+        // Use externalized configuration
+        return DataSourceBuilder.create().build();
+//        return DataSourceBuilder.create()
+//            .username("sa")
+//            .password("")
+//            .url("jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE")
+//            .driverClassName("org.h2.Driver")
+//            .build();
     }
 }
