@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+// Easing function specify the rate of change of a parameter over time
 public class AnimationDemo extends ApplicationAdapter {
 
     // Constant rows and columns of the sprite sheet
