@@ -1,14 +1,17 @@
 package com.guitar.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.guitar.db.repository.ModelJpaRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ import com.guitar.db.repository.ModelRepository;
 public class ModelPersistenceTests {
 	@Autowired
 	private ModelRepository modelRepository;
+
+	@Autowired
+	private ModelJpaRepository modelJpaRepository;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -67,5 +73,19 @@ public class ModelPersistenceTests {
 	public void testGetModelsByType() throws Exception {
 		List<Model> mods = modelRepository.getModelsByType("Electric");
 		assertEquals(4, mods.size());
+	}
+
+	@Test
+	public void testGetModelsByTypes() throws Exception {
+		List<String> types = new ArrayList<>();
+		types.add("Electric");
+		types.add("Acoustic");
+
+		List<Model> models = modelJpaRepository.findByModelTypeNameIn(types);
+
+		models.forEach(model -> {
+			assertTrue(model.getModelType().getName().equals("Electric") ||
+					model.getModelType().getName().equals("Acoustic"));
+		});
 	}
 }

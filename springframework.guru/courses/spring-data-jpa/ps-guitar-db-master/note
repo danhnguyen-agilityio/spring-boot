@@ -1,0 +1,20 @@
+Query method syntax basics Query DSL (Domain specific language)
+    Query Methods
+        Query parser will match the following:
+            find .. By, query..By, read..By, count..By, get..By
+        Criteria uses Jpa entity attribute names
+        Multiple criteria combined with "And", "Or"
+Keyword: And and Or
+    findByStateAndCountry("CA", "USA"); => JPQL: ... where a.state = ?1 and a.country = ?2
+    findByStateOrState("CA", "AZ"); => JPQL: ...where a.state = ?1 or a.state = ?2
+Keyword: Equals, Is and Not
+    findByState("CA")  => JPQL: ...where a.state = ?1
+    findByStateIs("CA")  => JPQL: ...where a.state = ?1
+    findByStateEquals("CA")  => JPQL: ...where a.state = ?1
+    findByStateNot("CA") => JPQL: ...where a.state <> ?1
+
+Keyword: Like and NotLike
+    findByStateLike("Cali%"); ...where a.state like ?1
+    findByStateNotLike("Al%"); ...where a.state not like ?1
+
+

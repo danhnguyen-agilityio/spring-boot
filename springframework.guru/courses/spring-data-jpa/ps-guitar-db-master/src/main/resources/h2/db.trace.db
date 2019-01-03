@@ -1,0 +1,27 @@
+01-02 17:16:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:16:39 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:16:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
+01-02 17:17:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "ALTER TABLE MANUFACTURER ADD COLUMN ACTIVE BOOLEAN NOT NULL INSERT[*] INTO LOCATION (ID, COUNTRY, STATE) VALUES (1, 'United States', 'Alabama') "; SQL statement:
+alter table manufacturer add column active boolean not null insert into location (id, country, state) values (1, 'United States', 'Alabama') [42000-182]
