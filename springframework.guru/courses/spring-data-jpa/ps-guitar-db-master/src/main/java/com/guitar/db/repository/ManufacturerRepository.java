@@ -70,10 +70,10 @@ public class ManufacturerRepository {
 	 * Native Query finder
 	 */
 	public List<Manufacturer> getManufacturersThatSellModelsOfType(String modelType) {
-		@SuppressWarnings("unchecked")
-		List<Manufacturer> mans = entityManager
-				.createNamedQuery("Manufacturer.getAllThatSellAcoustics")
-				.setParameter(1, modelType).getResultList();
-		return mans;
+		List<Manufacturer> manufacturers = manufacturerJpaRepository.getAllThatSellAcoustics(modelType);
+		System.out.println("AAAAA" + manufacturers.size());
+		manufacturers.forEach(manufacturer -> System.out.println(manufacturer.toString()));
+		System.out.println("BBBBBBB");
+		return manufacturerJpaRepository.getAllThatSellAcoustics(modelType);
 	}
 }

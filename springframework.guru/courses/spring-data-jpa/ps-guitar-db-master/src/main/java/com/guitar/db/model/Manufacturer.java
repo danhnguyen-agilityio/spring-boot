@@ -90,4 +90,10 @@ public class Manufacturer {
 	public Long getId() {
 		return id;
 	}
+
+	@Override
+	public String toString() {
+		return String.format("name: %s, foundedDate: %s, averageYearlySales: %s, active: %s, headquarters: %s",
+				name, foundedDate.toString(), averageYearlySales.toString(), active, headquarters.toString());
+	}
 }

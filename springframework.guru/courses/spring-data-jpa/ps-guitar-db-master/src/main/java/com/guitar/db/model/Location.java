@@ -51,5 +51,4 @@ public class Location {
 	public Long getId() {
 		return id;
 	}
-
 }
