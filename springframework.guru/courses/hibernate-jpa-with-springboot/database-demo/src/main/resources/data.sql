@@ -6,3 +6,12 @@ create table person
     birth_date timestamp,
     primary key(id)
 );
+
+INSERT INTO PERSON(ID, NAME, LOCATION, BIRTH_DATE)
+VALUES(10001, 'Range', 'Hyderate', sysdate());
+
+INSERT INTO PERSON(ID, NAME, LOCATION, BIRTH_DATE)
+VALUES(10002, 'David', 'Da Nang', sysdate());
+
+INSERT INTO PERSON(ID, NAME, LOCATION, BIRTH_DATE)
+VALUES(10003, 'Lusi', 'Tam Ky', sysdate());
