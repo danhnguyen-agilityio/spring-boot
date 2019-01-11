@@ -1,10 +1,17 @@
 package com.in28minute.database.databasedemo;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Date;
 
+@Entity
 public class Person {
 
-    private long id;
+    @Id
+    @GeneratedValue
+    private int id;
+
     private String name;
     private String location;
     private Date birthDate;
@@ -12,7 +19,7 @@ public class Person {
     public Person() {
     }
 
-    public Person(long id, String name, String location, Date birthDate) {
+    public Person(int id, String name, String location, Date birthDate) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -23,7 +30,7 @@ public class Person {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
