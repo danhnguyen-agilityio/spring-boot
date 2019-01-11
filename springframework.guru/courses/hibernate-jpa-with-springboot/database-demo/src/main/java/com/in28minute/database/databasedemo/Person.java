@@ -9,6 +9,9 @@ public class Person {
     private String location;
     private Date birthDate;
 
+    public Person() {
+    }
+
     public Person(long id, String name, String location, Date birthDate) {
         this.id = id;
         this.name = name;
@@ -46,5 +49,10 @@ public class Person {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("\nPerson [id=%s, name=%s, location=%s, birthDate=%s",id, name, location, birthDate);
     }
 }
