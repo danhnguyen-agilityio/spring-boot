@@ -3,9 +3,11 @@ package com.in28minute.database.databasedemo;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import java.util.Date;
 
 @Entity
+@NamedQuery(name = "find_all_persons", query = "select p from Person p")
 public class Person {
 
     @Id

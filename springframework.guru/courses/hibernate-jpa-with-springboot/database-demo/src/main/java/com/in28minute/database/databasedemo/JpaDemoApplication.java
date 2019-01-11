@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -25,10 +24,14 @@ public class JpaDemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        logger.info("All users -> {}", repository.findAll());
+
         logger.info("User id 10001 -> {}", repository.findById(10001));
 
         logger.info("Inserting -> {}", repository.insert(new Person("Tara", "Berlin", new Date())));
 
         logger.info("Update 10003 -> {}", repository.update(new Person(10003, "Pieter", "Utrecht", new Date())));
+
+        repository.deleteById(10003);
     }
 }
