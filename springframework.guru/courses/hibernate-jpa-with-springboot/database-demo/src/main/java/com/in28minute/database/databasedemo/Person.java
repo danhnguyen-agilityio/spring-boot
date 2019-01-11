@@ -19,6 +19,12 @@ public class Person {
     public Person() {
     }
 
+    public Person(String name, String location, Date birthDate) {
+        this.name = name;
+        this.location = location;
+        this.birthDate = birthDate;
+    }
+
     public Person(int id, String name, String location, Date birthDate) {
         this.id = id;
         this.name = name;
