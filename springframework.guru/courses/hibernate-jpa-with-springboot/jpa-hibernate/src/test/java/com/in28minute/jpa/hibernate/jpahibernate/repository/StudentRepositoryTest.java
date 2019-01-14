@@ -1,5 +1,6 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Passport;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,14 @@ public class StudentRepositoryTest {
         Student student = entityManager.find(Student.class, 20001L);
         logger.info("student -> {}", student);
         logger.info("passport -> {}", student.getPassport());
+    }
+
+    @Test
+    @Transactional
+    public void retrievePassportAndStudentDetails() {
+        Passport passport = entityManager.find(Passport.class, 40001L);
+        logger.info("passport -> {}", passport);
+        logger.info("student -> {}", passport.getStudent());
     }
 
     @Test
