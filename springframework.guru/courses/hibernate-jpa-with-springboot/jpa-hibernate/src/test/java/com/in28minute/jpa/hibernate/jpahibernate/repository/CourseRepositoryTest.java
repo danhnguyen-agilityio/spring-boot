@@ -55,4 +55,10 @@ public class CourseRepositoryTest {
     public void testEntityManager() {
         courseRepository.testEntityManager();
     }
+
+    @Test
+    @DirtiesContext
+    public void playWithEntityManager() {
+        courseRepository.playWithEntityManager();
+    }
 }
