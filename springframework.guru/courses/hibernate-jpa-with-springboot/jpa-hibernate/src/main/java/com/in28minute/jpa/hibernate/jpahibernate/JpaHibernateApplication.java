@@ -23,12 +23,12 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Course course = courseRepository.findById(10001L);
-		logger.info("{}", course);
-
-		courseRepository.deleteById(10003L);
-
-		courseRepository.save(new Course("Microservice"));
+//		Course course = courseRepository.findById(10001L);
+//		logger.info("{}", course);
+//
+//		courseRepository.deleteById(10003L);
+//
+//		courseRepository.save(new Course("Microservice"));
 	}
 }
 

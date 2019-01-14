@@ -50,4 +50,9 @@ public class CourseRepositoryTest {
         assertEquals("JPA in 50 steps", course.getName());
     }
 
+    @Test
+    @DirtiesContext
+    public void testEntityManager() {
+        courseRepository.testEntityManager();
+    }
 }

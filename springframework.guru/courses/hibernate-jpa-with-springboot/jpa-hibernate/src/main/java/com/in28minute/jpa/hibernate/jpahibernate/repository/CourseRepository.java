@@ -30,4 +30,10 @@ public class CourseRepository {
             entityManager.merge(course);
         }
     }
+
+    public void testEntityManager() {
+        Course course = new Course("JPA in action");
+        entityManager.persist(course);
+        course.setName("JPA in action - Updated");
+    }
 }
