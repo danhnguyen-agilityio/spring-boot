@@ -31,9 +31,28 @@ public class CourseRepository {
         }
     }
 
+
+    // Entity manager keep track course when execute persist method, auto update down database when set name of course
+    // en.flush() => The changes which are done until then they would be send out to database
+    // en.detach(course2) => untrack specific entity
+    // en.clear() => clear every thin that tracked by entity manager
     public void testEntityManager() {
-        Course course = new Course("JPA in action");
-        entityManager.persist(course);
-        course.setName("JPA in action - Updated");
+        Course course1 = new Course("Web service in 100 steps");
+        entityManager.persist(course1);
+        entityManager.flush();
+
+        Course course2 = new Course("Angular Js in 100 Steps");
+        entityManager.persist(course2);
+        entityManager.flush();
+
+        entityManager.clear();
+//        entityManager.detach(course1);
+//        entityManager.detach(course2);
+
+        course1.setName("Web service in 100 steps - Updated");
+        entityManager.flush();
+
+        course2.setName("Angular Js in 100 Steps - Updated");
+        entityManager.flush();
     }
 }
