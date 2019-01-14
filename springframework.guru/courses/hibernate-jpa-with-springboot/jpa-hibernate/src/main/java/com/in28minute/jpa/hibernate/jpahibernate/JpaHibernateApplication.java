@@ -2,6 +2,7 @@ package com.in28minute.jpa.hibernate.jpahibernate;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.repository.CourseRepository;
+import com.in28minute.jpa.hibernate.jpahibernate.repository.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class JpaHibernateApplication implements CommandLineRunner {
 	@Autowired
 	CourseRepository courseRepository;
 
+	@Autowired
+	StudentRepository studentRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(JpaHibernateApplication.class, args);
 	}
@@ -28,7 +32,10 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //
 //		courseRepository.deleteById(10003L);
 //
+
 //		courseRepository.save(new Course("Microservice"));
+
+		studentRepository.saveStudentWithPassport();
 	}
 }
 
