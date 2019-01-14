@@ -9,6 +9,7 @@ public class Student {
     private Long id;
     private String name;
 
+    // Student owning side relationship
     @OneToOne(fetch = FetchType.LAZY)
     private Passport passport;
 
