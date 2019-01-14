@@ -1,9 +1,6 @@
 package com.in28minute.jpa.hibernate.jpahibernate.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Student {
@@ -12,7 +9,7 @@ public class Student {
     private Long id;
     private String name;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Passport passport;
 
     public Student() {
