@@ -27,6 +27,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		logger.info("{}", course);
 
 		courseRepository.deleteById(10003L);
+
+		courseRepository.save(new Course("Microservice"));
 	}
 }
 
