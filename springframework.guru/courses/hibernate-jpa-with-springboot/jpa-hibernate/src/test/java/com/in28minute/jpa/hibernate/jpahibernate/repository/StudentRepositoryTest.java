@@ -21,11 +21,19 @@ public class StudentRepositoryTest {
     @Autowired
     EntityManager entityManager;
 
+    @Autowired
+    StudentRepository studentRepository;
+
     @Test
     @Transactional
     public void retrieveStudentAndPassportDetails() {
         Student student = entityManager.find(Student.class, 20001L);
         logger.info("student -> {}", student);
         logger.info("passport -> {}", student.getPassport());
+    }
+
+    @Test
+    public void testDumpyOperation() {
+        studentRepository.someDummyOperation();
     }
 }
