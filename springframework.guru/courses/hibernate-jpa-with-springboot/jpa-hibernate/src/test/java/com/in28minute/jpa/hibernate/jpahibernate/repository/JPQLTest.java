@@ -56,4 +56,20 @@ public class JPQLTest {
         List<Course> resultList = query.getResultList();
         logger.info("Results -> {}", resultList);
     }
+
+    @Test
+    public void jpql_courses_with_atleast_2_students() {
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c where size(c.students) > 2", Course.class);
+        List<Course> resultList = query.getResultList();
+        logger.info("Results -> {}", resultList);
+        // Results -> [[Course David] ]
+    }
+
+    @Test
+    public void jpql_courses_ordered_by_students() {
+        TypedQuery<Course> query = entityManager.createQuery("select c from Course c order by size(c.students) desc", Course.class);
+        List<Course> resultList = query.getResultList();
+        logger.info("Results -> {}", resultList);
+        // Results -> [[Course David] ]
+    }
 }
