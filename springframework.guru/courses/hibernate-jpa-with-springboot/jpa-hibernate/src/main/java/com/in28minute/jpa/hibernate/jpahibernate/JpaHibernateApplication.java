@@ -1,6 +1,7 @@
 package com.in28minute.jpa.hibernate.jpahibernate;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Review;
 import com.in28minute.jpa.hibernate.jpahibernate.repository.CourseRepository;
 import com.in28minute.jpa.hibernate.jpahibernate.repository.StudentRepository;
 import org.slf4j.Logger;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -37,7 +41,13 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
 //		studentRepository.saveStudentWithPassport();
 
-		courseRepository.addReviewsForCourse();
+//		courseRepository.addReviewsForCourse();
+
+		// Insert reviews for course
+		List<Review> reviews = new ArrayList<>();
+		reviews.add(new Review("5", "so great"));
+		reviews.add(new Review("4", "so bad"));
+		courseRepository.addReviewsForCourse(10003L, reviews);
 	}
 }
 

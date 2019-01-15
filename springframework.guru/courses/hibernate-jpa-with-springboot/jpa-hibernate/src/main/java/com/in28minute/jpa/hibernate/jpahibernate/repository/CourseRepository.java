@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -90,5 +91,15 @@ public class CourseRepository {
         // save it to the database
         entityManager.persist(review1);
         entityManager.persist(review2);
+    }
+
+    public void addReviewsForCourse(Long courseId, List<Review> reviews) {
+        Course course = findById(courseId);
+
+        for (Review review : reviews) {
+            course.addReview(review);
+            review.setCourse(course);
+            entityManager.persist(review);
+        }
     }
 }
