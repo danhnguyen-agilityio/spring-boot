@@ -45,4 +45,12 @@ public class StudentRepositoryTest {
     public void testDumpyOperation() {
         studentRepository.someDummyOperation();
     }
+
+    @Test
+    @Transactional
+    public void retrieveStudentAndCourses() {
+        Student student = entityManager.find(Student.class, 20001L);
+        logger.info("student -> {}", student);
+        logger.info("courses -> {}", student.getCourses());
+    }
 }
