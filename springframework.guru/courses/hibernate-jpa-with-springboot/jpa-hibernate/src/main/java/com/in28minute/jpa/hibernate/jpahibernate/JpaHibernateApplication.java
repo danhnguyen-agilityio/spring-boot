@@ -44,10 +44,10 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //		courseRepository.addReviewsForCourse();
 
 		// Insert reviews for course
-		List<Review> reviews = new ArrayList<>();
-		reviews.add(new Review("5", "so great"));
-		reviews.add(new Review("4", "so bad"));
-		courseRepository.addReviewsForCourse(10003L, reviews);
+//		List<Review> reviews = new ArrayList<>();
+//		reviews.add(new Review("5", "so great"));
+//		reviews.add(new Review("4", "so bad"));
+//		courseRepository.addReviewsForCourse(10003L, reviews);
 	}
 }
 

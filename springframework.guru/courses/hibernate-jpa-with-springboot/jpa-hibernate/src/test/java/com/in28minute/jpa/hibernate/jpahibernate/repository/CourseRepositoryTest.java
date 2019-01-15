@@ -1,7 +1,7 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
-import com.in28minute.jpa.hibernate.jpahibernate.JpaHibernateApplication;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Review;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.Assert.*;
 
@@ -17,6 +20,9 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class CourseRepositoryTest {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    EntityManager entityManager;
 
     @Autowired
     CourseRepository courseRepository;
@@ -60,5 +66,19 @@ public class CourseRepositoryTest {
     @DirtiesContext
     public void playWithEntityManager() {
         courseRepository.playWithEntityManager();
+    }
+
+    @Test
+    @Transactional
+    public void retrieveReviewsForCourse() {
+        Course course = courseRepository.findById(10001L);
+        logger.info("{}", course.getReviews());
+    }
+
+    @Test
+    @Transactional
+    public void retrieveCourseForReview() {
+        Review review = entityManager.find(Review.class, 50001L);
+        logger.info("{}", review.getCourse());
     }
 }
