@@ -1,6 +1,8 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Employee;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.FullTimeEmployee;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.PartTimeEmployee;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,11 @@ public class EmployeeRepository {
         em.persist(employee);
     }
 
-    public List<Employee> retrieveAllEmployees() {
-        return em.createQuery("select e from Employee e", Employee.class).getResultList();
+    public List<PartTimeEmployee> retrievePartTimeEmployees() {
+        return em.createQuery("select e from PartTimeEmployee e", PartTimeEmployee.class).getResultList();
+    }
+
+    public List<FullTimeEmployee> retrieveFullTimeEmployees() {
+        return em.createQuery("select e from FullTimeEmployee e", FullTimeEmployee.class).getResultList();
     }
 }

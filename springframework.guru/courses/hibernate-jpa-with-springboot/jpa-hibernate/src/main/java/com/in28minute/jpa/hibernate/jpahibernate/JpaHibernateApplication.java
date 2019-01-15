@@ -63,6 +63,9 @@ public class JpaHibernateApplication implements CommandLineRunner {
 	private void insertEmployee() {
 		employeeRepository.insert(new PartTimeEmployee("Jill", new BigDecimal(50)));
 		employeeRepository.insert(new FullTimeEmployee("Jack", new BigDecimal(10000)));
+
+		employeeRepository.retrievePartTimeEmployees();
+		employeeRepository.retrieveFullTimeEmployees();
 	}
 }
 
