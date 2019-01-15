@@ -3,7 +3,8 @@ package com.in28minute.jpa.hibernate.jpahibernate.entity;
 import javax.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @DiscriminatorColumn(name = "EmployeeType")
 public abstract class Employee {
 
