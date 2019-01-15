@@ -22,6 +22,11 @@ public class Review {
     public Review() {
     }
 
+    public Review(String rating, String description) {
+        this.rating = rating;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

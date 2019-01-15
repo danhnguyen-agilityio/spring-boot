@@ -36,6 +36,8 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //		courseRepository.save(new Course("Microservice"));
 
 //		studentRepository.saveStudentWithPassport();
+
+		courseRepository.addReviewsForCourse();
 	}
 }
 
