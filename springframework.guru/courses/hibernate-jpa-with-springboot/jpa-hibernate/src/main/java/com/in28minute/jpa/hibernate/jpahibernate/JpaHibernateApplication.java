@@ -2,6 +2,7 @@ package com.in28minute.jpa.hibernate.jpahibernate;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Review;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
 import com.in28minute.jpa.hibernate.jpahibernate.repository.CourseRepository;
 import com.in28minute.jpa.hibernate.jpahibernate.repository.StudentRepository;
 import org.slf4j.Logger;
@@ -48,6 +49,10 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //		reviews.add(new Review("5", "so great"));
 //		reviews.add(new Review("4", "so bad"));
 //		courseRepository.addReviewsForCourse(10003L, reviews);
+
+		studentRepository.insertStudentAndCourse(
+			new Student("Jack"),
+			new Course("Microservices in 100 steps"));
 	}
 }
 

@@ -1,5 +1,6 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Passport;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,13 @@ public class StudentRepository {
         // Database Operation 4 - update student
         student.setName("Range -updated");
         // Persistence Context (student++, passport++)
+    }
+
+    public void insertStudentAndCourse(Student student, Course course) {
+        student.addCourse(course);
+        course.addStudent(student);
+
+        entityManager.persist(student); // persist owning side relationship
+        entityManager.persist(course);
     }
 }

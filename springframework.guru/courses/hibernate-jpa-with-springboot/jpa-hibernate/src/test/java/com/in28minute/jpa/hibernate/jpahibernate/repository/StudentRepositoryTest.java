@@ -1,5 +1,6 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Passport;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
 import org.junit.Test;
@@ -52,5 +53,12 @@ public class StudentRepositoryTest {
         Student student = entityManager.find(Student.class, 20001L);
         logger.info("student -> {}", student);
         logger.info("courses -> {}", student.getCourses());
+    }
+
+    @Test
+    public void insertStudentAndCourse() {
+        studentRepository.insertStudentAndCourse(
+            new Student("Jack"),
+            new Course("Microservices in 100 steps"));
     }
 }
