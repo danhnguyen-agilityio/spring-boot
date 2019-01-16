@@ -4,14 +4,14 @@ package com.in28minute.jpa.hibernate.jpahibernate.repository;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
 
+@RepositoryRestResource(path = "courses")
 public interface CourseSpringDataRepository extends JpaRepository<Course, Long> {
 
     List<Course> findByName(String name);
-
-    List<Course> findByNameAndId(String name);
 
     List<Course> countByName(String name);
 
