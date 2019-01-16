@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -37,7 +38,16 @@ public class CourseSpringDataRepositoryTest {
     public void playingAroundWithSpringDataRepository() {
         logger.info("Courses -> {}", repository.findAll());
         // Courses -> [[Course David] , [Course Spring Boot in 100 Steps] , [Course Naven] ]
-        
+
         logger.info("Count -> {}", repository.count());
     }
+
+    @Test
+    public void sort() {
+        Sort sort = new Sort(Sort.Direction.DESC,"name");
+        logger.info("Sorted Courses -> {}", repository.findAll(sort));
+        // Sorted Courses -> [[Course Spring Boot in 100 Steps] , [Course Naven] , [Course David] ]
+    }
+
+    
 }
