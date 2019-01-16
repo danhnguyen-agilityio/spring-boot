@@ -35,6 +35,16 @@ public class CourseRepositoryTest {
     }
 
     @Test
+    @Transactional
+    public void findById_firstLevelCacheDemo() {
+        Course course = courseRepository.findById(10001L);
+        logger.info("First Course Retrieved -> {}", course);
+
+        Course course1 = courseRepository.findById(10001L);
+        logger.info("First Course Retrieved again -> {}", course1);
+    }
+
+    @Test
     @DirtiesContext // Spring would reset the data, so that for the other test, the data has not changed at all
     public void deleteById_basic() {
         courseRepository.deleteById(10001L);
