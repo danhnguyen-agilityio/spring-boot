@@ -1,6 +1,7 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -71,5 +72,51 @@ public class JPQLTest {
         List<Course> resultList = query.getResultList();
         logger.info("Results -> {}", resultList);
         // Results -> [[Course David] ]
+    }
+
+    @Test
+    public void jpql_students_with_passports_in_a_certain_pattern() {
+        TypedQuery<Student> query = entityManager.createQuery(
+            "select s from Student s where s.passport.number like '%1234%'", Student.class);
+        List<Student> resultList = query.getResultList();
+        logger.info("Results -> {}", resultList);
+    }
+
+    // like
+    // between 100 and 1000
+    // is null
+    // upper, lower, trim, length
+
+    // JOIN => Select c, s from Course c JOIN c.students s
+    // LEFT JOIN => Select c, s from Course c LEFT JOIN c.students s
+    // CROSS JOIN => Select c, s from Course c, Student s
+    @Test
+    public void join() {
+        Query query = entityManager.createQuery("Select c, s from Course c JOIN c.students s");
+        List<Object[]> resultList = query.getResultList();
+        logger.info("Results size -> {}", resultList.size());
+        for (Object[] result : resultList) {
+            logger.info("Course -> {}, Student -> {}", result[0], result[1]);
+        }
+    }
+
+    @Test
+    public void left_join() {
+        Query query = entityManager.createQuery("Select c, s from Course c LEFT JOIN c.students s");
+        List<Object[]> resultList = query.getResultList();
+        logger.info("Results size -> {}", resultList.size());
+        for (Object[] result : resultList) {
+            logger.info("Course -> {}, Student -> {}", result[0], result[1]);
+        }
+    }
+
+    @Test
+    public void cross_join() {
+        Query query = entityManager.createQuery("Select c, s from Course c, Student s");
+        List<Object[]> resultList = query.getResultList();
+        logger.info("Results size -> {}", resultList.size());
+        for (Object[] result : resultList) {
+            logger.info("Course -> {}, Student -> {}", result[0], result[1]);
+        }
     }
 }
