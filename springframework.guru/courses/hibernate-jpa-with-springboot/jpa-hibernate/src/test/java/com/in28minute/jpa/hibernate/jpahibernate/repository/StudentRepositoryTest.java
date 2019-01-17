@@ -1,5 +1,6 @@
 package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
+import com.in28minute.jpa.hibernate.jpahibernate.entity.Address;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Passport;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Student;
@@ -25,6 +26,16 @@ public class StudentRepositoryTest {
 
     @Autowired
     StudentRepository studentRepository;
+
+    @Test
+    @Transactional
+    public void setAddressDetails() {
+        Student student = entityManager.find(Student.class, 20001L);
+        student.setAddress(new Address("No 101", "Some Street", "Hyderabad"));
+        entityManager.flush();
+        logger.info("student -> {}", student);
+        logger.info("passport -> {}", student.getPassport());
+    }
 
     @Test
     @Transactional
