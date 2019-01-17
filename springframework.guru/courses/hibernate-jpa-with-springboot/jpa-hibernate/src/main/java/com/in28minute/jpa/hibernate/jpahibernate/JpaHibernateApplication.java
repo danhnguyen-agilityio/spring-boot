@@ -57,7 +57,7 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //			new Student("Jack"),
 //			new Course("Microservices in 100 steps"));
 
-		insertEmployee();
+//		insertEmployee();
 	}
 
 	private void insertEmployee() {

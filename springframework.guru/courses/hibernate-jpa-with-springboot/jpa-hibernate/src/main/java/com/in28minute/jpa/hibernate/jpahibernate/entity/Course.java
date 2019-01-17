@@ -2,7 +2,9 @@ package com.in28minute.jpa.hibernate.jpahibernate.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +18,9 @@ import java.util.List;
     @NamedQuery(name = "query_get_all_course", query = "Select c From Course c"),
     @NamedQuery(name = "query_get_100_step_courses", query = "Select c From Course c where name like '$Da'")
 })
+@javax.persistence.Cacheable
+@SQLDelete(sql = "update course set is_deleted = true where id = ?")
+@Where(clause = "is_deleted = false")
 public class Course {
     @Id
     @GeneratedValue
@@ -36,6 +41,8 @@ public class Course {
     @ManyToMany(mappedBy = "courses")
     @JsonIgnore
     private List<Student> students = new ArrayList<>();
+
+    private boolean isDeleted;
 
     public Course() {
     }
