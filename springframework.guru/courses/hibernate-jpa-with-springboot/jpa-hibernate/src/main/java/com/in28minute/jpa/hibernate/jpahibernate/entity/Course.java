@@ -18,6 +18,7 @@ import java.util.List;
 //@NamedQuery(name = "query_get_100_step_courses", query = "Select c From Course c where name like '$Da'")
 @NamedQueries(value = {
     @NamedQuery(name = "query_get_all_course", query = "Select c From Course c"),
+    @NamedQuery(name = "query_get_all_course_join_fetch", query = "Select c From Course c JOIN FETCH c.students s"),
     @NamedQuery(name = "query_get_100_step_courses", query = "Select c From Course c where name like '$Da'")
 })
 @javax.persistence.Cacheable
