@@ -2,6 +2,7 @@ package com.in28minute.jpa.hibernate.jpahibernate.repository;
 
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Course;
 import com.in28minute.jpa.hibernate.jpahibernate.entity.Review;
+import com.in28minute.jpa.hibernate.jpahibernate.entity.ReviewRating;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +86,8 @@ public class CourseRepository {
         logger.info("course.getReviews() -> {}", course.getReviews());
 
         // add 2 reviews to it
-        Review review1 = new Review("5", "so greate ...");
-        Review review2 = new Review("4", "very bad");
+        Review review1 = new Review(ReviewRating.FOUR, "so greate ...");
+        Review review2 = new Review(ReviewRating.FIVE, "very bad");
 
         // setting the relationship
         course.addReview(review1);
