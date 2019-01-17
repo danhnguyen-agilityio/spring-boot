@@ -45,6 +45,17 @@ public class CourseRepositoryTest {
     }
 
     @Test
+    public void findByID_SoftDelete() {
+        Course course = courseRepository.findById(10001L);
+
+        courseRepository.deleteById(10001L); // remove cache for data id 10001L
+
+        Course course1 = courseRepository.findById(10001L); // return null
+
+        courseRepository.findById_Jpql(); //
+    }
+
+    @Test
     @DirtiesContext // Spring would reset the data, so that for the other test, the data has not changed at all
     public void deleteById_basic() {
         courseRepository.deleteById(10001L);

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 @Repository
@@ -20,7 +21,13 @@ public class CourseRepository {
     @Autowired
     EntityManager entityManager;
 
-    public Course findById(Long id) {
+    public void findById_Jpql() {
+        Query query = entityManager.createQuery("Select c From Course c where c.isDeleted = false");
+        List resultList = query.getResultList();
+        logger.info("Select c From Course c where c.isDeleted = false -> {}", resultList);
+    }
+
+  public Course findById(Long id) {
         return entityManager.find(Course.class, id);
     }
 

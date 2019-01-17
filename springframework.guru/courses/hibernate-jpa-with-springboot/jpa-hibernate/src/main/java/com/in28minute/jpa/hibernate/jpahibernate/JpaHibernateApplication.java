@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -58,6 +59,20 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //			new Course("Microservices in 100 steps"));
 
 //		insertEmployee();
+
+//		demo();
+	}
+
+	@Transactional
+	private void findCourseWithSoftDelete() {
+		Course course = courseRepository.findById(10001L);
+		logger.info("isDeleted -> {}", course.isDeleted());
+
+		courseRepository.deleteById(10002L);
+
+		Course course1 = courseRepository.findById(10001L);
+
+		courseRepository.findById_Jpql();
 	}
 
 	private void insertEmployee() {

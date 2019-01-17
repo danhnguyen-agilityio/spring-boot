@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,6 +24,9 @@ import java.util.List;
 @SQLDelete(sql = "update course set is_deleted = true where id = ?")
 @Where(clause = "is_deleted = false")
 public class Course {
+
+    private static Logger logger = LoggerFactory.getLogger(Course.class);
+
     @Id
     @GeneratedValue
     private Long id;
@@ -43,6 +48,14 @@ public class Course {
     private List<Student> students = new ArrayList<>();
 
     private boolean isDeleted;
+
+    // Hibernate don't know when to update isDelete properties, so before remove Course, set isDeleted = true
+    // If not change this properties, when use JPQL wil not work correctly because it work base on Entity
+    @PreRemove
+    private void preRemove() {
+        logger.info("Delete column change from false to true");
+        this.isDeleted = true;
+    }
 
     public Course() {
     }
@@ -81,6 +94,14 @@ public class Course {
 
     public void addStudent(Student student) {
         this.students.add(student);
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override
