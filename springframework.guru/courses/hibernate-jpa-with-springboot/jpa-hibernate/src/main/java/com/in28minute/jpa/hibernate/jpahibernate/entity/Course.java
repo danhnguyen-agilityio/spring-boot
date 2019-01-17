@@ -106,6 +106,8 @@ public class Course {
 
     @Override
     public String toString() {
-        return String.format("[Course %s] ",name);
+        // Should not log info reviews because it will take more sql to query reviews => decrease performance
+        //return String.format("[Course %s] Reviews %s", name, reviews);
+        return String.format("[Course %s]", name);
     }
 }
