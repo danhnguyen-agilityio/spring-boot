@@ -1,11 +1,13 @@
 package com.pluralsight.ridetracker.repository;
 
 import com.pluralsight.ridetracker.model.Ride;
+import com.pluralsight.ridetracker.model.RideRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -20,8 +22,7 @@ public class RideRepositoryImpl implements RideRepository {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-	@Override
-	public List<Ride> getRides() {
+	public List<Ride> getRides_InnerClassRowMapper() {
 		List<Ride> rides = jdbcTemplate.query("select * from ride", new RowMapper<Ride>() {
 
 			@Override
@@ -34,7 +35,13 @@ public class RideRepositoryImpl implements RideRepository {
 	}
 
 	@Override
-	public Ride createRide(Ride ride) {
+	public List<Ride> getRides() {
+		List<Ride> rides = jdbcTemplate.query("select * from ride", new RideRowMapper());
+		logger.info("Rides -> {}", rides);
+		return rides;
+	}
+
+	public Ride createRide_NotReturn(Ride ride) {
 		jdbcTemplate.update("insert into ride (name, duration) values (?,?)", ride.getName(), ride.getDuration());
 		return null;
 	}
