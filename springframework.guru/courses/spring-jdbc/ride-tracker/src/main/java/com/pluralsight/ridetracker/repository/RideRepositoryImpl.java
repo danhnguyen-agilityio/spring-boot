@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -16,7 +17,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository("rideRepository")
 public class RideRepositoryImpl implements RideRepository {
@@ -91,7 +94,14 @@ public class RideRepositoryImpl implements RideRepository {
 
 	@Override
 	public void deleteRide(Integer id) {
-		jdbcTemplate.update("delete from ride where id = ?", id);
+//		jdbcTemplate.update("delete from ride where id = ?", id);
+
+		NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("id", id);
+
+		namedTemplate.update("delete from ride where id = :id", paramMap);
 	}
 
 }
