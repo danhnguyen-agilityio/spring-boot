@@ -64,5 +64,12 @@ public class RideTrackerApplicationTests {
 		restTemplate.getForObject("http://localhost:8080/batch", Object.class);
 	}
 
+	@Test(timeout = 3000)
+	public void testDelete() {
+		RestTemplate restTemplate = new RestTemplate();
+
+		restTemplate.delete("http://localhost:8080/delete/1");
+	}
+
 }
 

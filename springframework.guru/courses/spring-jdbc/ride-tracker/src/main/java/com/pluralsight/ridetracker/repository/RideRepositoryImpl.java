@@ -89,4 +89,9 @@ public class RideRepositoryImpl implements RideRepository {
 		jdbcTemplate.batchUpdate("update ride set ride_date = ? where id = ?", pairs);
 	}
 
+	@Override
+	public void deleteRide(Integer id) {
+		jdbcTemplate.update("delete from ride where id = ?", id);
+	}
+
 }
