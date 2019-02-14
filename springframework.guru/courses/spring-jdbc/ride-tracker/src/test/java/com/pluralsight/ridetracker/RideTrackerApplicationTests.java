@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.SQLOutput;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class RideTrackerApplicationTests {
@@ -38,6 +40,19 @@ public class RideTrackerApplicationTests {
 		RestTemplate restTemplate = new RestTemplate();
 
 		Ride ride = restTemplate.getForObject("http://localhost:8080/ride/1", Ride.class);
+
+		System.out.println("Ride name: " + ride.getName());
+	}
+
+	@Test(timeout = 3000)
+	public void testUpdateRide() {
+		RestTemplate restTemplate = new RestTemplate();
+
+		Ride ride = restTemplate.getForObject("http://localhost:8080/ride/1", Ride.class);
+
+		ride.setDuration(ride.getDuration() + 1);
+
+		restTemplate.put("http://localhost:8080/ride", ride);
 
 		System.out.println("Ride name: " + ride.getName());
 	}

@@ -14,7 +14,7 @@ public class RideController {
 	@Autowired
 	private RideService rideService;
 
-	@RequestMapping(value = "/ride", method = RequestMethod.PUT)
+	@RequestMapping(value = "/ride", method = RequestMethod.POST)
 	public @ResponseBody Ride createRide(@RequestBody Ride ride) {
 		return rideService.createRide(ride);
 	}
@@ -29,5 +29,9 @@ public class RideController {
 	public @ResponseBody Ride getRide(@PathVariable(value = "id") Integer id) {
 		return rideService.getRide(id);
 	}
-	
+
+	@RequestMapping(value = "/ride", method = RequestMethod.PUT)
+	public @ResponseBody Ride updateRide(@RequestBody Ride ride) {
+		return rideService.updateRide(ride);
+	}
 }
