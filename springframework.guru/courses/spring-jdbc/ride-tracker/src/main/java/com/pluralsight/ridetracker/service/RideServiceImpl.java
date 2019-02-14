@@ -5,6 +5,8 @@ import com.pluralsight.ridetracker.repository.RideRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service("rideService")
@@ -32,4 +34,19 @@ public class RideServiceImpl implements RideService {
 	public Ride updateRide(Ride ride) {
 		return rideRepository.updateRide(ride);
 	}
+
+	@Override
+	public void batch() {
+		List<Ride> rides = rideRepository.getRides();
+
+		List<Object[]> pairs = new ArrayList<>();
+
+		for (Ride ride : rides) {
+			Object[] tmp = {new Date(), ride.getId()};
+			pairs.add(tmp);
+		}
+
+		rideRepository.updateRides(pairs);
+	}
+
 }

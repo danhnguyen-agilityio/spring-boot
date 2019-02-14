@@ -57,5 +57,12 @@ public class RideTrackerApplicationTests {
 		System.out.println("Ride name: " + ride.getName());
 	}
 
+	@Test(timeout = 3000)
+	public void testBatchUpdate() {
+		RestTemplate restTemplate = new RestTemplate();
+
+		restTemplate.getForObject("http://localhost:8080/batch", Object.class);
+	}
+
 }
 
