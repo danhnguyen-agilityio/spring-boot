@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 import com.guitar.db.repository.ModelJpaRepository;
 import org.junit.Test;
@@ -18,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.guitar.db.model.Model;
 import com.guitar.db.repository.ModelRepository;
@@ -88,5 +88,12 @@ public class ModelPersistenceTests {
 			assertTrue(model.getModelType().getName().equals("Electric") ||
 					model.getModelType().getName().equals("Acoustic"));
 		});
+	}
+
+	@Test
+	@Transactional
+	public void testUpdateModel() {
+		int numberOfUpdatedRow = modelJpaRepository.updateByName("David Nguyen");
+		System.out.println("numberOfUpdatedRow: " + numberOfUpdatedRow);
 	}
 }
