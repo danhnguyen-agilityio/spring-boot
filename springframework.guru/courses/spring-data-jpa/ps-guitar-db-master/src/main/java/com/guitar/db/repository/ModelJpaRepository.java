@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
-public interface ModelJpaRepository extends JpaRepository<Model, Long> {
+public interface ModelJpaRepository extends JpaRepository<Model, Long>, ModelJpaRepositoryCustom {
     List<Model> findByPriceGreaterThanEqualAndPriceLessThanEqual(BigDecimal lowest, BigDecimal highest);
 
     List<Model> findByModelTypeNameIn(List<String> types);

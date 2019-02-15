@@ -96,4 +96,9 @@ public class ModelPersistenceTests {
 		int numberOfUpdatedRow = modelJpaRepository.updateByName("David Nguyen");
 		System.out.println("numberOfUpdatedRow: " + numberOfUpdatedRow);
 	}
+
+	@Test
+	public void testCustomRepository() {
+		modelJpaRepository.customMethod();
+	}
 }
