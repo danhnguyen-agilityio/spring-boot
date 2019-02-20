@@ -23,4 +23,20 @@ public interface ManufacturerJpaRepository extends JpaRepository<Manufacturer, L
 	List<Manufacturer> findByActiveFalse();
 	
 	List<Manufacturer> getAllThatSellAcoustics(String name);
+
+	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	List<Manufacturer> findAll();
+
+	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	List<Manufacturer> findAll(Sort sort);
+
+	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	List<Manufacturer> findAll(Iterable<Long> iterable);
+
+	@Override
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	Page<Manufacturer> findAll(Pageable pageable);
 }
