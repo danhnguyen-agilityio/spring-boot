@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.guitar.model.Manufacturer;
 
 @Repository
-@RepositoryRestResource(path = "companies")
+@RepositoryRestResource(path = "companies", collectionResourceRel = "companies")
 public interface ManufacturerJpaRepository extends JpaRepository<Manufacturer, Long> {
 	List<Manufacturer> findByFoundedDateBefore(Date date);
 	
