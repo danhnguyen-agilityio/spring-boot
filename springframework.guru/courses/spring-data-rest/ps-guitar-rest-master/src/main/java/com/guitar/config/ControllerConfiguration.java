@@ -15,4 +15,9 @@ public class ControllerConfiguration {
     public void notValid() {
 
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Not expected data send to server")
+    public void notExpected() {
+    }
 }
