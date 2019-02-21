@@ -1,0 +1,2 @@
+https://github.com/dlbunker/ps-guitar-db
+https://app.pluralsight.com/library/courses/spring-data-jpa-getting-started/table-of-contents

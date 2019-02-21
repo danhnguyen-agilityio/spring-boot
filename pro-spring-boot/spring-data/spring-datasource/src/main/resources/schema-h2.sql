@@ -1,0 +1,1 @@
+create table Cars(id bigint primary key auto_increment, name varchar(100), price int)

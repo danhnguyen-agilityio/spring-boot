@@ -1,0 +1,2 @@
+* https://app.pluralsight.com/library/courses/building-applications-spring-jdbc/table-of-contents
+* https://github.com/bh5k/ride_tracker
