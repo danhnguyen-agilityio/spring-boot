@@ -8,6 +8,7 @@ import springframework.guru.didemo.controlller.MyController;
 import springframework.guru.didemo.controlller.PropertyInjectedController;
 import springframework.guru.didemo.controlller.SetterInjectedController;
 import springframework.guru.didemo.examplebeans.FakeDataSource;
+import springframework.guru.didemo.examplebeans.FakeJmsBroker;
 
 @SpringBootApplication
 public class DiDemoApplication {
@@ -26,6 +27,9 @@ public class DiDemoApplication {
 
 		FakeDataSource fakeDataSource = context.getBean(FakeDataSource.class);
 		System.out.println("Username: " + fakeDataSource.getUsername());
+
+		FakeJmsBroker fakeJmsBroker = context.getBean(FakeJmsBroker.class);
+		System.out.printf("Username: " + fakeJmsBroker.getUsername());
 	}
 
 }
