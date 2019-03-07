@@ -6,6 +6,8 @@ import java.util.Set;
 @Entity
 public class Recipe {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String description;
@@ -26,7 +28,7 @@ public class Recipe {
     private Notes notes;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Ingredient ingredients;
+    private Set<Ingredient> ingredients;
 
     @ManyToMany
     @JoinTable(joinColumns = @JoinColumn(name = "recipe_id"),
