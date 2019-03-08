@@ -1,7 +1,6 @@
 package guru.springframework.sfgspringpetclinic.services.springdatajpa;
 
 import guru.springframework.sfgspringpetclinic.model.Speciality;
-import guru.springframework.sfgspringpetclinic.model.Speciality;
 import guru.springframework.sfgspringpetclinic.repositories.SpecialityRepository;
 import guru.springframework.sfgspringpetclinic.services.SpecialityService;
 import org.springframework.context.annotation.Profile;
