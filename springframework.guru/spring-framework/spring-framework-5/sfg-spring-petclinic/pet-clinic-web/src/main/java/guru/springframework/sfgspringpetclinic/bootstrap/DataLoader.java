@@ -36,7 +36,7 @@ public class DataLoader implements CommandLineRunner {
 
     private void loadData() {
         // Demo builder
-        Owner.builder().address("Tam Ky").build();
+        Owner.builder().id(1L).firstName("David").address("Tam Ky").build();
 
         PetType dog = new PetType();
         dog.setName("Dog");
