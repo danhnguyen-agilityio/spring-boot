@@ -6,11 +6,11 @@ import guru.springframework.repositories.RecipeRepository;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RecepiServiceImpl implements RecipeService {
+public class RecipeServiceImpl implements RecipeService {
 
     public final RecipeRepository recipeRepository;
 
-    public RecepiServiceImpl(RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository) {
         this.recipeRepository = recipeRepository;
     }
 
