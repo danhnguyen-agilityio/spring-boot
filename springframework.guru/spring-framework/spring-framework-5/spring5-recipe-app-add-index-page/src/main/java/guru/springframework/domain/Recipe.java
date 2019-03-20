@@ -27,6 +27,7 @@ public class Recipe {
     private String directions;
 
     @Lob
+    // use wrap object inject primitive value
     private Byte[] image;
 
     @Enumerated(value = EnumType.STRING)
