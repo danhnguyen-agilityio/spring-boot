@@ -2,6 +2,10 @@ package guru.springframework.services;
 
 import guru.springframework.commands.IngredientCommand;
 import guru.springframework.commands.RecipeCommand;
+import guru.springframework.converters.IngredientCommandToIngredient;
+import guru.springframework.converters.IngredientToIngredientCommand;
+import guru.springframework.repositories.RecipeRepository;
+import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,6 +26,18 @@ public class IngredientServiceImplTest {
 
     @Mock
     RecipeService recipeService;
+
+    @Mock
+    RecipeRepository recipeRepository;
+
+    @Mock
+    UnitOfMeasureRepository unitOfMeasureRepository;
+
+    @Mock
+    IngredientToIngredientCommand ingredientToIngredientCommand;
+
+    @Mock
+    IngredientCommandToIngredient ingredientCommandToIngredient;
 
     IngredientService ingredientService;
 
