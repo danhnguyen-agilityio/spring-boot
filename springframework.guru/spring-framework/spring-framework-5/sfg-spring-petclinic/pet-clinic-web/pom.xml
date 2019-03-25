@@ -64,9 +64,16 @@
     <build>
         <plugins>
             <plugin>
-                <!--JUnit 5 requires Surefire version 2.20.0 or higher-->
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <groupId>ro.isdc.wro4j</groupId>
+                <artifactId>wro4j-maven-plugin</artifactId>
+                <version>1.8.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>2.23.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
