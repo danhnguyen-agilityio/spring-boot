@@ -29,6 +29,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // shell into a running docker container
 // docker exec -it <container name> bash
 
+// giving a command that's never going to end
+// docker run -t -d centos
+// winpty docker exec -it <container> bash
+// yum install java
+// java -version
+
 @SpringBootApplication
 public class SpringBootMongodbApplication {
 
