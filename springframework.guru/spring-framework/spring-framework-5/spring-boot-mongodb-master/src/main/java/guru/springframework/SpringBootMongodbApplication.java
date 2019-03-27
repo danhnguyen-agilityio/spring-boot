@@ -35,6 +35,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 // yum install java
 // java -version
 
+// mysql command for docker
+//docker run --name jt-mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
+//docker ps
+//docker exec -it jt-mysql bash
+//whoami
+//mysql --user=root -p
+
+
 @SpringBootApplication
 public class SpringBootMongodbApplication {
 
