@@ -20,5 +20,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .anyRequest().authenticated()
             .and().httpBasic();
+
+        // enable Digest authentication
+        /* http.authorizeRequests()
+            .anyRequest().authenticated()
+            .exceptionHandling()
+            .authenticationEntryPoint(digestEntryPoint())
+            .and
+            .addFilter(digestAuthenticationFilter()); */
     }
 }
