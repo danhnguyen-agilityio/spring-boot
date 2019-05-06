@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
@@ -48,10 +47,11 @@ public class UserDetailsServiceImplTest {
         assertEquals("david", userDetails.getUsername());
     }
 
-    @Test(expected = UsernameNotFoundException.class)
-    public void testLoadUserByUsernameThrowExceptionWhenUserNotFound() {
+    public void testLoadUserByUsernameShouldReturnNullWhenUserNotFound() {
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.empty());
 
-        userDetailsServiceImpl.loadUserByUsername(anyString());
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(anyString());
+
+        assertNull(userDetails);
     }
 }
