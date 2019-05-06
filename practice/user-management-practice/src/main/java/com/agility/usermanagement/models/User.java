@@ -1,7 +1,6 @@
 package com.agility.usermanagement.models;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,17 +9,18 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * User entity class
+ */
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -54,7 +54,7 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-            .map(role -> role.getName())
+            .map(role -> role.getName().toString())
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     }

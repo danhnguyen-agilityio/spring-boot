@@ -1,5 +1,6 @@
 package com.agility.usermanagement.models;
 
+import com.agility.usermanagement.constants.RoleName;
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,6 +9,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Role entity class
+ */
 @Entity
 @Table(name = "roles")
 @Getter
@@ -24,7 +28,7 @@ public class Role implements Serializable {
     @Column(name = "name")
     @NotNull
     @Enumerated(EnumType.STRING)
-    private String name;
+    private RoleName name;
 
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
