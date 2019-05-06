@@ -2,6 +2,7 @@ package com.agility.usermanagement.configs;
 
 import com.agility.usermanagement.securities.JwtAuthenticationEntryPoint;
 import com.agility.usermanagement.securities.JwtAuthenticationFilter;
+import com.agility.usermanagement.securities.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,9 +34,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationEntryPoint unauthorizedHandler;
 
+    @Autowired
+    private JwtTokenService jwtTokenService;
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter(jwtTokenService);
     }
 
     /**
