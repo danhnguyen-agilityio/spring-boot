@@ -1,5 +1,6 @@
 package com.agility.usermanagement.models;
 
+import com.agility.usermanagement.constants.RoleName;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -54,7 +55,7 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-            .map(role -> role.getName().toString())
+            .map(role -> role.getName().getName())
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     }

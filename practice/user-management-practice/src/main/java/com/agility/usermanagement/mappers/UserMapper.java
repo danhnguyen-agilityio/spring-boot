@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * UserMapper interface is used to map between different object models that relate to User
  */
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
     /**

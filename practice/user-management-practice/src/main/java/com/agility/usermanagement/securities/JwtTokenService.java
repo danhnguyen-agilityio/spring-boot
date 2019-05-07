@@ -23,6 +23,7 @@ public class JwtTokenService {
     @Autowired
     private SecurityConfig securityConfig;
 
+    @Autowired
     private UserDetailsService userDetailsService;
 
     public JwtTokenService() {
