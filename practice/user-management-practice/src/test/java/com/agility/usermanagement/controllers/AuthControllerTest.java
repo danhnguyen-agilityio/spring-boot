@@ -1,6 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.AuthenticationRequest;
@@ -11,16 +12,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
 import static com.agility.usermanagement.exceptions.CustomError.BAD_CREDENTIALS;
+import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -30,11 +35,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 @Slf4j
 public class AuthControllerTest extends BaseControllerTest {
 
     private User user;
     private AuthenticationRequest credentialRequest;
+    private UserRequest userRequest;
 
     @Before
     public void setUp() {
@@ -47,10 +54,15 @@ public class AuthControllerTest extends BaseControllerTest {
         user.setId(1L);
         user.setUsername("user");
         user.setPassword(passwordEncoder.encode("user"));
+        user.setActive(true);
 
         credentialRequest = new AuthenticationRequest();
         credentialRequest.setUsername("user");
         credentialRequest.setPassword("user");
+
+        userRequest = new UserRequest();
+        userRequest.setUsername("user");
+        userRequest.setPassword("user");
     }
 
     /* ========================== Test sign up ======================= */
@@ -105,6 +117,50 @@ public class AuthControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("$.code", is(BAD_CREDENTIALS.code())))
             .andExpect(jsonPath("$.message", is(BAD_CREDENTIALS.message())));
     }
+
+    /* ========================== Test sign up app ======================= */
+
+    /**
+     * Test sign up should return exception when username registry exists
+     */
+    @Test
+    public void testSignUpShouldReturnExceptionWhenUsernameExists() throws Exception {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(post("/v1/auths/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userRequest)))
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.code", is(USERNAME_ALREADY_EXISTS.code())))
+            .andExpect(jsonPath("$.message", is(USERNAME_ALREADY_EXISTS.message())));
+
+        verify(userRepository, times(1)).findByUsername(anyString());
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    /**
+     * Test sign up should success when request data valid
+     */
+    @Test
+    public void testSignUpShouldSuccessWhenRequestDataValid() throws Exception {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(post("/v1/auths/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userRequest)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", notNullValue()))
+            .andExpect(jsonPath("$.username", is(user.getUsername())))
+            .andExpect(jsonPath("$.active", is(true)));
+
+        verify(userRepository, times(1)).findByUsername(anyString());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
 
     /* ========================== Test access authenticated requests ======================= */
 

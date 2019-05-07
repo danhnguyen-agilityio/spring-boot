@@ -1,8 +1,10 @@
 package com.agility.usermanagement.controllers;
 
-import com.agility.usermanagement.dto.UserRegistry;
+import com.agility.usermanagement.dto.UserRequest;
+import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.exceptions.BadAccountCredentialException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
+import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.AuthenticationRequest;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +23,11 @@ import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY
 public class AuthController extends BaseController {
 
     private PasswordEncoder passwordEncoder;
+    private UserMapper userMapper;
 
-    public AuthController(PasswordEncoder passwordEncoder) {
+    public AuthController(PasswordEncoder passwordEncoder, UserMapper userMapper) {
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -59,11 +63,13 @@ public class AuthController extends BaseController {
     /**
      * Sign up app
      *
-     * @param userRegistry Authentication request
+     * @param userRequest Authentication request
+     * @return created user
+     * @throws ResourceAlreadyExistsException when username already exists in system
      */
-    @PostMapping("/registry")
-    public ResponseEntity signup(@Valid @RequestBody UserRegistry userRegistry) {
-        User user = userRepository.findByUsername(userRegistry.getUsername()).orElse(null);
+    @PostMapping("/signup")
+    public UserResponse signup(@Valid @RequestBody UserRequest userRequest) {
+        User user = userRepository.findByUsername(userRequest.getUsername()).orElse(null);
 
         // User already exists
         if (user != null) {
@@ -72,11 +78,13 @@ public class AuthController extends BaseController {
 
         // User not already exists
         user = new User();
-        user.setUsername(userRegistry.getUsername());
-        user.setUsername(passwordEncoder.encode(userRegistry.getPassword()));
-        user.setActive(false);
+        user.setUsername(userRequest.getUsername());
+        user.setUsername(passwordEncoder.encode(userRequest.getPassword()));
+        user.setActive(true);
 
-        userRepository.save(user);
-        return null;
+        User savedUser = userRepository.save(user);
+        UserResponse userResponse = userMapper.toUserResponse(savedUser);
+
+        return userResponse;
     }
 }
