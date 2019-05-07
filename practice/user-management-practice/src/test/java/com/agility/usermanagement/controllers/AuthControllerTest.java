@@ -21,6 +21,7 @@ import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBy
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -61,7 +62,7 @@ public class AuthControllerTest extends BaseControllerTest {
     public void testSignUpWithCorrectCredential() throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
-        mockMvc.perform(post("/v1/auths")
+        mockMvc.perform(post("/v1/auths/signin")
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(credentialRequest)))
             .andDo(print())
@@ -80,7 +81,7 @@ public class AuthControllerTest extends BaseControllerTest {
 
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(null));
 
-        mockMvc.perform(post("/v1/auths")
+        mockMvc.perform(post("/v1/auths/signin")
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(credentialRequest)))
             .andDo(print())
@@ -96,12 +97,30 @@ public class AuthControllerTest extends BaseControllerTest {
 
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
 
-        mockMvc.perform(post("/v1/auths")
+        mockMvc.perform(post("/v1/auths/signin")
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(credentialRequest)))
             .andDo(print())
             .andExpect(status().isUnauthorized())
             .andExpect(jsonPath("$.code", is(BAD_CREDENTIALS.code())))
             .andExpect(jsonPath("$.message", is(BAD_CREDENTIALS.message())));
+    }
+
+    /* ========================== Test access authenticated requests ======================= */
+
+    /**
+     * Test access authenticated request should return error unauthorized when token invalid
+     */
+    @Test
+    public void testAccessAuthenticatedRequestShouldReturnErrorWhenTokenInvalid() throws Exception {
+        // Set user have role user
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(get("/me")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), "Bearer david nguyen beck cam"))
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
     }
 }
