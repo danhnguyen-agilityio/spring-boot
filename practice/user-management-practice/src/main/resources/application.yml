@@ -1,5 +1,4 @@
-security:
-    secret: SecretKeyToGenJWTs
-    expiration-time: 864000000
-    token-prefix: Bearer
-    header-string: Authorization
+spring:
+    # Specify which profiles are active
+    profiles:
+        active: dev
