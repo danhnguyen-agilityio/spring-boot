@@ -1,6 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.repositories.UserRepository;
+import com.agility.usermanagement.securities.JwtTokenService;
 import com.agility.usermanagement.securities.SecurityConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class BaseControllerTest {
 
     @Autowired
     protected SecurityConfig securityConfig;
+
+    @Autowired
+    protected JwtTokenService jwtTokenService;
 
     @MockBean
     protected UserRepository userRepository;

@@ -2,6 +2,7 @@ package com.agility.usermanagement.securities;
 
 import com.agility.usermanagement.exceptions.ApiError;
 import com.agility.usermanagement.exceptions.BaseCustomException;
+import com.agility.usermanagement.exceptions.InvalidJwtAuthenticationException;
 import com.agility.usermanagement.utils.ConvertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -28,27 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        Authentication authentication;
 
-        // FIXME:: We can catch exception and set error to body
-        /*try {
-            log.debug("Implement doFilter");
-
-            String token = jwtTokenService.resolveToken((HttpServletRequest) request);
-            if (token != null && jwtTokenService.validateToken(token)) {
-                Authentication authentication = jwtTokenService.getAuthentication(token);
-
-                if (authentication != null) {
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            }
-            filterChain.doFilter(request, response);
+        try {
+            String token = jwtTokenService.resolveToken(request);
+            authentication = jwtTokenService.getAuthentication(token);
         } catch (InvalidJwtAuthenticationException e) {
-            log.debug("Error get authentication filter");
-            setErrorResponse((HttpServletResponse) response, e);
-        }*/
+            authentication = null;
+        }
 
-        String token = jwtTokenService.resolveToken(request);
-        Authentication authentication = jwtTokenService.getAuthentication(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         filterChain.doFilter(request, response);
     }

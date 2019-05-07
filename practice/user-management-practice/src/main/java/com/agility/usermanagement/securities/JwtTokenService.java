@@ -72,7 +72,7 @@ public class JwtTokenService {
             return null;
         }
 
-        String username;
+        String username = null;
 
         try {
             username = Jwts.parser().setSigningKey(securityConfig.getSecret())
@@ -80,15 +80,18 @@ public class JwtTokenService {
                 .getBody()
                 .getSubject();
         } catch (ExpiredJwtException e) {
-            throw new InvalidJwtAuthenticationException(CustomError.EXPIRED_TOKEN);
+            log.error("The token is expired");
+             throw new InvalidJwtAuthenticationException(CustomError.EXPIRED_TOKEN);
         }
         catch (JwtException e) {
+            log.error("Invalid token");
             throw new InvalidJwtAuthenticationException(CustomError.INVALID_TOKEN);
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         if (userDetails == null) {
+            log.error("Username not valid");
             throw new UsernameNotFoundException("Username " + username + " not found.");
         }
 

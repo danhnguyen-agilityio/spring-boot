@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * This class is called when occur exception while authentication, with purpose custom response http servlet
+ * This class is called when occur exception while authentication error, with purpose custom response http servlet
+ *  - Authenticate user and and password error
+ *  - Access a secured REST resource without authentication credentials (null authentication)
  * Default, Server return Status = 403 and Error Message = Access Denied when occur exception while authentication
  */
 
@@ -22,7 +24,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        // This is invoked when user tries to access a secured REST resource without supplying any credentials
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
     }
 }
