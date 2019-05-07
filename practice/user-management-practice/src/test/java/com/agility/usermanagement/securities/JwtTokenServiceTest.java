@@ -46,12 +46,11 @@ public class JwtTokenServiceTest {
         user.setId(100L);
         user.setUsername("david");
 
-//        securityConfig = SecurityConfig.builder()
-//            .secret("SecretKeyToGenJWTs")
-//            .expirationTime((3000))
-//            .tokenPrefix("Bearer")
-//            .headerString("Authorization")
-//            .build();
+        securityConfig = new SecurityConfig();
+        securityConfig.setSecret("SecretKeyToGenJWTs");
+        securityConfig.setExpirationTime((3000));
+        securityConfig.setTokenPrefix("Bearer");
+        securityConfig.setHeaderString("Authorization");
 
         jwtTokenService = new JwtTokenService(securityConfig, userDetailsService);
     }
