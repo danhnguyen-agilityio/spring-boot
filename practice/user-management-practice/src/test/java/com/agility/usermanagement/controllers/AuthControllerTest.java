@@ -56,10 +56,10 @@ public class AuthControllerTest extends BaseControllerTest {
     /* ========================== Test sign up ======================= */
 
     /**
-     * Test login with correct credential
+     * Test sign in with correct credential
      */
     @Test
-    public void testSignUpWithCorrectCredential() throws Exception {
+    public void testSignInWithCorrectCredential() throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
         mockMvc.perform(post("/v1/auths/signin")
@@ -72,10 +72,10 @@ public class AuthControllerTest extends BaseControllerTest {
     }
 
     /**
-     * Test sign up not success when username not found
+     * Test sign in not success when username not found
      */
     @Test
-    public void testSignUpShouldReturnFailWhenUserNameNotFound() throws Exception {
+    public void testSignInShouldReturnFailWhenUserNameNotFound() throws Exception {
         // Set username not found in system
         credentialRequest.setUsername("admin");
 
@@ -89,10 +89,10 @@ public class AuthControllerTest extends BaseControllerTest {
     }
 
     /**
-     * Test sign up should throw bad account credential exception when returned user null id
+     * Test sign in should throw bad account credential exception when returned user null id
      */
     @Test
-    public void testSignUpShouldThrowBadAccountCredentialExceptionWhenUserNullId() throws Exception {
+    public void testSignInShouldThrowBadAccountCredentialExceptionWhenUserNullId() throws Exception {
         user.setId(null);
 
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));

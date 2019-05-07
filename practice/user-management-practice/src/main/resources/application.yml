@@ -1,7 +1,3 @@
-security:
-    # Tell Spring security to require request over HTTPS
-    require-ssl: true
-
 spring:
     #  h2:
     #    console:
