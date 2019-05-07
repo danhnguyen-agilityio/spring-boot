@@ -1,5 +1,6 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.dto.UserRegistry;
 import com.agility.usermanagement.exceptions.BadAccountCredentialException;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.AuthenticationRequest;
@@ -7,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.agility.usermanagement.exceptions.CustomError.BAD_CREDENTIALS;
 
@@ -20,7 +23,7 @@ public class AuthController extends BaseController {
      * @return Response with token attached in header
      * @throws BadAccountCredentialException if invalid credential or returned user null id
      */
-    @PostMapping
+    @PostMapping("/signin")
     public ResponseEntity signin(@RequestBody AuthenticationRequest credential) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
