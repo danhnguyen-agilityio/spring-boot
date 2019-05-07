@@ -30,6 +30,11 @@ public class Role implements Serializable {
     @Enumerated(EnumType.STRING)
     private RoleName name;
 
+    public Role(Long id, @NotNull RoleName name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<>();
 }

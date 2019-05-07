@@ -42,8 +42,8 @@ public class User implements Serializable, UserDetails {
     )
     private List<Role> roles = new ArrayList<>();
 
-    @Column(name = "full_name")
-    private String fullName;
+    @Column(name = "first_name")
+    private String firstName;
 
     private String lastName;
 
