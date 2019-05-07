@@ -11,7 +11,8 @@ public enum CustomError {
     NO_HANDLER_FOUND(403),
     METHOD_NOT_ALLOWED(404),
     UNSUPPORTED_MEDIA_TYPE(405),
-    USER_NOT_FOUND(410),
+    USER_NOT_FOUND(410, "User not found"),
+    USERNAME_ALREADY_EXISTS(411, "Username already exists"),
     BAD_CREDENTIALS(451, "Invalid username/password supplied"),
     EXPIRED_TOKEN(452, "Token has expired"),
     INVALID_TOKEN(453, "Token is invalid");
