@@ -30,4 +30,12 @@ public interface UserMapper {
 
         return roles;
     }
+
+    /**
+     * Convert from user to user response
+     *
+     * @param users User need convert
+     * @return User response
+     */
+    List<UserResponse> toUserResponses(List<User> users);
 }

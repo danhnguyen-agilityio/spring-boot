@@ -52,6 +52,11 @@ public class User implements Serializable, UserDetails {
 
     private boolean active;
 
+    public User(Long id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()

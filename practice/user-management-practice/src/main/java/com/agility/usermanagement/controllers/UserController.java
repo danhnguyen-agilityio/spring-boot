@@ -5,6 +5,8 @@ import com.agility.usermanagement.dto.UserUpdate;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.User;
+import com.agility.usermanagement.securities.RoleConstant;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.agility.usermanagement.exceptions.CustomError.USER_NOT_FOUND;
 
@@ -68,5 +72,18 @@ public class UserController extends BaseController {
         user = userRepository.save(user);
         UserResponse userResponse = userMapper.toUserResponse(user);
         return userResponse;
+    }
+
+    /**
+     * Get all users
+     *
+     * @return all users
+     */
+    @GetMapping("/users")
+    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    public List<UserResponse> getUsers() {
+        List<User> users = userRepository.findAll();
+
+        return userMapper.toUserResponses(users);
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
@@ -37,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest extends BaseControllerTest {
 
     private User user;
+    private List<User> users;
     private String token;
     private UserUpdate userUpdate;
 
@@ -55,6 +58,8 @@ public class UserControllerTest extends BaseControllerTest {
         user.setLastName("lastName");
         user.setAddress("address");
         user.setPassword(passwordEncoder.encode("user"));
+
+        users = Arrays.asList(new User(1L, "david"), new User(2L, "tommy"), new User(3L, "beck"));
 
         userUpdate = new UserUpdate();
         userUpdate.setId(1L);
@@ -184,6 +189,68 @@ public class UserControllerTest extends BaseControllerTest {
 
         verify(userRepository, times(2)).findByUsername(anyString());
         verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    // ============================= Test Admin or Manager get user list ============================
+
+    /**
+     * Test get user list fail when user login
+     */
+    @Test
+    public void testGetUserListFailForbiddenWhenUserLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+
+        mockMvc.perform(get("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test get user list success when manager login
+     */
+    @Test
+    public void testGetUserListSuccessWhenManagerLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        testGetUserListWithUserMock(user);
+    }
+
+    /**
+     * Test get user list success when admin login
+     */
+    @Test
+    public void testGetUserListSuccessWhenAdminLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        testGetUserListWithUserMock(user);
+    }
+
+    /**
+     * Test get user list success with user mock
+     *
+     * @param user user need mock
+     * @throws Exception
+     */
+    private void testGetUserListWithUserMock(User user) throws Exception {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findAll()).thenReturn(users);
+
+        mockMvc.perform(get("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(users.size())));
+
+        verify(userRepository, times(1)).findByUsername(anyString());
+        verify(userRepository, times(1)).findAll();
     }
 
 }
