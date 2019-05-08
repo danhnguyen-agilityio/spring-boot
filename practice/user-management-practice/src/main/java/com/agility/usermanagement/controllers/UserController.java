@@ -1,15 +1,19 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.constants.RoleName;
 import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.dto.UserUpdate;
+import com.agility.usermanagement.exceptions.BadAccountCredentialException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.RoleConstant;
+import com.agility.usermanagement.services.UserService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +22,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
+import static com.agility.usermanagement.exceptions.CustomError.BAD_CREDENTIALS;
 import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
 import static com.agility.usermanagement.exceptions.CustomError.USER_NOT_FOUND;
 
@@ -28,9 +33,12 @@ public class UserController extends BaseController {
 
     private PasswordEncoder passwordEncoder;
 
-    public UserController(UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    private UserService userService;
+
+    public UserController(UserMapper userMapper, PasswordEncoder passwordEncoder, UserService userService) {
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     /**
@@ -134,6 +142,24 @@ public class UserController extends BaseController {
         userRepository.delete(user);
     }
 
-    
+    /**
+     * Update user (Only manager user and admin user have permission for feature)
+     */
+    @PutMapping("/users/{id}/activate")
+    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    public UserResponse updateActive(@AuthenticationPrincipal UserDetails userDetails,
+                     @Valid @RequestBody UserUpdate userUpdate,
+                     @PathVariable Long id) {
+
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        user.setActive(userUpdate.isActive());
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toUserResponse(updatedUser);
+    }
 
 }

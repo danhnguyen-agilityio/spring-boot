@@ -27,9 +27,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,10 +64,10 @@ public class UserControllerTest extends BaseControllerTest {
         users = Arrays.asList(new User(1L, "david"), new User(2L, "tommy"), new User(3L, "beck"));
 
         userUpdate = new UserUpdate();
-        userUpdate.setId(1L);
         userUpdate.setFirstName("firstNameUpdate");
         userUpdate.setLastName("lastNameUpdate");
         userUpdate.setAddress("addressUpdate");
+        userUpdate.setActive(false);
 
         userRequest = new UserRequest();
         userRequest.setUsername("userRequest");
@@ -367,7 +365,7 @@ public class UserControllerTest extends BaseControllerTest {
      */
     @Test
     public void testDeleteUserFailForbiddenWhenUserLogin() throws Exception {
-        // Set user have role manager
+        // Set user have role user
         user.getRoles().add(new Role(1L, RoleName.USER));
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
@@ -439,5 +437,90 @@ public class UserControllerTest extends BaseControllerTest {
             .header(securityConfig.getHeaderString(), token))
             .andDo(print())
             .andExpect(status().isOk());
+    }
+
+    /* ========================== Update active user  ======================= */
+
+    /**
+     * Test update user fail forbidden when user login
+     */
+    @Test
+    public void testUpdateUserForbiddenWhenUserLogin() throws Exception {
+        // Set user have role user
+        user.getRoles().add(new Role(1L, RoleName.USER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(put("/users/100/activate")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test update active user should fail when user id not found
+     */
+    @Test
+    public void testUpdateActiveShouldFailWhenUserIdNotFound() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(put("/users/100/activate")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Test update active user success when manager login and user id found
+     */
+    @Test
+    public void testUpdateActiveSuccessWhenManagerLoginAndUserIdFound() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        testUpdateActiveUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test update active user success when admin login and user id found
+     */
+    @Test
+    public void testUpdateActiveSuccessWhenAdminLoginAndUserIdFound() throws Exception {
+        // Set user have role admin
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+
+        testUpdateActiveUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test update active user success with authentication user
+     *
+     * @param user authentication user
+     * @throws Exception
+     */
+    private void testUpdateActiveUserSuccessWithAuthenticationUser(User user) throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(put("/users/100/activate")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.active", is(userUpdate.isActive())));
     }
 }
