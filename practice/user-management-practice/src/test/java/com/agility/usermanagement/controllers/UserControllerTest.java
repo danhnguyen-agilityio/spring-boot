@@ -1,6 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserUpdate;
 import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
@@ -18,14 +19,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,6 +40,7 @@ public class UserControllerTest extends BaseControllerTest {
 
     private User user;
     private List<User> users;
+    private UserRequest userRequest;
     private String token;
     private UserUpdate userUpdate;
 
@@ -58,6 +59,7 @@ public class UserControllerTest extends BaseControllerTest {
         user.setLastName("lastName");
         user.setAddress("address");
         user.setPassword(passwordEncoder.encode("user"));
+        user.setActive(true);
 
         users = Arrays.asList(new User(1L, "david"), new User(2L, "tommy"), new User(3L, "beck"));
 
@@ -66,6 +68,10 @@ public class UserControllerTest extends BaseControllerTest {
         userUpdate.setFirstName("firstNameUpdate");
         userUpdate.setLastName("lastNameUpdate");
         userUpdate.setAddress("addressUpdate");
+
+        userRequest = new UserRequest();
+        userRequest.setUsername("userRequest");
+        userRequest.setPassword("userRequest");
 
         token = jwtTokenService.createToken(user);
     }
@@ -201,6 +207,8 @@ public class UserControllerTest extends BaseControllerTest {
         // Set user have role manager
         user.getRoles().add(new Role(1L, RoleName.USER));
 
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+
         mockMvc.perform(get("/users")
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityConfig.getHeaderString(), token))
@@ -251,6 +259,102 @@ public class UserControllerTest extends BaseControllerTest {
 
         verify(userRepository, times(1)).findByUsername(anyString());
         verify(userRepository, times(1)).findAll();
+    }
+
+
+    /* ========================== Test create user ======================= */
+
+    /**
+     * Test create user fail forbidden when user login
+     */
+    @Test
+    public void testCreateUserFailForbiddenWhenUserLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token)
+            .content(convertObjectToJsonBytes(userRequest)))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test create user fail resource exist when username exists
+     */
+    @Test
+    public void testCreateUserFailResourceExistWhenUsernameExists() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token)
+            .content(convertObjectToJsonBytes(userRequest)))
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.code", is(USERNAME_ALREADY_EXISTS.code())))
+            .andExpect(jsonPath("$.message", is(USERNAME_ALREADY_EXISTS.message())));
+
+        verify(userRepository, times(2)).findByUsername(anyString());
+        verifyNoMoreInteractions(userRepository);
+    }
+
+    /**
+     * Test create user should success when request data valid and manager login
+     */
+    @Test
+    public void testCreateUserShouldSuccessWhenRequestDataValidAndManagerLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+
+        testCreateUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test create user should success when request data valid and admin login
+     */
+    @Test
+    public void testCreateUserShouldSuccessWhenRequestDataValidAndAdminLogin() throws Exception {
+        // Set user have role admin
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+
+        testCreateUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test create user success
+     *
+     * @throws Exception
+     */
+    private void testCreateUserSuccessWithAuthenticationUser(User user) throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.ofNullable(null));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(post("/users")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token)
+            .content(convertObjectToJsonBytes(userRequest)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", notNullValue()))
+            .andExpect(jsonPath("$.username", is(user.getUsername())))
+            .andExpect(jsonPath("$.active", is(true)));
+
+        verify(userRepository, times(2)).findByUsername(anyString());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
 }
