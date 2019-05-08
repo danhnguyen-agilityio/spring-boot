@@ -5,9 +5,11 @@ import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.dto.UserUpdate;
 import com.agility.usermanagement.exceptions.BadAccountCredentialException;
+import com.agility.usermanagement.exceptions.BadRequestException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
+import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.RoleConstant;
 import com.agility.usermanagement.services.UserService;
@@ -22,9 +24,7 @@ import javax.validation.Valid;
 
 import java.util.List;
 
-import static com.agility.usermanagement.exceptions.CustomError.BAD_CREDENTIALS;
-import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
-import static com.agility.usermanagement.exceptions.CustomError.USER_NOT_FOUND;
+import static com.agility.usermanagement.exceptions.CustomError.*;
 
 @RestController
 public class UserController extends BaseController {
@@ -143,13 +143,11 @@ public class UserController extends BaseController {
     }
 
     /**
-     * Update user (Only manager user and admin user have permission for feature)
+     * Change active user (Only manager user and admin user have permission for feature)
      */
     @PutMapping("/users/{id}/activate")
     @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
-    public UserResponse updateActive(@AuthenticationPrincipal UserDetails userDetails,
-                     @Valid @RequestBody UserUpdate userUpdate,
-                     @PathVariable Long id) {
+    public UserResponse updateActive(@Valid @RequestBody UserUpdate userUpdate, @PathVariable Long id) {
 
         User user = userRepository.findById(id).orElse(null);
         if (user == null) {
@@ -157,6 +155,40 @@ public class UserController extends BaseController {
         }
 
         user.setActive(userUpdate.isActive());
+
+        User updatedUser = userRepository.save(user);
+        return userMapper.toUserResponse(updatedUser);
+    }
+
+    /**
+     * Update role user (Only admin user have permission for feature)
+     */
+    @PutMapping("/users/{id}/roles")
+    @Secured({RoleConstant.ADMIN})
+    public UserResponse updateRole(@Valid @RequestBody UserUpdate userUpdate, @PathVariable Long id) {
+
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        user.getRoles().clear();
+        switch (userUpdate.getRole()) {
+            case "USER":
+                user.getRoles().add(new Role(1L, RoleName.USER));
+                break;
+            case "MANAGER":
+                user.getRoles().add(new Role(1L, RoleName.USER));
+                user.getRoles().add(new Role(2L, RoleName.MANAGER));
+                break;
+            case "ADMIN":
+                user.getRoles().add(new Role(1L, RoleName.USER));
+                user.getRoles().add(new Role(2L, RoleName.MANAGER));
+                user.getRoles().add(new Role(3L, RoleName.ADMIN));
+                break;
+            default:
+                throw new BadRequestException(INVALID_ROLE_NAME);
+        }
 
         User updatedUser = userRepository.save(user);
         return userMapper.toUserResponse(updatedUser);

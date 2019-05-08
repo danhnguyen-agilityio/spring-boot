@@ -15,7 +15,8 @@ public enum CustomError {
     USERNAME_ALREADY_EXISTS(411, "Username already exists"),
     BAD_CREDENTIALS(451, "Invalid username/password supplied"),
     EXPIRED_TOKEN(452, "Token has expired"),
-    INVALID_TOKEN(453, "Token is invalid");
+    INVALID_TOKEN(453, "Token is invalid"),
+    INVALID_ROLE_NAME(460, "Role name is invalid, only accept value (USER, MANAGER, ADMIN)");
 
     private int code;
     private String message;

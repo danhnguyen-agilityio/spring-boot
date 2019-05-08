@@ -523,4 +523,127 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.active", is(userUpdate.isActive())));
     }
+
+    /* ========================== Change role user ======================= */
+
+    /**
+     * Test update role user fail forbidden when user login
+     */
+    @Test
+    public void testUpdateRoleUserForbiddenWhenUserLogin() throws Exception {
+        // Set user have role user
+        user.getRoles().add(new Role(1L, RoleName.USER));
+
+        testUpdateRoleUserFailForbiddenWithAuthentication(user);
+    }
+
+    /**
+     * Test update role user fail forbidden when manager login
+     */
+    @Test
+    public void testUpdateRoleUserForbiddenWhenManagerLogin() throws Exception {
+        // Set user have role admin
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+
+        testUpdateRoleUserFailForbiddenWithAuthentication(user);
+    }
+
+    /**
+     * Test update role user fail forbidden
+     * @param user
+     */
+    private void testUpdateRoleUserFailForbiddenWithAuthentication(User user) throws Exception {
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(put("/users/100/roles")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test update role user should fail when user id not found
+     */
+    @Test
+    public void testUpdateRoleUserShouldFailWhenUserIdNotFound() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(put("/users/100/roles")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isNotFound());
+    }
+
+    /**
+     * Test update role user should fail format when role name wrong format
+     */
+    @Test
+    public void testUpdateRoleUserShouldFailFormatWhenRoleNameWrongFormat() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(user));
+
+        // set role name invalid
+        userUpdate.setRole("wrongFormat");
+
+        mockMvc.perform(put("/users/100/roles")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+    }
+
+    /**
+     * Test update role user success when admin login
+     */
+    @Test
+    public void testUpdateActiveSuccessWhenAdminLogin() throws Exception {
+        testUpdateRoleUserSuccessWithAdminLoginAndRoleUpdate("USER");
+        testUpdateRoleUserSuccessWithAdminLoginAndRoleUpdate("MANAGER");
+        testUpdateRoleUserSuccessWithAdminLoginAndRoleUpdate("ADMIN");
+    }
+
+    /**
+     * Test update role user success with admin user login and role update
+     *
+     * @param role new role update
+     * @throws Exception
+     */
+    private void testUpdateRoleUserSuccessWithAdminLoginAndRoleUpdate(String role) throws Exception {
+        // Set user have role admin
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+
+        userUpdate.setRole(role);
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(put("/users/100/roles")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userUpdate))
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roles", hasSize(user.getRoles().size())));
+    }
 }
+

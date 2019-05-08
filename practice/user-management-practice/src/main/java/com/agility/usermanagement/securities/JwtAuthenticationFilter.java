@@ -36,6 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             authentication = jwtTokenService.getAuthentication(token);
         } catch (InvalidJwtAuthenticationException e) {
             authentication = null;
+        } catch (Exception e) {
+            authentication = null;
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
