@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.agility.usermanagement.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
+import static com.agility.usermanagement.exceptions.CustomError.USER_NOT_FOUND;
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -336,6 +338,7 @@ public class UserControllerTest extends BaseControllerTest {
     /**
      * Test create user success
      *
+     * @param user Authentication user
      * @throws Exception
      */
     private void testCreateUserSuccessWithAuthenticationUser(User user) throws Exception {
@@ -357,4 +360,84 @@ public class UserControllerTest extends BaseControllerTest {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    /* ========================== Delete user ======================= */
+
+    /**
+     * Test delete user fail forbidden when user login
+     */
+    @Test
+    public void testDeleteUserFailForbiddenWhenUserLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    /**
+     * Test delete user fail user not found when user id not found
+     */
+    @Test
+    public void testDeleteUserShouldFailUserNotFoundWhenUserIdNotFound() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+
+        when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(USER_NOT_FOUND.code())));
+    }
+
+    /**
+     * Test delete user success when manager login and user id exists
+     */
+    @Test
+    public void testDeleteUserSuccessWhenManagerLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+
+        testDeleteUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test delete user success when manager login and user id exists
+     */
+    @Test
+    public void testDeleteUserSuccessWhenAdminLogin() throws Exception {
+        // Set user have role manager
+        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+        user.getRoles().add(new Role(1L, RoleName.ADMIN));
+
+        testDeleteUserSuccessWithAuthenticationUser(user);
+    }
+
+    /**
+     * Test delete user success with authentication user
+     *
+     * @param user authentication user
+     * @throws Exception
+     */
+    private void testDeleteUserSuccessWithAuthenticationUser(User user) throws Exception {
+        when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header(securityConfig.getHeaderString(), token))
+            .andDo(print())
+            .andExpect(status().isOk());
+    }
 }

@@ -12,10 +12,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -88,7 +85,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/users")
     @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
-    public List<UserResponse> getUsers() {
+    public List<UserResponse> findAll() {
         List<User> users = userRepository.findAll();
 
         return userMapper.toUserResponses(users);
@@ -97,11 +94,12 @@ public class UserController extends BaseController {
     /**
      * Create user (Only manager user and admin user have permission for feature)
      *
-     * @return
+     * @return created user
+     * @throws ResourceAlreadyExistsException if user name exists
      */
     @PostMapping("/users")
     @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
-    public UserResponse save(@Valid @RequestBody UserRequest userRequest) {
+    public UserResponse create(@Valid @RequestBody UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername()).orElse(null);
 
         // User already exists
@@ -120,4 +118,22 @@ public class UserController extends BaseController {
 
         return userResponse;
     }
+
+    /**
+     * Delete user (Only manager user and admin user have permission for feature)
+     */
+    @DeleteMapping("/users/{id}")
+    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    public void delete(@PathVariable Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        userRepository.delete(user);
+    }
+
+    
+
 }
