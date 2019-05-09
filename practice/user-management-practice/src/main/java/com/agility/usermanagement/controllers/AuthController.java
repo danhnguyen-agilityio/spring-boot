@@ -1,12 +1,11 @@
 package com.agility.usermanagement.controllers;
 
-import com.agility.usermanagement.dto.UserRequest;
+import com.agility.usermanagement.dto.UserAuth;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.exceptions.BadAccountCredentialException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.User;
-import com.agility.usermanagement.securities.AuthenticationRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +37,7 @@ public class AuthController extends BaseController {
      * @throws BadAccountCredentialException if invalid credential or returned user null id
      */
     @PostMapping("/signin")
-    public ResponseEntity signin(@Valid @RequestBody AuthenticationRequest credential) {
+    public ResponseEntity signin(@Valid @RequestBody UserAuth credential) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 credential.getUsername(),
@@ -63,13 +62,13 @@ public class AuthController extends BaseController {
     /**
      * Sign up app
      *
-     * @param userRequest Authentication request
+     * @param userAuth Authentication request
      * @return created user
      * @throws ResourceAlreadyExistsException when username already exists in system
      */
     @PostMapping("/signup")
-    public UserResponse signup(@Valid @RequestBody UserRequest userRequest) {
-        User user = userRepository.findByUsername(userRequest.getUsername()).orElse(null);
+    public UserResponse signup(@Valid @RequestBody com.agility.usermanagement.dto.UserAuth userAuth) {
+        User user = userRepository.findByUsername(userAuth.getUsername()).orElse(null);
 
         // User already exists
         if (user != null) {
@@ -78,8 +77,8 @@ public class AuthController extends BaseController {
 
         // User not already exists
         user = new User();
-        user.setUsername(userRequest.getUsername());
-        user.setUsername(passwordEncoder.encode(userRequest.getPassword()));
+        user.setUsername(userAuth.getUsername());
+        user.setUsername(passwordEncoder.encode(userAuth.getPassword()));
         user.setActive(true);
 
         User savedUser = userRepository.save(user);

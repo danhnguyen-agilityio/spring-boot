@@ -1,7 +1,7 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.dto.UserAuth;
 import com.agility.usermanagement.models.Role;
-import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.dto.UserUpdate;
 import com.agility.usermanagement.exceptions.BadRequestException;
@@ -104,8 +104,8 @@ public class UserController extends BaseController {
      */
     @PostMapping("/users")
     @Secured({Role.ROLE_ADMIN, Role.ROLE_MANAGER})
-    public UserResponse create(@Valid @RequestBody UserRequest userRequest) {
-        User user = userRepository.findByUsername(userRequest.getUsername()).orElse(null);
+    public UserResponse create(@Valid @RequestBody UserAuth userAuth) {
+        User user = userRepository.findByUsername(userAuth.getUsername()).orElse(null);
 
         // User already exists
         if (user != null) {
@@ -114,8 +114,8 @@ public class UserController extends BaseController {
 
         // User not already exists
         user = new User();
-        user.setUsername(userRequest.getUsername());
-        user.setUsername(passwordEncoder.encode(userRequest.getPassword()));
+        user.setUsername(userAuth.getUsername());
+        user.setUsername(passwordEncoder.encode(userAuth.getPassword()));
         user.setActive(true);
         user.setRoles(Arrays.asList(Role.USER));
 

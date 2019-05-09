@@ -1,9 +1,8 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.dto.UserAuth;
 import com.agility.usermanagement.models.Role;
-import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.models.User;
-import com.agility.usermanagement.securities.AuthenticationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -39,8 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthControllerTest extends BaseControllerTest {
 
     private User user;
-    private AuthenticationRequest credentialRequest;
-    private UserRequest userRequest;
+    private UserAuth credentialRequest;
+    private com.agility.usermanagement.dto.UserAuth userAuth;
 
     @Before
     public void setUp() {
@@ -55,13 +54,13 @@ public class AuthControllerTest extends BaseControllerTest {
         user.setPassword(passwordEncoder.encode("user"));
         user.setActive(true);
 
-        credentialRequest = new AuthenticationRequest();
+        credentialRequest = new UserAuth();
         credentialRequest.setUsername("user");
         credentialRequest.setPassword("user");
 
-        userRequest = new UserRequest();
-        userRequest.setUsername("user");
-        userRequest.setPassword("user");
+        userAuth = new com.agility.usermanagement.dto.UserAuth();
+        userAuth.setUsername("user");
+        userAuth.setPassword("user");
     }
 
     /* ========================== Test sign up ======================= */
@@ -129,7 +128,7 @@ public class AuthControllerTest extends BaseControllerTest {
 
         mockMvc.perform(post("/v1/auths/signup")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(userRequest)))
+            .content(convertObjectToJsonBytes(userAuth)))
             .andDo(print())
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.code", is(USERNAME_ALREADY_EXISTS.code())))
@@ -149,7 +148,7 @@ public class AuthControllerTest extends BaseControllerTest {
 
         mockMvc.perform(post("/v1/auths/signup")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(userRequest)))
+            .content(convertObjectToJsonBytes(userAuth)))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", notNullValue()))

@@ -1,7 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.models.Role;
-import com.agility.usermanagement.dto.UserRequest;
+import com.agility.usermanagement.dto.UserAuth;
 import com.agility.usermanagement.dto.UserUpdate;
 import com.agility.usermanagement.models.User;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class UserControllerTest extends BaseControllerTest {
 
     private User user;
     private List<User> users;
-    private UserRequest userRequest;
+    private UserAuth userAuth;
     private String token;
     private UserUpdate userUpdate;
 
@@ -68,9 +68,9 @@ public class UserControllerTest extends BaseControllerTest {
         userUpdate.setAddress("addressUpdate");
         userUpdate.setActive(false);
 
-        userRequest = new UserRequest();
-        userRequest.setUsername("userRequest");
-        userRequest.setPassword("userRequest");
+        userAuth = new UserAuth();
+        userAuth.setUsername("userAuth");
+        userAuth.setPassword("userAuth");
 
         token = jwtTokenService.createToken(user);
     }
@@ -276,7 +276,7 @@ public class UserControllerTest extends BaseControllerTest {
         mockMvc.perform(post("/users")
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityConfig.getHeaderString(), token)
-            .content(convertObjectToJsonBytes(userRequest)))
+            .content(convertObjectToJsonBytes(userAuth)))
             .andDo(print())
             .andExpect(status().isForbidden());
     }
@@ -291,13 +291,13 @@ public class UserControllerTest extends BaseControllerTest {
         user.getRoles().add(Role.MANAGER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
-        when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findByUsername(userAuth.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         mockMvc.perform(post("/users")
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityConfig.getHeaderString(), token)
-            .content(convertObjectToJsonBytes(userRequest)))
+            .content(convertObjectToJsonBytes(userAuth)))
             .andDo(print())
             .andExpect(status().isConflict())
             .andExpect(jsonPath("$.code", is(USERNAME_ALREADY_EXISTS.code())))
@@ -340,13 +340,13 @@ public class UserControllerTest extends BaseControllerTest {
      */
     private void testCreateUserSuccessWithAuthenticationUser(User user) throws Exception {
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
-        when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.ofNullable(null));
+        when(userRepository.findByUsername(userAuth.getUsername())).thenReturn(Optional.ofNullable(null));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
         mockMvc.perform(post("/users")
             .contentType(MediaType.APPLICATION_JSON)
             .header(securityConfig.getHeaderString(), token)
-            .content(convertObjectToJsonBytes(userRequest)))
+            .content(convertObjectToJsonBytes(userAuth)))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", notNullValue()))
