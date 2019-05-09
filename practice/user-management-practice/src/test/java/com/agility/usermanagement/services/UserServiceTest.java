@@ -1,6 +1,6 @@
 package com.agility.usermanagement.services;
 
-import com.agility.usermanagement.constants.Role;
+import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import org.junit.Before;
 import org.junit.Test;

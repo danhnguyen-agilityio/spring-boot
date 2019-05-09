@@ -1,6 +1,6 @@
 package com.agility.usermanagement.models.converter;
 
-import com.agility.usermanagement.constants.Role;
+import com.agility.usermanagement.models.Role;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

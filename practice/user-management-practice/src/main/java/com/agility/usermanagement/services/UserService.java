@@ -1,6 +1,6 @@
 package com.agility.usermanagement.services;
 
-import com.agility.usermanagement.constants.Role;
+import com.agility.usermanagement.models.Role;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;

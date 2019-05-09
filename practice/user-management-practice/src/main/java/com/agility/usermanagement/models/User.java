@@ -1,6 +1,5 @@
 package com.agility.usermanagement.models;
 
-import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.models.converter.RoleListConverter;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

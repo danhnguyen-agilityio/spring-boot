@@ -1,9 +1,8 @@
-package com.agility.usermanagement.constants;
+package com.agility.usermanagement.models;
 
 /**
  * Defines name role
  */
-// TODO:: refactor name and method
 public enum Role {
     USER("ROLE_USER"),
     MANAGER("ROLE_MANAGER"),

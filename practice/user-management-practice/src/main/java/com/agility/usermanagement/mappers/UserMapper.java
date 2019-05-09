@@ -1,6 +1,6 @@
 package com.agility.usermanagement.mappers;
 
-import com.agility.usermanagement.constants.Role;
+import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.models.User;
 import org.mapstruct.Mapper;
