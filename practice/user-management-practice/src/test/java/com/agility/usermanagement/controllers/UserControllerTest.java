@@ -3,7 +3,6 @@ package com.agility.usermanagement.controllers;
 import com.agility.usermanagement.constants.RoleName;
 import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserUpdate;
-import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;

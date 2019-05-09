@@ -8,7 +8,6 @@ import com.agility.usermanagement.exceptions.BadRequestException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
-import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.RoleConstant;
 import com.agility.usermanagement.services.UserService;

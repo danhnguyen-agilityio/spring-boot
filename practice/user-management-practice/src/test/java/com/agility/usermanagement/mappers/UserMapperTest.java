@@ -2,13 +2,11 @@ package com.agility.usermanagement.mappers;
 
 import com.agility.usermanagement.constants.RoleName;
 import com.agility.usermanagement.dto.UserResponse;
-import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 

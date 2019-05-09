@@ -2,7 +2,6 @@ package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.constants.RoleName;
 import com.agility.usermanagement.dto.UserRequest;
-import com.agility.usermanagement.models.Role;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.AuthenticationRequest;
 import lombok.extern.slf4j.Slf4j;
