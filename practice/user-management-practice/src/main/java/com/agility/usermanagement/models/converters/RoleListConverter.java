@@ -1,4 +1,4 @@
-package com.agility.usermanagement.models.converter;
+package com.agility.usermanagement.models.converters;
 
 import com.agility.usermanagement.models.Role;
 
