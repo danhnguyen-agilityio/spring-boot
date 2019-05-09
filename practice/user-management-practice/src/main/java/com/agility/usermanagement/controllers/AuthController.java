@@ -38,7 +38,7 @@ public class AuthController extends BaseController {
      * @throws BadAccountCredentialException if invalid credential or returned user null id
      */
     @PostMapping("/signin")
-    public ResponseEntity signin(@RequestBody AuthenticationRequest credential) {
+    public ResponseEntity signin(@Valid @RequestBody AuthenticationRequest credential) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 credential.getUsername(),

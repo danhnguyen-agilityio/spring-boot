@@ -34,3 +34,9 @@ spring:
                 dialect: org.hibernate.dialect.MySQL5Dialect
                 format_sql: true
                 generate_stastistics: true
+
+# LEVEL LOGGING
+logging:
+    level:
+        org.hibernate.stat: true
+        org.hibernate.type: trace
