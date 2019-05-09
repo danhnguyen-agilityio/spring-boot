@@ -7,8 +7,16 @@
  
  --- 
  
+ ## RUN APPS
+ - Run app
+   - `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+ - Test
+   - `mvn clean test`
+ 
+ 
  ## TASKS
  1. [Persist a property of type List<String> in JPA](https://stackoverflow.com/questions/287201/how-to-persist-a-property-of-type-liststring-in-jpa)
+ 2. [Use @Builder.Defaultto add default behavior for your Builder](https://stackoverflow.com/questions/46057360/how-to-suppress-lombok-warnings)
  
  ## STEPS BEFORE CODE
  

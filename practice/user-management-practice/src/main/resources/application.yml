@@ -7,7 +7,7 @@ security:
 spring:
     # Specify which profiles are active
     profiles:
-        active: test
+        active: dev
 
     mvc:
         throw-exception-if-no-handler-found: true
