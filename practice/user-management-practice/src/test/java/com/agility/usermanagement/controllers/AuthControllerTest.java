@@ -170,7 +170,7 @@ public class AuthControllerTest extends BaseControllerTest {
     @Test
     public void testAccessAuthenticatedRequestShouldReturnErrorWhenTokenInvalid() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
 
         mockMvc.perform(get("/me")

@@ -4,7 +4,6 @@ import com.agility.usermanagement.exceptions.ApiError;
 import com.agility.usermanagement.exceptions.BaseCustomException;
 import com.agility.usermanagement.exceptions.InvalidJwtAuthenticationException;
 import com.agility.usermanagement.utils.ConvertUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;

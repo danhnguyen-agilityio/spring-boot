@@ -1,6 +1,7 @@
 package com.agility.usermanagement.models;
 
 import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.models.converter.RoleListConverter;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -35,14 +36,6 @@ public class User implements Serializable, UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName ="id")
-    )
-    private List<Role> roles = new ArrayList<>();
-
     @Column(name = "first_name")
     private String firstName;
 
@@ -52,6 +45,8 @@ public class User implements Serializable, UserDetails {
 
     private boolean active;
 
+    @Convert(converter = RoleListConverter.class)
+    List<RoleName> roles = new ArrayList<>();
     public User(Long id, String username) {
         this.id = id;
         this.username = username;
@@ -60,7 +55,7 @@ public class User implements Serializable, UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
-            .map(role -> role.getName().getName())
+            .map(role -> role.getName())
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toList());
     }

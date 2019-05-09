@@ -84,7 +84,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetCurrentUserShouldSuccessWhenUserLogin() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         testGetCurrentUserWithUserMock(user);
     }
@@ -95,8 +95,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetCurrentUserShouldSuccessWhenManagerLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testGetCurrentUserWithUserMock(user);
     }
@@ -107,9 +107,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetCurrentUserShouldSuccessWhenAdminLogin() throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         testGetCurrentUserWithUserMock(user);
     }
@@ -142,7 +142,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateSelfUserInfoShouldSuccessWhenUserLogin() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         testUpdateSelfInfoWithUserMock(user);
     }
@@ -153,8 +153,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateSelfUserInfoShouldSuccessWhenManagerLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testUpdateSelfInfoWithUserMock(user);
     }
@@ -165,9 +165,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateSelfUserInfoShouldSuccessWhenAdminLogin() throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         testUpdateSelfInfoWithUserMock(user);
     }
@@ -205,7 +205,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetUserListFailForbiddenWhenUserLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
 
@@ -222,8 +222,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetUserListSuccessWhenManagerLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testGetUserListWithUserMock(user);
     }
@@ -234,8 +234,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetUserListSuccessWhenAdminLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testGetUserListWithUserMock(user);
     }
@@ -270,7 +270,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testCreateUserFailForbiddenWhenUserLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
@@ -288,8 +288,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testCreateUserFailResourceExistWhenUsernameExists() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findByUsername(userRequest.getUsername())).thenReturn(Optional.ofNullable(user));
@@ -314,8 +314,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testCreateUserShouldSuccessWhenRequestDataValidAndManagerLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testCreateUserSuccessWithAuthenticationUser(user);
     }
@@ -326,9 +326,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testCreateUserShouldSuccessWhenRequestDataValidAndAdminLogin() throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         testCreateUserSuccessWithAuthenticationUser(user);
     }
@@ -366,7 +366,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteUserFailForbiddenWhenUserLogin() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
@@ -383,8 +383,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteUserShouldFailUserNotFoundWhenUserIdNotFound() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
@@ -403,8 +403,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteUserSuccessWhenManagerLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testDeleteUserSuccessWithAuthenticationUser(user);
     }
@@ -415,9 +415,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteUserSuccessWhenAdminLogin() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(1L, RoleName.MANAGER));
-        user.getRoles().add(new Role(1L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         testDeleteUserSuccessWithAuthenticationUser(user);
     }
@@ -447,7 +447,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateUserForbiddenWhenUserLogin() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
 
@@ -465,8 +465,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateActiveShouldFailWhenUserIdNotFound() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(null));
@@ -485,8 +485,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateActiveSuccessWhenManagerLoginAndUserIdFound() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testUpdateActiveUserSuccessWithAuthenticationUser(user);
     }
@@ -497,9 +497,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateActiveSuccessWhenAdminLoginAndUserIdFound() throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         testUpdateActiveUserSuccessWithAuthenticationUser(user);
     }
@@ -532,7 +532,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateRoleUserForbiddenWhenUserLogin() throws Exception {
         // Set user have role user
-        user.getRoles().add(new Role(1L, RoleName.USER));
+        user.getRoles().add(RoleName.USER);
 
         testUpdateRoleUserFailForbiddenWithAuthentication(user);
     }
@@ -543,8 +543,8 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateRoleUserForbiddenWhenManagerLogin() throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(1L, RoleName.MANAGER));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
 
         testUpdateRoleUserFailForbiddenWithAuthentication(user);
     }
@@ -570,9 +570,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateRoleUserShouldFailWhenUserIdNotFound() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(null));
@@ -591,9 +591,9 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testUpdateRoleUserShouldFailFormatWhenRoleNameWrongFormat() throws Exception {
         // Set user have role manager
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(2L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         when(userRepository.findByUsername(user.getUsername())).thenReturn(Optional.ofNullable(user));
         when(userRepository.findById(100L)).thenReturn(Optional.ofNullable(user));
@@ -627,9 +627,9 @@ public class UserControllerTest extends BaseControllerTest {
      */
     private void testUpdateRoleUserSuccessWithAdminLoginAndRoleUpdate(String role) throws Exception {
         // Set user have role admin
-        user.getRoles().add(new Role(1L, RoleName.USER));
-        user.getRoles().add(new Role(2L, RoleName.MANAGER));
-        user.getRoles().add(new Role(3L, RoleName.ADMIN));
+        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(RoleName.MANAGER);
+        user.getRoles().add(RoleName.ADMIN);
 
         userUpdate.setRole(role);
 

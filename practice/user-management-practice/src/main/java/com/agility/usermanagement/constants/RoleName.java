@@ -3,6 +3,7 @@ package com.agility.usermanagement.constants;
 /**
  * Defines name role
  */
+// TODO:: refactor name and method
 public enum RoleName {
     USER("ROLE_USER"),
     MANAGER("ROLE_MANAGER"),
@@ -21,5 +22,18 @@ public enum RoleName {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Test RoleName by name
+     * @param name role name
+     * @return RoleName enum
+     */
+    public static RoleName getRole(String name) {
+        try {
+            return RoleName.valueOf(name);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 }

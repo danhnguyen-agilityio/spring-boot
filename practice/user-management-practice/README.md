@@ -7,6 +7,9 @@
  
  --- 
  
+ ## TASKS
+ 1. [Persist a property of type List<String> in JPA](https://stackoverflow.com/questions/287201/how-to-persist-a-property-of-type-liststring-in-jpa)
+ 
  ## STEPS BEFORE CODE
  
  1. [Init project](https://start.spring.io/)

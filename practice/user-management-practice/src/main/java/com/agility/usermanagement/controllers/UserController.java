@@ -4,7 +4,6 @@ import com.agility.usermanagement.constants.RoleName;
 import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.dto.UserUpdate;
-import com.agility.usermanagement.exceptions.BadAccountCredentialException;
 import com.agility.usermanagement.exceptions.BadRequestException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
@@ -15,7 +14,6 @@ import com.agility.usermanagement.securities.RoleConstant;
 import com.agility.usermanagement.services.UserService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -175,16 +173,16 @@ public class UserController extends BaseController {
         user.getRoles().clear();
         switch (userUpdate.getRole()) {
             case "USER":
-                user.getRoles().add(new Role(1L, RoleName.USER));
+                user.getRoles().add(RoleName.USER);
                 break;
             case "MANAGER":
-                user.getRoles().add(new Role(1L, RoleName.USER));
-                user.getRoles().add(new Role(2L, RoleName.MANAGER));
+                user.getRoles().add(RoleName.USER);
+                user.getRoles().add(RoleName.MANAGER);
                 break;
             case "ADMIN":
-                user.getRoles().add(new Role(1L, RoleName.USER));
-                user.getRoles().add(new Role(2L, RoleName.MANAGER));
-                user.getRoles().add(new Role(3L, RoleName.ADMIN));
+                user.getRoles().add(RoleName.USER);
+                user.getRoles().add(RoleName.MANAGER);
+                user.getRoles().add(RoleName.ADMIN);
                 break;
             default:
                 throw new BadRequestException(INVALID_ROLE_NAME);

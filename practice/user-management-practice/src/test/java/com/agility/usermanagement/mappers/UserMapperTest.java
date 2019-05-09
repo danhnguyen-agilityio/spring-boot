@@ -30,7 +30,7 @@ public class UserMapperTest {
         user.setLastName("nguyen");
         user.setAddress("Tam ky quang nam");
         user.setActive(true);
-        List<Role> roles = Arrays.asList(new Role(1L, RoleName.ADMIN), new Role(1L, RoleName.USER));
+        List<RoleName> roles = Arrays.asList(RoleName.ADMIN, RoleName.USER);
         user.setRoles(roles);
 
         // fake user list
