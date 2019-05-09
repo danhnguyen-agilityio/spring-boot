@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -50,23 +51,25 @@ public class UserControllerTest extends BaseControllerTest {
             .addFilter(filterChainProxy)
             .build();
 
-        user = new User();
-        user.setId(1L);
-        user.setUsername("user");
-        user.setFirstName("firstName");
-        user.setFirstName("lastName");
-        user.setLastName("lastName");
-        user.setAddress("address");
-        user.setPassword(passwordEncoder.encode("user"));
-        user.setActive(true);
+        user = User.builder()
+            .id(1L)
+            .username("user")
+            .firstName("firstName")
+            .lastName("lastName")
+            .address("address")
+            .password(passwordEncoder.encode("user"))
+            .active(true)
+            .roles(new ArrayList<>())
+            .build();
 
         users = Arrays.asList(new User(1L, "david"), new User(2L, "tommy"), new User(3L, "beck"));
 
-        userUpdate = new UserUpdate();
-        userUpdate.setFirstName("firstNameUpdate");
-        userUpdate.setLastName("lastNameUpdate");
-        userUpdate.setAddress("addressUpdate");
-        userUpdate.setActive(false);
+        userUpdate = UserUpdate.builder()
+            .firstName("firstNameUpdate")
+            .lastName("lastNameUpdate")
+            .address("addressUpdate")
+            .active(false)
+            .build();
 
         userAuth = new UserAuth();
         userAuth.setUsername("userAuth");

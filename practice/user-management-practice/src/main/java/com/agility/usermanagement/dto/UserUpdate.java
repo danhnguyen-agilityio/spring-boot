@@ -1,7 +1,6 @@
 package com.agility.usermanagement.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Pattern;
 
@@ -10,6 +9,9 @@ import javax.validation.constraints.Pattern;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserUpdate {
     private String firstName;
     private String lastName;

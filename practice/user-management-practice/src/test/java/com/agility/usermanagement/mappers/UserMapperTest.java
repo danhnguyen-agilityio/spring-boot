@@ -38,12 +38,12 @@ public class UserMapperTest {
     @Test
     public void testMapperToUserResponse() {
         UserResponse userResponse = mapper.toUserResponse(user);
-
         assertEquals(user.getId(), userResponse.getId());
         assertEquals(user.getUsername(), userResponse.getUsername());
         assertEquals(user.getFirstName(), userResponse.getFirstName());
         assertEquals(user.getLastName(), userResponse.getLastName());
         assertEquals(user.getAddress(), userResponse.getAddress());
+        assertEquals(user.isActive(), userResponse.getActive());
         assertEquals(2, userResponse.getRoles().size());
         assertEquals(Role.ADMIN.name(), userResponse.getRoles().get(0));
         assertEquals(Role.USER.name(), userResponse.getRoles().get(1));

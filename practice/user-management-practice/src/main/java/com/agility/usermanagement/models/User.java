@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -44,11 +45,16 @@ public class User implements Serializable, UserDetails {
 
     private boolean active;
 
+    // When user builder for property have default value, we use @Builder.Default
+    // Every time we create User object without default value, it will received null value
+    // Consider user Builder for class that default value
+    @Builder.Default
     @Convert(converter = RoleListConverter.class)
     List<Role> roles = new ArrayList<>();
     public User(Long id, String username) {
         this.id = id;
         this.username = username;
+        this.roles = new ArrayList<>();
     }
 
     @Override

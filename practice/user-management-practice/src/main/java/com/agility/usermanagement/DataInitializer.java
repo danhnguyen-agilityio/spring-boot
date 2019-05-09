@@ -27,9 +27,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User user = new User();
-        user.setUsername("david");
-        user.setPassword("password");
+        User user = User.builder()
+            .username("David")
+            .lastName("nguyen")
+            .build();
 //        userRepository.save(user);
     }
 }

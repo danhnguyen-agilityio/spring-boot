@@ -1,7 +1,6 @@
 package com.agility.usermanagement.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -10,12 +9,21 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
     Long id;
     String username;
     String firstName;
     String lastName;
     String address;
-    Boolean active;
+
+    // When user type boolean, lombok generate method isActive(), so we need create getActive() method for using mapper
+    boolean active;
     List<String> roles;
+
+    public boolean getActive() {
+        return active;
+    }
 }
