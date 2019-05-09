@@ -7,12 +7,34 @@ security:
 spring:
     # Specify which profiles are active
     profiles:
-        active: dev
+        active: test
 
     mvc:
         throw-exception-if-no-handler-found: true
     resources:
         add-mappings: false
+
+    # JPA / HIBERNATE
+    # Use spring.jpa.properties.* for Hibernate native properties
+    jpa:
+        # Show or not log for each sql query
+        show-sql: true
+
+        hibernate:
+            # Hibernate ddl auto (create, create-drop, update): with "update" the database
+            # schema will be automatically updated accordingly to java entities found in
+            # the project
+            ddl-auto: update
+
+        # Automatically generate table from java entities if need
+        generate-ddl: true
+
+        properties:
+            hibernate:
+                # Allows Hibernate to generate SQL optimized for a particular DBMS
+                dialect: org.hibernate.dialect.MySQL5Dialect
+                format_sql: true
+                generate_stastistics: true
 
     # JACKSON
     jackson:

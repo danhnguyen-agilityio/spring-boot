@@ -59,9 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.cors().and()
             .authorizeRequests()
-            .antMatchers("/h2-console/").permitAll()
+            .antMatchers("/h2-console/**").permitAll()
             .antMatchers("/v1/auths/**").permitAll()
             .anyRequest().authenticated()
             .and()
@@ -71,5 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+        // Enable accessing h2 console
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
     }
 }
