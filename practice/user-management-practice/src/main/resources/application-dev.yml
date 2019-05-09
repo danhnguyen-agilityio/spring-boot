@@ -32,3 +32,5 @@ spring:
             hibernate:
                 # Allows Hibernate to generate SQL optimized for a particular DBMS
                 dialect: org.hibernate.dialect.MySQL5Dialect
+                format_sql: true
+                generate_stastistics: true

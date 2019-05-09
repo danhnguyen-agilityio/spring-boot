@@ -29,6 +29,8 @@ spring:
 logging:
     level:
         com.agility.usermanagement: DEBUG
+        org.hibernate.stat: true
+        org.hibernate.type: trace
 
 
 
