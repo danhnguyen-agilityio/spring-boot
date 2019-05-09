@@ -1,6 +1,6 @@
 package com.agility.usermanagement.mappers;
 
-import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.models.User;
 import org.mapstruct.Mapper;
@@ -26,7 +26,7 @@ public interface UserMapper {
 
     default List<String> toRoles(User user) {
         List<String> roles = user.getRoles().stream()
-            .map(RoleName::name)
+            .map(Role::name)
             .collect(Collectors.toList());
 
         return roles;

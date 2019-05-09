@@ -1,6 +1,6 @@
 package com.agility.usermanagement.controllers;
 
-import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.models.User;
 import com.agility.usermanagement.securities.AuthenticationRequest;
@@ -169,7 +169,7 @@ public class AuthControllerTest extends BaseControllerTest {
     @Test
     public void testAccessAuthenticatedRequestShouldReturnErrorWhenTokenInvalid() throws Exception {
         // Set user have role user
-        user.getRoles().add(RoleName.USER);
+        user.getRoles().add(Role.USER);
         when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user));
 
         mockMvc.perform(get("/me")

@@ -1,6 +1,6 @@
 package com.agility.usermanagement.models;
 
-import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.models.converter.RoleListConverter;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,7 +46,7 @@ public class User implements Serializable, UserDetails {
     private boolean active;
 
     @Convert(converter = RoleListConverter.class)
-    List<RoleName> roles = new ArrayList<>();
+    List<Role> roles = new ArrayList<>();
     public User(Long id, String username) {
         this.id = id;
         this.username = username;

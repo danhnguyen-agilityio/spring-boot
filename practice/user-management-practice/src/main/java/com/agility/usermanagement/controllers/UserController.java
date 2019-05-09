@@ -1,6 +1,6 @@
 package com.agility.usermanagement.controllers;
 
-import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.dto.UserRequest;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.dto.UserUpdate;
@@ -9,7 +9,6 @@ import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.User;
-import com.agility.usermanagement.securities.RoleConstant;
 import com.agility.usermanagement.services.UserService;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.agility.usermanagement.exceptions.CustomError.*;
@@ -89,7 +89,7 @@ public class UserController extends BaseController {
      * @return all users
      */
     @GetMapping("/users")
-    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    @Secured({Role.ROLE_ADMIN, Role.ROLE_MANAGER})
     public List<UserResponse> findAll() {
         List<User> users = userRepository.findAll();
 
@@ -103,7 +103,7 @@ public class UserController extends BaseController {
      * @throws ResourceAlreadyExistsException if user name exists
      */
     @PostMapping("/users")
-    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    @Secured({Role.ROLE_ADMIN, Role.ROLE_MANAGER})
     public UserResponse create(@Valid @RequestBody UserRequest userRequest) {
         User user = userRepository.findByUsername(userRequest.getUsername()).orElse(null);
 
@@ -117,6 +117,7 @@ public class UserController extends BaseController {
         user.setUsername(userRequest.getUsername());
         user.setUsername(passwordEncoder.encode(userRequest.getPassword()));
         user.setActive(true);
+        user.setRoles(Arrays.asList(Role.USER));
 
         User savedUser = userRepository.save(user);
         UserResponse userResponse = userMapper.toUserResponse(savedUser);
@@ -128,7 +129,7 @@ public class UserController extends BaseController {
      * Delete user (Only manager user and admin user have permission for feature)
      */
     @DeleteMapping("/users/{id}")
-    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    @Secured({Role.ROLE_ADMIN, Role.ROLE_MANAGER})
     public void delete(@PathVariable Long id) {
         User user = userRepository.findById(id).orElse(null);
 
@@ -143,7 +144,7 @@ public class UserController extends BaseController {
      * Change active user (Only manager user and admin user have permission for feature)
      */
     @PutMapping("/users/{id}/activate")
-    @Secured({RoleConstant.ADMIN, RoleConstant.MANAGER})
+    @Secured({Role.ROLE_ADMIN, Role.ROLE_MANAGER})
     public UserResponse updateActive(@Valid @RequestBody UserUpdate userUpdate, @PathVariable Long id) {
 
         User user = userRepository.findById(id).orElse(null);
@@ -161,7 +162,7 @@ public class UserController extends BaseController {
      * Update role user (Only admin user have permission for feature)
      */
     @PutMapping("/users/{id}/roles")
-    @Secured({RoleConstant.ADMIN})
+    @Secured({Role.ROLE_ADMIN})
     public UserResponse updateRole(@Valid @RequestBody UserUpdate userUpdate, @PathVariable Long id) {
 
         User user = userRepository.findById(id).orElse(null);
@@ -172,16 +173,16 @@ public class UserController extends BaseController {
         user.getRoles().clear();
         switch (userUpdate.getRole()) {
             case "USER":
-                user.getRoles().add(RoleName.USER);
+                user.getRoles().add(Role.USER);
                 break;
             case "MANAGER":
-                user.getRoles().add(RoleName.USER);
-                user.getRoles().add(RoleName.MANAGER);
+                user.getRoles().add(Role.USER);
+                user.getRoles().add(Role.MANAGER);
                 break;
             case "ADMIN":
-                user.getRoles().add(RoleName.USER);
-                user.getRoles().add(RoleName.MANAGER);
-                user.getRoles().add(RoleName.ADMIN);
+                user.getRoles().add(Role.USER);
+                user.getRoles().add(Role.MANAGER);
+                user.getRoles().add(Role.ADMIN);
                 break;
             default:
                 throw new BadRequestException(INVALID_ROLE_NAME);

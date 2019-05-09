@@ -1,6 +1,6 @@
 package com.agility.usermanagement.mappers;
 
-import com.agility.usermanagement.constants.RoleName;
+import com.agility.usermanagement.constants.Role;
 import com.agility.usermanagement.dto.UserResponse;
 import com.agility.usermanagement.models.User;
 import org.junit.Before;
@@ -28,7 +28,7 @@ public class UserMapperTest {
         user.setLastName("nguyen");
         user.setAddress("Tam ky quang nam");
         user.setActive(true);
-        List<RoleName> roles = Arrays.asList(RoleName.ADMIN, RoleName.USER);
+        List<Role> roles = Arrays.asList(Role.ADMIN, Role.USER);
         user.setRoles(roles);
 
         // fake user list
@@ -45,8 +45,8 @@ public class UserMapperTest {
         assertEquals(user.getLastName(), userResponse.getLastName());
         assertEquals(user.getAddress(), userResponse.getAddress());
         assertEquals(2, userResponse.getRoles().size());
-        assertEquals(RoleName.ADMIN.name(), userResponse.getRoles().get(0));
-        assertEquals(RoleName.USER.name(), userResponse.getRoles().get(1));
+        assertEquals(Role.ADMIN.name(), userResponse.getRoles().get(0));
+        assertEquals(Role.USER.name(), userResponse.getRoles().get(1));
     }
 
     @Test
