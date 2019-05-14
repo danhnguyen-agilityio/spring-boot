@@ -1,7 +1,7 @@
-package clientauthorizationcode;
+package com.packt.example.clientauthorizationcode;
 
-import clientauthorizationcode.user.ClientUser;
-import clientauthorizationcode.user.UserRepository;
+import com.packt.example.clientauthorizationcode.user.ClientUser;
+import com.packt.example.clientauthorizationcode.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
