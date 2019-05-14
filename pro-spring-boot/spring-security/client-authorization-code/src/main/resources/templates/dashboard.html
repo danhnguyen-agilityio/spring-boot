@@ -9,18 +9,18 @@
     <table>
         <tr><td><b>That is your entries</b></td></tr>
         <tr th:each="entry : ${user.entries}">
-            <td th:text=""${entry.value}}>value</td>
+            <td th:text="${entry.value}">value</td>
         </tr>
     </table>
     <h3>Your profile from Application</h3>
     <table>
         <tr>
             <td><b>name</b></td>
-            <td th:text="${profile.name}">username</td>
+            <td th:text="${profile?.name}">username</td>
         </tr>
         <tr>
             <td><b>email</b></td>
-            <td th:text="${profile.email}">email</td>
+            <td th:text="${profile?.email}">email</td>
         </tr>
     </table>
 </body>
