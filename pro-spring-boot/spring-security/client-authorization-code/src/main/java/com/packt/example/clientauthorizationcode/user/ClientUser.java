@@ -8,11 +8,11 @@ import java.util.List;
 @Entity
 public class ClientUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String password;
-    private String acccessToken;
+    private String accessToken;
     private Calendar accessTokenValidity;
     private String refreshToken;
 
@@ -43,12 +43,12 @@ public class ClientUser {
         this.password = password;
     }
 
-    public String getAcccessToken() {
-        return acccessToken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAcccessToken(String acccessToken) {
-        this.acccessToken = acccessToken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public Calendar getAccessTokenValidity() {
