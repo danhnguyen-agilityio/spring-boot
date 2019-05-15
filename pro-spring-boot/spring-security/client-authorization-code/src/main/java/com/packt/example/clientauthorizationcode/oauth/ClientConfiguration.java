@@ -34,7 +34,7 @@ public class ClientConfiguration {
         resourceDetails.setClientId("clientapp");
         resourceDetails.setClientSecret("123456");
         resourceDetails.setAccessTokenUri("http://localhost:8080/oauth/token");
-        resourceDetails.setUserAuthorizationUri("http://localhost:8080/oauth/authorization");
+        resourceDetails.setUserAuthorizationUri("http://localhost:8080/oauth/authorize");
         resourceDetails.setScope(Arrays.asList("read_profile"));
         resourceDetails.setPreEstablishedRedirectUri("http://localhost:9000/callback");
         resourceDetails.setUseCurrentUri(false);
@@ -47,6 +47,7 @@ public class ClientConfiguration {
         OAuth2ProtectedResourceDetails resourceDetails = authorizationCode();
         OAuth2RestTemplate template = new OAuth2RestTemplate(resourceDetails, oAuth2ClientContext);
         AccessTokenProviderChain provider = new AccessTokenProviderChain(Arrays.asList(new AuthorizationCodeAccessTokenProvider()));
+        provider.setClientTokenServices(clientTokenServices);
         template.setAccessTokenProvider(provider);
         return template;
     }
