@@ -27,7 +27,8 @@ public class AuthorizationCodeTokenService {
         authParameters.put("client_id", "clientapp");
         authParameters.put("response_type", "code");
         authParameters.put("redirect_uri",
-            getEncodeUrl("http://localhost:9000/callback"));
+            getEncodedUrl("http://localhost:9000/callback"));
+        authParameters.put("scope", getEncodedUrl("read_profile"));
         return buildUrl(endpoint, authParameters);
     }
 
@@ -40,7 +41,7 @@ public class AuthorizationCodeTokenService {
             .reduce((a, b) -> a + "&" + b ).get();
     }
 
-    private String getEncodeUrl(String url) {
+    private String getEncodedUrl(String url) {
         try {
             return URLEncoder.encode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {

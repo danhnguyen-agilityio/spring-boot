@@ -53,7 +53,7 @@ public class UserDashboard {
         ClientUser clientUser = userDetails.getClientUser();
         if (clientUser.getAccessToken() == null) {
             String authEndpoint = tokenService.getAuthorizationEndpoint();
-            return new ModelAndView("redirect:/" + authEndpoint);
+            return new ModelAndView("redirect:" + authEndpoint);
         }
         clientUser.setEntries(Arrays.asList(
             new Entry("entry 1"),
@@ -70,15 +70,17 @@ public class UserDashboard {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Authorization", "Bearer " + token);
         String endpoint = "http://localhost:8080/api/profile";
+
         try {
             RequestEntity<Object> request = new RequestEntity<>(
                 headers, HttpMethod.GET, URI.create(endpoint));
-            ResponseEntity<UserProfile> userProfile = restTemplate.exchange(
-                request, UserProfile.class);
+
+            ResponseEntity<UserProfile> userProfile = restTemplate.exchange(request, UserProfile.class);
+
             if (userProfile.getStatusCode().is2xxSuccessful()) {
                 mv.addObject("profile", userProfile.getBody());
             } else {
-                throw new RuntimeException("it as not possible to retrieve user");
+                throw new RuntimeException("it was not possible to retrieve user profile");
             }
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("it was not possible to retrieve user profile");
