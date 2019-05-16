@@ -14,7 +14,8 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
         clients.inMemory()
             .withClient("clientapp").secret("123456")
             .redirectUris("http://localhost:9000/callback")
-            .authorizedGrantTypes("authorization_code")
+            .authorizedGrantTypes("authorization_code", "refresh_token")
+            .accessTokenValiditySeconds(120)
             .scopes("read_profile", "read_contacts");
     }
 }

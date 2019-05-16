@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.ClientTokenServices;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class OAuth2ClientTokenServices implements ClientTokenServices {
         if (accessToken == null) return null;
         DefaultOAuth2AccessToken oAuth2AccessToken = new DefaultOAuth2AccessToken(accessToken);
         oAuth2AccessToken.setExpiration(expirationDate.getTime());
+        oAuth2AccessToken.setRefreshToken(new DefaultOAuth2RefreshToken(clientUser.getRefreshToken()));
         return oAuth2AccessToken;
     }
 
@@ -43,7 +45,7 @@ public class OAuth2ClientTokenServices implements ClientTokenServices {
         ClientUser clientUser = getClientUser(authentication);
         clientUser.setAccessToken(accessToken.getValue());
         clientUser.setAccessTokenValidity(expirationDate);
-
+        clientUser.setRefreshToken(accessToken.getRefreshToken().getValue());
         users.save(clientUser);
     }
 
