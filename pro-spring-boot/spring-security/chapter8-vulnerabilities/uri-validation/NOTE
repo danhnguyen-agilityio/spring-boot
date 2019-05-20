@@ -1,0 +1,5 @@
+Implicit grant type
+http://localhost:8080/oauth/authorize?client_id=clientapp&redirect_uri=http://localhost:9000/callback&response_type=token&scope=read
+
+Invalid redirection url
+http://localhost:8080/oauth/authorize?client_id=clientapp&redirect_uri=http://localhost:2000/malicious&response_type=token&scope=read
