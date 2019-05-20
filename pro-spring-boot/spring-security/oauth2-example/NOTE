@@ -1,0 +1,9 @@
+- Get token
+http://localhost:8080/oauth/token
+application/x-www-form-urlencoded
+scope=read write&username=Alex123&password=password&grant_type=password
+agility_client:agility_secret
+
+- Get data
+http://localhost:8080/users/user
+Bearer b9e0e941-6bf8-45b1-95bd-7d26076a11dd
