@@ -1,1 +1,11 @@
 http://localhost:8080/api/hello?name=Seb
+
+http://localhost:8080/oauth/token
+Header
+my-client:my_secret
+Form urlencoded
+x-www-form-urlencoded
+scope:read write
+username:test@test.com
+password:tester
+grant_type:password
