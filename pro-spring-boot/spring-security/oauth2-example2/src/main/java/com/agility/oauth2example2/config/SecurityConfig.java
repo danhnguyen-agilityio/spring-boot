@@ -26,6 +26,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(new DefaultUserDetailsService());
     }
-
-
 }
