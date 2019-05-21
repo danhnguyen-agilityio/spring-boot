@@ -5,6 +5,9 @@ public class Welcome {
 
     public String greetings;
 
+    public Welcome() {
+    }
+
     public Welcome(String who) {
         this.greetings = String.format(GREETINGS_FORMAT, who);
     }

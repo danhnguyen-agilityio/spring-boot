@@ -8,9 +8,11 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
+
+import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 
 @Configuration
 @EnableAuthorizationServer
@@ -32,11 +34,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private static final int VALID_FOREVER = -1;
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     @Bean
     public TokenStore tokenStore() {
-        return new InMemoryTokenStore();
+        return new JdbcTokenStore(dataSource);
     }
 
     @Override
