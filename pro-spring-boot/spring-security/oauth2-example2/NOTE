@@ -1,0 +1,26 @@
+Ref: https://github.com/patternmatch/oauth2-blog/blob/authentication-token-revocation/src/main/java/com/patternmatch/oauth2blog/config/SecurityConfig.java
+
+http://localhost:8080/api/hello?name=Seb
+
+Get token
+http://localhost:8080/oauth/token
+Header
+my-client:my_secret
+Form urlencoded
+x-www-form-urlencoded
+scope:read write
+username:test@test.com
+password:tester
+grant_type:password
+
+List all token
+http://localhost:8080/admin/token/list
+Bearer ab204837-b8ca-45e6-8f29-95272638fd37
+
+Revoke token
+http://localhost:8080/oauth/revoke
+Bearer b7085811-ed9d-43b9-a912-a888111ef8da
+
+Refresh token
+http://localhost:8080/oauth/token
+grant_type='refresh_token' refresh_token='2647edf2-81cf-4fa8-9009-822be7ca44ed'
