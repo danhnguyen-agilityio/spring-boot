@@ -1,0 +1,6 @@
+create table user (
+id bigint auto_increment primary key,
+username varchar(50),
+password varchar(255),
+roles varchar(255)
+);
