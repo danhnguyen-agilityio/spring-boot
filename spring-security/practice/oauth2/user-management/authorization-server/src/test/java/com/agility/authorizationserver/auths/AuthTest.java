@@ -85,6 +85,29 @@ public class AuthTest {
 
     // ============================ Check access token ======================
 
+    @Test
+    public void checkInvalidToken() throws Exception {
+        // TODO::
+    }
+
+    @Test
+    public void checkValidToken() throws Exception {
+        String accessToken = obtainAccessToken("admin", "password");
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("token", accessToken);
+
+        mockMvc.perform(post("/oauth/check_token")
+            .params(params)
+            .with(httpBasic("my-client", "my-secret"))
+            .accept("application/json;charset=UTF-8"))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(jsonPath("$.user_name", is("admin")))
+            .andExpect(jsonPath("$.authorities", hasSize(3)));
+    }
+
     /**
      * Get response token
      * @param username
