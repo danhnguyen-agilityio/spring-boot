@@ -16,7 +16,8 @@ public enum CustomError {
     BAD_CREDENTIALS(451, "Invalid username/password supplied"),
     EXPIRED_TOKEN(452, "Token has expired"),
     INVALID_TOKEN(453, "Token is invalid"),
-    INVALID_ROLE_NAME(460, "Role name is invalid, only accept value (USER, MANAGER, ADMIN)");
+    INVALID_ROLE_NAME(460, "Role name is invalid, only accept value (USER, MANAGER, ADMIN)"),
+    INTERNAL_SERVER_ERROR(500, "Internal Server Error");
 
     private int code;
     private String message;
