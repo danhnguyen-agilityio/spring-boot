@@ -1,6 +1,7 @@
 package com.agility.authorizationserver.auths;
 
 import com.agility.authorizationserver.configs.TestConfig;
+import com.agility.authorizationserver.dto.AuthRequest;
 import com.agility.authorizationserver.models.Role;
 import com.agility.authorizationserver.models.User;
 import com.agility.authorizationserver.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,10 +24,13 @@ import org.springframework.util.MultiValueMap;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static com.agility.authorizationserver.exceptions.CustomError.USERNAME_ALREADY_EXISTS;
+import static com.agility.authorizationserver.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -39,6 +44,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AuthTest {
 
+    private User user;
+    private User manager;
+    private User admin;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -50,19 +59,22 @@ public class AuthTest {
 
     @Before
     public void setUp() {
-        User user = User.builder()
+        user = User.builder()
+            .id(1L)
             .username("user")
             .password(passwordEncoder.encode("password"))
             .roles(Arrays.asList(Role.USER))
             .build();
 
-        User manager = User.builder()
+        manager = User.builder()
+            .id(2L)
             .username("manager")
             .password(passwordEncoder.encode("password"))
             .roles(Arrays.asList(Role.USER, Role.MANAGER))
             .build();
 
-        User admin = User.builder()
+        admin = User.builder()
+            .id(3L)
             .username("admin")
             .password(passwordEncoder.encode("password"))
             .roles(Arrays.asList(Role.USER, Role.MANAGER, Role.ADMIN))
@@ -171,6 +183,33 @@ public class AuthTest {
     @Test
     public void testGetTokenFromExpiredRefreshToken() throws Exception {
        // TODO::
+    }
+
+    // ============================ Register user =================================
+
+    @Test
+    public void testRegisterExistsUser() throws Exception {
+        AuthRequest authRequest = new AuthRequest("user", "password");
+
+        mockMvc.perform(post("/auths/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(authRequest)))
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.code", is(USERNAME_ALREADY_EXISTS.code())))
+            .andExpect(jsonPath("$.message", is(USERNAME_ALREADY_EXISTS.message())));
+    }
+
+    @Test
+    public void testRegisterNewUser() throws Exception {
+        AuthRequest authRequest = new AuthRequest("newuser", "password");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(post("/auths/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(authRequest)))
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 
     /**
