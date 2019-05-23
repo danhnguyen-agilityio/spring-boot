@@ -7,7 +7,7 @@ import com.agility.authorizationserver.mappers.UserMapper;
 import com.agility.authorizationserver.models.Role;
 import com.agility.authorizationserver.models.User;
 import com.agility.authorizationserver.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,10 +25,12 @@ public class AuthController {
 
     private UserRepository userRepository;
     private UserMapper userMapper;
+    private PasswordEncoder passwordEncoder;
 
-    public AuthController(UserRepository userRepository, UserMapper userMapper) {
+    public AuthController(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/register")
@@ -43,7 +45,7 @@ public class AuthController {
         // User not already exists
         user = User.builder()
             .username(authRequest.getUsername())
-            .password(authRequest.getPassword())
+            .password(passwordEncoder.encode(authRequest.getPassword()))
             .roles(Arrays.asList(Role.USER))
             .build();
 
