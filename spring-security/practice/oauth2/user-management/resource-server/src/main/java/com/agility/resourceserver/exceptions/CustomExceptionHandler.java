@@ -25,7 +25,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.agility.usermanagement.exceptions.CustomError.*;
+import static com.agility.resourceserver.exceptions.CustomError.*;
 
 
 /**
