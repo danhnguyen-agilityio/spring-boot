@@ -15,9 +15,8 @@ import org.springframework.security.oauth2.provider.token.*;
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-    private static final String RESOURCE_ID = "resource_id";
-    private static final String CLIENT_ID = "my-client";
-    static final String CLIENT_SECRET = "my-secret";
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -26,15 +25,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public RemoteTokenServices remoteTokenServices() {
         RemoteTokenServices tokenServices = new RemoteTokenServices();
-        tokenServices.setClientId(CLIENT_ID);
-        tokenServices.setClientSecret(CLIENT_SECRET);
+        tokenServices.setClientId(securityProperties.getClientId());
+        tokenServices.setClientSecret(securityProperties.getClientSecret());
         tokenServices.setCheckTokenEndpointUrl("http://localhost:8080/oauth/check_token");
         return tokenServices;
     }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
-        resources.resourceId(RESOURCE_ID).stateless(false);
+        resources.resourceId(securityProperties.getResourceId()).stateless(false);
     }
 
     @Override

@@ -10,6 +10,14 @@ server:
 #        resource:
 #            token-info-uri: http://localhost:8080/oauth/check_token
 
+
+security:
+    oauth2:
+        resource-id: RESOURCE_ID
+        client-id: my-client
+        client-secret: my-secret
+        token-endpoint: http://localhost:8080/oauth/token
+
 spring:
     # Specify which profiles are active
     profiles:
