@@ -14,10 +14,10 @@ public class TokenController {
     @Autowired
     private DefaultTokenServices tokenServices;
 
-    @RequestMapping(method = RequestMethod.GET, path = "/revoke")
+    @RequestMapping(method = RequestMethod.DELETE, path = "/revoke")
     @ResponseStatus(HttpStatus.OK)
-    public void revokeToken(@RequestParam("token") String userToken) {
+    public boolean revokeToken(@RequestParam("token") String userToken) {
         // final String userToken = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
-        tokenServices.revokeToken(userToken);
+        return tokenServices.revokeToken(userToken);
     }
 }

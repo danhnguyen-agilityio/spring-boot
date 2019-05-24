@@ -16,13 +16,13 @@ import org.springframework.http.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,7 +80,6 @@ public class UserControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user")
     public void getSelfInfoSuccess() throws Exception {
         String accessToken = obtainAccessToken("user", "password");
         mockMvc.perform(get("/me")
@@ -90,6 +89,32 @@ public class UserControllerTest {
     }
 
     // =========================== Delete user ===========================
+
+    // ======================== Log out ============================
+
+    @Test
+    public void logout() throws Exception {
+        String accessToken = obtainAccessToken("user", "password");
+
+        // Get data success
+        mockMvc.perform(get("/me")
+            .header("Authorization","Bearer " + accessToken))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        // log out app
+        mockMvc.perform(post("/logout-app")
+            .header("Authorization","Bearer " + accessToken))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", is(true)));
+
+        // get data fail un-authorize
+        mockMvc.perform(get("/me")
+            .header("Authorization","Bearer " + accessToken))
+            .andDo(print())
+            .andExpect(status().isUnauthorized());
+    }
 
     /**
      * Get access token
@@ -121,4 +146,5 @@ public class UserControllerTest {
 
         return responseEntity.getBody().getAccessToken();
     }
+
 }
