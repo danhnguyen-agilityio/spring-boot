@@ -185,7 +185,6 @@ public class UserControllerTest {
 
 
         // delete user
-        String accessToken = obtainAccessToken("user", "password");
         when(userProfileRepository.findById(anyLong())).thenReturn(Optional.ofNullable(userProfile));
 
         mockMvc.perform(delete("/users/" + userResponse.getId())

@@ -1,8 +1,10 @@
--- create the database for OAuth 2.0 provider and admin user
-CREATE DATABASE oauth2provider;
+-- create the database for OAuth 2.0 provider
+CREATE DATABASE auth_server;
 
-create table user (
-id bigint auto_increment primary key,
+use auth_server;
+
+create table users (
+id int auto_increment primary key,
 username varchar(50),
 password varchar(255),
 roles varchar(255)
@@ -23,3 +25,6 @@ create table oauth_refresh_token (
   token LONG VARBINARY,
   authentication LONG VARBINARY
 );
+
+-- create the database for resource server
+CREATE DATABASE resource_server;

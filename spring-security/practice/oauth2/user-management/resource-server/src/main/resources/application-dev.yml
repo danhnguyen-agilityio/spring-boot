@@ -2,8 +2,8 @@ spring:
     # DATASOURCE
     # Set here configurations for the database connection
     datasource:
-        # Connection url for the database "user_management"
-        url: jdbc:mysql://localhost:3306/user-management-resource
+        # Connection url for the database resource server
+        url: jdbc:mysql://localhost:3306/resource_server
 
         # MySQL username and password
         username: root
