@@ -11,7 +11,8 @@ public enum CustomError {
     NO_HANDLER_FOUND(403),
     METHOD_NOT_ALLOWED(404),
     USERNAME_ALREADY_EXISTS(411, "Username already exists"),
-    UNSUPPORTED_MEDIA_TYPE(405);
+    UNSUPPORTED_MEDIA_TYPE(405),
+    USER_NOT_FOUND(410, "User not found");
 
     private int code;
     private String message;
