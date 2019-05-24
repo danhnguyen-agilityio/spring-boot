@@ -1,16 +1,17 @@
 package com.agility.resourceserver.controllers;
 
+import com.agility.resourceserver.configs.SecurityProperties;
 import com.agility.resourceserver.dto.UserProfileResponse;
 import com.agility.resourceserver.exceptions.ResourceNotFoundException;
 import com.agility.resourceserver.mappers.UserProfileMapper;
+import com.agility.resourceserver.models.Role;
 import com.agility.resourceserver.models.UserProfile;
 import com.agility.resourceserver.repositorys.UserProfileRepository;
 import org.springframework.http.*;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -23,11 +24,13 @@ public class UserController {
 
     private UserProfileRepository userProfileRepository;
     private UserProfileMapper userProfileMapper;
+    private SecurityProperties securityProperties;
     private RestTemplate restTemplate;
 
-    public UserController(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper) {
+    public UserController(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper, SecurityProperties securityProperties) {
         this.userProfileRepository = userProfileRepository;
         this.userProfileMapper = userProfileMapper;
+        this.securityProperties = securityProperties;
         this.restTemplate = new RestTemplate();
     }
 
@@ -59,6 +62,7 @@ public class UserController {
             .toUriString();
 
         HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(securityProperties.getClientId(), securityProperties.getClientSecret());
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange(
@@ -68,4 +72,5 @@ public class UserController {
             Boolean.class);
         return responseEntity.getBody();
     }
+
 }

@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            // Enable the tomcat basic authentication
             .csrf().disable() // TODO: Find the reason why need this command to revoke tokens
             .authorizeRequests()
             .anyRequest().authenticated()
