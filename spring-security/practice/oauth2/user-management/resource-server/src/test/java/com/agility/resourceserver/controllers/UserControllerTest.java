@@ -1,8 +1,12 @@
 package com.agility.resourceserver.controllers;
 
+import com.agility.resourceserver.dto.AuthRequest;
 import com.agility.resourceserver.dto.AuthResponse;
+import com.agility.resourceserver.dto.UserResponse;
 import com.agility.resourceserver.models.UserProfile;
 import com.agility.resourceserver.repositorys.UserProfileRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +22,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Optional;
+
+import static com.agility.resourceserver.exceptions.CustomError.USER_NOT_FOUND;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,6 +47,8 @@ public class UserControllerTest {
     public final static String SECRET_ID = "my-secret";
     public final static String AUTHORIZATION_SERVER = "http://localhost:8080";
 
+    private static final Faker faker = new Faker();
+    private ObjectMapper objectMapper = new ObjectMapper();
     private UserProfile userProfile;
 
     @MockBean
@@ -88,8 +101,6 @@ public class UserControllerTest {
             .andExpect(status().isOk());
     }
 
-    // =========================== Delete user ===========================
-
     // ======================== Log out ============================
 
     @Test
@@ -114,6 +125,79 @@ public class UserControllerTest {
             .header("Authorization","Bearer " + accessToken))
             .andDo(print())
             .andExpect(status().isUnauthorized());
+    }
+
+    // ========================== Delete user =========================
+
+    @Test
+    @WithMockUser(username = "user", roles = {"USER"})
+    public void testDeleteUserWhenUserLogin() throws Exception {
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = {"MANAGER"})
+    public void testDeleteNotExistsUserWhenManagerLogin() throws Exception {
+
+        when(userProfileRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(USER_NOT_FOUND.code())));
+    }
+
+    @Test
+    @WithMockUser(username = "user", roles = {"ADMIN"})
+    public void testDeleteNotExistsUserWhenAdminLogin() throws Exception {
+
+        when(userProfileRepository.findById(anyLong())).thenReturn(Optional.ofNullable(null));
+
+        mockMvc.perform(delete("/users/100")
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.code", is(USER_NOT_FOUND.code())));
+    }
+
+
+    @Test
+    @WithMockUser(username = "user", roles = {"MANAGER", "ADMIN"})
+    public void testDeleteExistsUser() throws Exception{
+
+        // register user
+        AuthRequest authRequest = new AuthRequest(faker.name().username(), "password");
+        when(userProfileRepository.save(any(UserProfile.class))).thenReturn(userProfile);
+
+        String contentAsString = mockMvc.perform(post("/auths/register")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsBytes(authRequest)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(notNullValue())))
+            .andReturn().getResponse().getContentAsString();
+
+        UserResponse userResponse = objectMapper.readValue(contentAsString, UserResponse.class);
+
+
+        // delete user
+        String accessToken = obtainAccessToken("user", "password");
+        when(userProfileRepository.findById(anyLong())).thenReturn(Optional.ofNullable(userProfile));
+
+        mockMvc.perform(delete("/users/" + userResponse.getId())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isOk());
+
+        // occur error when delete user again
+        mockMvc.perform(delete("/users/" + userResponse.getId())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound());
     }
 
     /**
