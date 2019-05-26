@@ -18,6 +18,12 @@
 
 ## REF
 
+### Security
 - https://pattern-match.com/blog/2019/02/12/springboot2-and-oauth2-authorization-and-revocation/
-- https://www.baeldung.com/spring-security-multiple-entry-points
+- https://www.baeldung.com/spring-security-multiple-entry-points **(not read)**
+
+### Junit
 - https://www.baeldung.com/spring-mock-rest-template
+- https://thepracticaldeveloper.com/2018/05/10/write-bdd-unit-tests-with-bddmockito-and-assertj/
+- http://joel-costigliola.github.io/assertj/assertj-core-features-highlight.html
+
