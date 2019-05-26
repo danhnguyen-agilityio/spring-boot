@@ -2,11 +2,14 @@ package com.agility.resourceserver.dto;
 
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class UserProfileResponse {
     Long id;
     String username;

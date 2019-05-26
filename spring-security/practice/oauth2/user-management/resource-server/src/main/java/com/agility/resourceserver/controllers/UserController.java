@@ -8,6 +8,7 @@ import com.agility.resourceserver.mappers.UserProfileMapper;
 import com.agility.resourceserver.models.Role;
 import com.agility.resourceserver.models.UserProfile;
 import com.agility.resourceserver.repositorys.UserProfileRepository;
+import com.agility.resourceserver.services.UserProfileService;
 import org.springframework.http.*;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -30,12 +31,14 @@ public class UserController {
     private UserProfileRepository userProfileRepository;
     private UserProfileMapper userProfileMapper;
     private SecurityProperties securityProperties;
+    private UserProfileService userProfileService;
     private RestTemplate restTemplate;
 
-    public UserController(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper, SecurityProperties securityProperties) {
+    public UserController(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper, SecurityProperties securityProperties, UserProfileService userProfileService) {
         this.userProfileRepository = userProfileRepository;
         this.userProfileMapper = userProfileMapper;
         this.securityProperties = securityProperties;
+        this.userProfileService = userProfileService;
         this.restTemplate = new RestTemplate();
     }
 
@@ -47,14 +50,7 @@ public class UserController {
     @GetMapping("/me")
     public UserProfileResponse currentUser(Principal principal) {
         String username = principal.getName();
-        UserProfile userProfile = userProfileRepository.findByUsername(username);
-
-        if (userProfile == null) {
-            throw new ResourceNotFoundException(USER_NOT_FOUND);
-        }
-
-        UserProfileResponse userProfileResponse = userProfileMapper.toUserProfileResponse(userProfile);
-        return userProfileResponse;
+        return userProfileService.findByUsername(username);
     }
 
     @PostMapping("/logout-app")

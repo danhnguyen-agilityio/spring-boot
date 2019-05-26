@@ -2,21 +2,30 @@ package com.agility.resourceserver.controllers;
 
 import com.agility.resourceserver.dto.AuthRequest;
 import com.agility.resourceserver.dto.AuthResponse;
+import com.agility.resourceserver.dto.UserProfileResponse;
 import com.agility.resourceserver.dto.UserResponse;
+import com.agility.resourceserver.exceptions.ApiError;
+import com.agility.resourceserver.exceptions.ResourceNotFoundException;
 import com.agility.resourceserver.models.UserProfile;
 import com.agility.resourceserver.repositorys.UserProfileRepository;
+import com.agility.resourceserver.services.UserProfileService;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.JUnitSoftAssertions;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,10 +34,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Optional;
 
 import static com.agility.resourceserver.exceptions.CustomError.USER_NOT_FOUND;
+import static com.agility.resourceserver.utils.ConvertUtil.convertObjectToJsonString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -50,16 +65,36 @@ public class UserControllerTest {
     private static final Faker faker = new Faker();
     private ObjectMapper objectMapper = new ObjectMapper();
     private UserProfile userProfile;
+    private UserProfileResponse userProfileResponse;
+
+    private JacksonTester jsonUserProfile;
 
     @MockBean
     private UserProfileRepository userProfileRepository;
 
+    @MockBean
+    private UserProfileService userProfileService;
+
     @Autowired
     private MockMvc mockMvc;
 
+    @Rule
+    JUnitSoftAssertions softly = new JUnitSoftAssertions();
+
     @Before
     public void setUp() {
+        JacksonTester.initFields(this, new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL));
+
         userProfile = UserProfile.builder()
+            .id(1L)
+            .username("user")
+            .firstName("firstName")
+            .lastName("lastName")
+            .address("address")
+            .active(true)
+            .build();
+
+        userProfileResponse = UserProfileResponse.builder()
             .id(1L)
             .username("user")
             .firstName("firstName")
@@ -76,20 +111,54 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username = "notfound")
     public void testGetSelfInfoForNotExistsUser() throws Exception {
-        mockMvc.perform(get("/me"))
+        // given
+        given(userProfileService.findByUsername("notfound")).willThrow(new ResourceNotFoundException(USER_NOT_FOUND));
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(get("/me"))
             .andDo(print())
-            .andExpect(status().isNotFound());
+            .andExpect(status().isNotFound())
+            .andReturn().getResponse();
+
+        // then
+        softly.assertThat(response.getStatus()).as("Check status is not found when username not exists")
+            .isEqualTo(HttpStatus.NOT_FOUND.value());
+        softly.assertThat(response.getContentAsString()).as("Check error message when username not exists")
+            .isEqualTo(jsonUserProfile.write(new ApiError(USER_NOT_FOUND.code(), USER_NOT_FOUND.message())).getJson());
+        softly.assertThat(response.getContentAsString()).as("Check error message when username not exists")
+            .isEqualTo(convertObjectToJsonString(new ApiError(USER_NOT_FOUND.code(), USER_NOT_FOUND.message())));
+        then(response.getContentAsString()).as("Check error message when username not exists")
+            .isEqualTo(convertObjectToJsonString(new ApiError(USER_NOT_FOUND.code(), USER_NOT_FOUND.message())));
     }
 
     @Test
     @WithMockUser(username = "user")
     public void testGetSelfInfoForExistsUser() throws Exception {
-        mockMvc.perform(get("/me"))
+        // given
+        given(userProfileService.findByUsername("user")).willReturn(userProfileResponse);
+
+
+        // when
+        MockHttpServletResponse response = mockMvc.perform(get("/me"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", is(notNullValue())))
             .andExpect(jsonPath("$.username", is(userProfile.getUsername())))
-            .andExpect(jsonPath("$.active", is(userProfile.isActive())));
+            .andExpect(jsonPath("$.active", is(userProfile.isActive())))
+            .andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo(jsonUserProfile.write(
+            UserProfileResponse.builder()
+                .id(1L)
+                .username("user")
+                .firstName("firstName")
+                .lastName("lastName")
+                .address("address")
+                .active(true)
+                .build()
+        ).getJson());
     }
 
     @Test
