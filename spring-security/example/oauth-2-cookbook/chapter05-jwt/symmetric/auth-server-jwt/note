@@ -1,0 +1,7 @@
+Generate token
+http://localhost:8080/oauth/token?scope=read_profile&username=adolfo&password=123&grant_type=password
+clientapp:123456
+
+Validate token
+http://localhost:8081/api/profile
+Bearer {token}

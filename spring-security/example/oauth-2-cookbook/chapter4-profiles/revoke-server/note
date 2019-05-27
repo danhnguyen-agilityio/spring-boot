@@ -1,0 +1,9 @@
+Revoke access_token
+POST localhost:8080/oauth/revoke?token_type_int=access_token&token=a7444943-46ec-4286-bae4-dbf87e82289f
+clientapp:123456
+
+Revoke refresh_token
+
+Revoke access_token
+POST localhost:8080/oauth/revoke?token_type_int=refresh_token&token=a7444943-46ec-4286-bae4-dbf87e82289f
+clientapp:123456

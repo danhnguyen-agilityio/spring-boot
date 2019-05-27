@@ -1,0 +1,11 @@
+Get token use password grant type
+clientapp:123456
+http://localhost:8080/oauth/token?scope=read_profile&username=adolfo&password=123&grant_type=password
+
+Get profile
+http://localhost:8081/api/profile
+Bearer d5e87691-c7d6-45e9-b19a-7e5b6f29e4e4
+
+Check token
+http://localhost:8080/oauth/check_token?token=d5e87691-c7d6-45e9-b19a-7e5b6f29e4e4
+resource_server:abc123

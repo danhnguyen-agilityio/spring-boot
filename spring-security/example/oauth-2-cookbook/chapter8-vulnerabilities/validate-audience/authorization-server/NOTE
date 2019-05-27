@@ -1,0 +1,9 @@
+http://localhost:8080/oauth/token?scope=read_profile&username=adolfo&password=123&grant_type=password
+client-a:123
+
+http://localhost:8080/oauth/check_token?token=73418945-14f8-4150-b5e2-05ebe6a4a0c7
+client-a:123
+
+
+http://localhost:9001/rest-b
+Authorization Bearer 73418945-14f8-4150-b5e2-05ebe6a4a0c7
