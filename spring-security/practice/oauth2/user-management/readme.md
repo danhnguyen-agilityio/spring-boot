@@ -27,3 +27,6 @@
 - https://thepracticaldeveloper.com/2018/05/10/write-bdd-unit-tests-with-bddmockito-and-assertj/
 - http://joel-costigliola.github.io/assertj/assertj-core-features-highlight.html
 
+### Spring with Docker
+- https://hellokoding.com/mapping-jpa-hibernate-entity-and-dto-with-mapstruct/
+
