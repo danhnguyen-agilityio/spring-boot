@@ -1,6 +1,5 @@
 package com.agility.oauth2example2.config;
 
-import com.agility.oauth2example2.service.DefaultAuthenticationProvider;
 import com.agility.oauth2example2.service.DefaultUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

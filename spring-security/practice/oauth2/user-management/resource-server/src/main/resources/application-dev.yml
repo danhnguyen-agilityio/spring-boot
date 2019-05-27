@@ -1,0 +1,20 @@
+spring:
+    # DATASOURCE
+    # Set here configurations for the database connection
+    datasource:
+        # Connection url for the database resource server
+        url: jdbc:mysql://localhost:3306/resource_server
+
+        # MySQL username and password
+        username: root
+        password: password
+
+        # Keep the connection alive if idle for a long time (needed in production)
+        test-while-idle: true
+        validation-query: SELECT 1
+
+# LEVEL LOGGING
+logging:
+    level:
+        org.hibernate.stat: true
+        org.hibernate.type: trace

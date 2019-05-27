@@ -1,0 +1,70 @@
+server:
+    port: 9000
+
+# Config check token endpoint
+#security:
+#    oauth2:
+#        client:
+#            client-id: my-client
+#            client-secret: my-secret
+#        resource:
+#            token-info-uri: http://localhost:8080/oauth/check_token
+
+
+security:
+    oauth2:
+        resource-id: RESOURCE_ID
+        client-id: my-client
+        client-secret: my-secret
+        token-endpoint: http://localhost:8080/oauth/token
+
+spring:
+    # Specify which profiles are active
+    profiles:
+        active: dev
+
+    mvc:
+        throw-exception-if-no-handler-found: true
+    resources:
+        add-mappings: false
+
+    # JPA / HIBERNATE
+    # Use spring.jpa.properties.* for Hibernate native properties
+    jpa:
+        # Show or not log for each sql query
+        show-sql: true
+
+        hibernate:
+            # Hibernate ddl auto (create, create-drop, update): with "update" the database
+            # schema will be automatically updated accordingly to java entities found in
+            # the project
+            ddl-auto: update
+
+        # Automatically generate table from java entities if need
+        generate-ddl: true
+
+        properties:
+            hibernate:
+                # Allows Hibernate to generate SQL optimized for a particular DBMS
+                dialect: org.hibernate.dialect.MySQL5Dialect
+                format_sql: true
+                generate_stastistics: true
+
+    # JACKSON
+    jackson:
+        serialization:
+            # Disable converting dates to timestamps and instead use a ISO-8601 compliant format
+            write_dates_as_timestamps: false
+        # Controls the inclusion of properties during serialization
+        default-property-inclusion: non_null
+        mapper:
+            # Controls properties that have no view associated are serialized
+            default_view_inclusion: true
+
+# LEVEL LOGGING
+logging:
+    level:
+        com.agility.resourceserver: DEBUG
+
+
+
