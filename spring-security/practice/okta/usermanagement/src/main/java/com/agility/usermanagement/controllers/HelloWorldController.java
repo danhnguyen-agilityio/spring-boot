@@ -19,4 +19,10 @@ public class HelloWorldController {
     public String helloWorldProtected(Principal principal) {
         return "Hello VIP " + principal.getName();
     }
+
+    @GetMapping("/manager")
+    @PreAuthorize("hasAuthority('Manager')")
+    public String manager() {
+        return "manager";
+    }
 }
