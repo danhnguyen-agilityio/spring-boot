@@ -22,3 +22,4 @@
 ### Okta
 
 - [Spring Rest API with Okta](https://developer.okta.com/blog/2018/12/18/secure-spring-rest-api)
+- [Okta Spring Boot 2.1] ()
