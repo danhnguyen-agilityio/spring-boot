@@ -15,7 +15,7 @@ public class HelloWorldController {
     }
 
     @GetMapping("/protected")
-    @PreAuthorize("#oauth2.hasScope('profile')")
+    @PreAuthorize("hasAuthority('profile')")
     public String helloWorldProtected(Principal principal) {
         return "Hello VIP " + principal.getName();
     }
