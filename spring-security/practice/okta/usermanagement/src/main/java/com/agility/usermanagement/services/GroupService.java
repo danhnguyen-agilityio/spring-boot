@@ -1,7 +1,6 @@
 package com.agility.usermanagement.services;
 
 import com.okta.sdk.client.Client;
-import com.okta.sdk.resource.group.Group;
 import com.okta.sdk.resource.group.GroupList;
 import org.springframework.stereotype.Service;
 

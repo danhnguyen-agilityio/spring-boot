@@ -2,6 +2,7 @@ package com.agility.usermanagement.services;
 
 import com.agility.usermanagement.dtos.AppUserResponse;
 import com.agility.usermanagement.exceptions.InternalServerException;
+import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.AppUser;
 import com.agility.usermanagement.models.Role;
@@ -11,12 +12,14 @@ import com.okta.sdk.resource.group.Group;
 import com.okta.sdk.resource.group.GroupList;
 import com.okta.sdk.resource.user.User;
 import com.okta.sdk.resource.user.UserBuilder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import static com.agility.usermanagement.exceptions.CustomError.EMAIL_ALREADY_EXISTS;
 import static com.agility.usermanagement.exceptions.CustomError.INTERNAL_SERVER_ERROR;
 
 @Service
@@ -42,6 +45,12 @@ public class UserService {
      * @throws InternalServerException if get group info error
      */
     public AppUserResponse createUser(AppUser appUser) {
+        AppUser foundAppUser = userRepository.findByEmail(appUser.getEmail());
+
+        if (foundAppUser != null) {
+            throw new ResourceAlreadyExistsException(EMAIL_ALREADY_EXISTS);
+        }
+
         GroupList groupList = groupService.find(Role.USER.getName());
         Group group = groupList.single();
 

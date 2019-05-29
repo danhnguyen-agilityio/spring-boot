@@ -1,5 +1,6 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.dtos.AppUserResponse;
 import com.agility.usermanagement.dtos.UserCreatedRequest;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.AppUser;
@@ -30,14 +31,11 @@ public class PublicController {
     }
 
     @PostMapping("/signup")
-    public User signup(@Valid @RequestBody UserCreatedRequest request) {
+    public AppUserResponse signup(@Valid @RequestBody UserCreatedRequest request) {
         log.debug("POST /api/v1/public/signup body={}", request);
 
         AppUser appUser = userMapper.toAppUser(request);
 
-
-        userService.createUser(appUser);
-
-        return null;
+        return userService.createUser(appUser);
     }
 }

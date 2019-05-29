@@ -10,7 +10,7 @@ public enum CustomError {
     METHOD_ARGUMENT_TYPE_MISMATCH(402),
     NO_HANDLER_FOUND(403),
     METHOD_NOT_ALLOWED(404),
-    USERNAME_ALREADY_EXISTS(411, "Username already exists"),
+    EMAIL_ALREADY_EXISTS(411, "Email already exists"),
     UNSUPPORTED_MEDIA_TYPE(405),
     USER_NOT_FOUND(410, "User not found"),
     BAD_CREDENTIALS(451, "Invalid username/password supplied"),

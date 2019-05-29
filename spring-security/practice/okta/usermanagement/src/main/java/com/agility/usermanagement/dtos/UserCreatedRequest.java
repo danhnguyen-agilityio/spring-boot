@@ -9,6 +9,7 @@ import javax.validation.constraints.Pattern;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserCreatedRequest {
 
     @NotBlank
