@@ -3,6 +3,7 @@ package com.agility.usermanagement.services;
 import com.agility.usermanagement.dtos.AppUserResponse;
 import com.agility.usermanagement.exceptions.InternalServerException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
+import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.AppUser;
 import com.agility.usermanagement.models.Role;
@@ -21,6 +22,7 @@ import java.util.HashSet;
 
 import static com.agility.usermanagement.exceptions.CustomError.EMAIL_ALREADY_EXISTS;
 import static com.agility.usermanagement.exceptions.CustomError.INTERNAL_SERVER_ERROR;
+import static com.agility.usermanagement.exceptions.CustomError.USER_NOT_FOUND;
 
 @Service
 public class UserService {
@@ -68,10 +70,29 @@ public class UserService {
             .buildAndCreate(client);
 
         appUser.setId(user.getId());
+        appUser.setActive("ACTIVE".equalsIgnoreCase(user.getStatus().name()));
         appUser.setRoles(Arrays.asList(Role.USER));
 
         appUser = userRepository.save(appUser);
 
         return userMapper.toAppUserResponse(appUser);
     }
+
+    /**
+     * Find user by username
+     *
+     * @param username Name of user
+     * @return AppUserResponse object with name matched given username
+     */
+    public AppUserResponse findByUsername(String username) {
+        AppUser appUser = userRepository.findByEmail(username);
+
+        if (appUser == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        return userMapper.toAppUserResponse(appUser);
+    }
+
+
 }

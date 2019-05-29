@@ -34,4 +34,6 @@ public class AppUser {
 
     @Convert(converter = RoleListConverter.class)
     private List<Role> roles = new ArrayList<>();
+
+    private boolean active;
 }

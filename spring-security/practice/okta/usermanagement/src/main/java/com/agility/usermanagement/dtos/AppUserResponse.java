@@ -22,4 +22,11 @@ public class AppUserResponse {
     private String lastName;
 
     private List<Role> roles;
+
+    private boolean active;
+
+    // When user type boolean, lombok generate method isActive(), so we need create getActive() method for using mapper
+    public boolean getActive() {
+        return active;
+    }
 }

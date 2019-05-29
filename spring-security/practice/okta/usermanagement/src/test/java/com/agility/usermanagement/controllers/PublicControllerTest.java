@@ -59,6 +59,7 @@ public class PublicControllerTest extends BaseController {
             .andExpect(jsonPath("$.email", is(userCreatedRequest.getEmail())))
             .andExpect(jsonPath("$.firstName", is(userCreatedRequest.getFirstName())))
             .andExpect(jsonPath("$.lastName", is(userCreatedRequest.getLastName())))
+            .andExpect(jsonPath("$.active", is(true)))
             .andExpect(jsonPath("$.roles[0]", is(Role.USER.toString())));
     }
 }
