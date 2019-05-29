@@ -13,7 +13,6 @@ import com.okta.sdk.resource.group.Group;
 import com.okta.sdk.resource.group.GroupList;
 import com.okta.sdk.resource.user.User;
 import com.okta.sdk.resource.user.UserBuilder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -80,6 +79,22 @@ public class UserService {
     }
 
     /**
+     * Find user given id
+     *
+     * @param id Id of user
+     * @return AppUserResponse object that match given id
+     */
+    public AppUserResponse findById(String id) {
+        AppUser appUser = userRepository.findById(id).orElse(null);
+
+        if (appUser == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        return userMapper.toAppUserResponse(appUser);
+    }
+
+    /**
      * Find all user
      *
      * @return All user
@@ -96,11 +111,6 @@ public class UserService {
      */
     public AppUserResponse findByUsername(String username) {
         AppUser appUser = userRepository.findByEmail(username);
-
-        if (appUser == null) {
-            throw new ResourceNotFoundException(USER_NOT_FOUND);
-        }
-
         return userMapper.toAppUserResponse(appUser);
     }
 

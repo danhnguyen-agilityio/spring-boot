@@ -47,7 +47,6 @@ public class PublicControllerTest extends BaseControllerTest {
     public void testSignUpNewUser() throws Exception {
         // when
         mockMvc.perform(post("/api/v1/public/signup")
-            .header("Authorization","Bearer " + USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(userCreatedRequest)))
             .andDo(print())
