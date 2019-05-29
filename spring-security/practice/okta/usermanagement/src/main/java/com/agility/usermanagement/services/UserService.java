@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static com.agility.usermanagement.exceptions.CustomError.EMAIL_ALREADY_EXISTS;
 import static com.agility.usermanagement.exceptions.CustomError.INTERNAL_SERVER_ERROR;
@@ -76,6 +77,15 @@ public class UserService {
         appUser = userRepository.save(appUser);
 
         return userMapper.toAppUserResponse(appUser);
+    }
+
+    /**
+     * Find all user
+     *
+     * @return All user
+     */
+    public List<AppUserResponse> findAll() {
+        return userMapper.toAppUserResponseList(userRepository.findAll());
     }
 
     /**

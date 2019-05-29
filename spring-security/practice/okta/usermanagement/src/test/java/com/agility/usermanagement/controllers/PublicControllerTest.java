@@ -3,7 +3,6 @@ package com.agility.usermanagement.controllers;
 import com.agility.usermanagement.dtos.UserCreatedRequest;
 import com.agility.usermanagement.models.AppUser;
 import com.agility.usermanagement.models.Role;
-import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Slf4j
-public class PublicControllerTest extends BaseController {
+public class PublicControllerTest extends BaseControllerTest {
 
     private UserCreatedRequest userCreatedRequest;
     private AppUser appUser;
@@ -49,7 +47,7 @@ public class PublicControllerTest extends BaseController {
     public void testSignUpNewUser() throws Exception {
         // when
         mockMvc.perform(post("/api/v1/public/signup")
-            .header("Authorization","Bearer " + TOKEN)
+            .header("Authorization","Bearer " + USER_TOKEN)
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(userCreatedRequest)))
             .andDo(print())
