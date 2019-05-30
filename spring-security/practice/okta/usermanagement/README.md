@@ -26,6 +26,9 @@
 
 ## REFERENCE LINKS
 
+### Security
+- [SSL](https://stackoverflow.com/questions/47700115/tomcatembeddedservletcontainerfactory-is-missing-in-spring-boot-2)
+
 ### Okta
 
 - [Spring Rest API with Okta](https://developer.okta.com/blog/2018/12/18/secure-spring-rest-api)

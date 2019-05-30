@@ -1,3 +1,20 @@
+server:
+    # Define a custom port instead of the default 8080
+    port: 8443
+    ssl:
+        enabled: true
+        # The format used for the keystore
+        key-store-type: PKCS12
+        # The path to the keystore containing the certificate
+        key-store: classpath:keystore/keystore.p12
+        # The password used to generate the certificate
+        key-store-password: 123456
+        # The alias mapped to the certificate
+        key-alias: tomcat
+
+security:
+    # Tell Spring security to require request over HTTPS
+    require-ssl: true
 
 okta:
     # Web service configuration
