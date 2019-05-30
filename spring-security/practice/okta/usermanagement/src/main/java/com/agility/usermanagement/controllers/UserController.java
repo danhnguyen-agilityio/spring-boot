@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.List;
 
@@ -83,8 +85,4 @@ public class UserController {
     public AppUserResponse deactivate(@PathVariable String id) {
         return userService.activeUser(id, false);
     }
-
-    
-
-
 }

@@ -14,7 +14,6 @@ import com.okta.sdk.resource.group.Group;
 import com.okta.sdk.resource.group.GroupList;
 import com.okta.sdk.resource.user.User;
 import com.okta.sdk.resource.user.UserBuilder;
-import com.okta.sdk.resource.user.UserList;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

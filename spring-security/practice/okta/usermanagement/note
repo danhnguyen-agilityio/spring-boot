@@ -1,0 +1,54 @@
+*********************************************
+***** Not for SSL certificate *******
+*********************************************
+
+- Create RSA key: openssl genrsa -out server.key 2048
+- Create CSR (Certificate Signing Request): openssl req -new -key server.key -out server.csr
+- Create self signed certificate: openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+- Create keystore p12 from certificate: openssl pkcs12 -export -in server.crt -inkey server.key -out server.p12 -name tomcat
+- Create keystore JKS from p12:
++ Example: keytool -importkeystore -deststorepass 123456 -destkeystore keystore.jks -srckeystore server.p12 -srcstoretype PKCS12 -alias tomcat
++ Syntax: keytool -importkeystore \
+          -deststorepass [changeit] -destkeypass [changeit] -destkeystore server.keystore \
+          -srckeystore server.p12 -srcstoretype PKCS12 -srcstorepass some-password \
+          -alias [some-alias]
+
+- Generate keystore P12 from encoded certificate file (get certificate on browser)
++ Convert the certificate: openssl x509 -inform DER -outform PEM -in certificate.cer -out certificate.pem
++ Build the PKCS#12: openssl pkcs12 -export -in certificate.pem -inkey server.key -out server.p12 -name tomcat
+
+- Get contain keystore
++ keytool -list -v -keystore keystore.jks => get content JKS
++ keytool -list -v -storetype pkcs12 -keystore keystore.p12 => get content PKCS12
+
+- Verify the certificate: keytool -printcert -file ${PATH_TO_CERTIFCATE}/selfsigned.crt
+
+- Export self-signed certificate if you want to distribute to the clients
++ keytool -export -keystore keystore.jks -alias tomcat -file myCertificate.crt
+
+- Create keystore from existing SSL certificate without private key
++ keytool -import -alias tomcat -file server.crt -keystore keystoresss.p12 -storepass 123456
++ keytool -import -trustcacerts -file server.crt -keystore keystoresss.jks -alias tomcat -storepass 123456
+
+openssl x509 -inform DER -outform PEM -in Certificates.cer -out certificate.pem
+
+
+*********************************************
+*************** Test CORS *******************
+*********************************************
+
+Go to page http://api.jquery.com/jquery.ajax/
+
+$.ajax({
+  method: "POST",
+  url: "http://localhost:8080",
+  beforeSend: function( xhr ) {
+    xhr.setRequestHeader( "Authorization", "Bearer eyJraWQiOiJJVHUyZVZTaWVrR2N2d19FRkYwYmgwMXlZSmV1Uy1ZMzFrd0NDV09Yc1k4IiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULk1ickFLN1VRRmJmOUFPQXo3UVBPVHc0QU9DTWtpamtKT01BdTlrV0xuakkiLCJpc3MiOiJodHRwczovL2Rldi0zNDMzNjIub2t0YS5jb20vb2F1dGgyL2RlZmF1bHQiLCJhdWQiOiJhcGk6Ly9kZWZhdWx0IiwiaWF0IjoxNTU5MTI0MzkyLCJleHAiOjE1NTkyMTA3OTIsImNpZCI6IjBvYW40bXQ4eURzY0J3QU9GMzU2IiwidWlkIjoiMDB1bmZoNTE0WUJNU0ZTZEEzNTYiLCJzY3AiOlsicHJvZmlsZSIsIm9wZW5pZCJdLCJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJncm91cHMiOlsiRXZlcnlvbmUiLCJVc2VyIiwiQWRtaW4iXX0.Zl3KayXnw1QE4llFBl5PXQsnNvk3xHa_g89AyNE_cQRsoKryM-cyWklKj5lGBoOPyx4VF1R9YdcPijilf_sepOsOB2SMKRIdXVBJxc8T-T88bLiQnT_Nfq-43oa1lF2QvdJQUqUCAV4ZWfgpFLq_z_Zk4Q0TJawN66GeiUu9_VI58HKMxnDsbxtviiy7uNrVBKZdI0bmCQQxfIiocRDe-Q5OcFJ9jNuN_aQGhuErCWp_eDZsUqLiRYL6VGww80CRgVey-cvMSHFnB8CvKel_Fl1ouPwMziL2Uv7KPmq-J6nrPVZhl2cXc71B4ytcXVpCAey0r2c_Ko8bKpIQLdLT1w");
+    xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+  }
+})
+  .done(function( data ) {
+    if ( console && console.log ) {
+      console.log( "Sample of data:", data );
+    }
+  });
