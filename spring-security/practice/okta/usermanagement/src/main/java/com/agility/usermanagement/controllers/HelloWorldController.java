@@ -8,8 +8,14 @@ import java.security.Principal;
 @RestController
 public class HelloWorldController {
 
+    @CrossOrigin(origins = "http://api.jquery.com")
     @GetMapping("/")
     public String getMethod() {
+        return "Hello world";
+    }
+
+    @GetMapping("/cors")
+    public String cors() {
         return "Hello world";
     }
 

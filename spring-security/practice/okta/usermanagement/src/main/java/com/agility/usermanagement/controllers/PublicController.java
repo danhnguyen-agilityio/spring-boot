@@ -14,6 +14,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/public")
+@CrossOrigin(origins = "*")
 public class PublicController {
 
     private Client client;
