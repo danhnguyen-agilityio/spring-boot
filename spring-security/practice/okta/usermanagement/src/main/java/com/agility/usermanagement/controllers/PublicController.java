@@ -2,16 +2,15 @@ package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.dtos.AppUserResponse;
 import com.agility.usermanagement.dtos.UserCreatedRequest;
+import com.agility.usermanagement.exceptions.CustomError;
+import com.agility.usermanagement.exceptions.ResourceNotFoundException;
 import com.agility.usermanagement.mappers.UserMapper;
 import com.agility.usermanagement.models.AppUser;
 import com.agility.usermanagement.services.UserService;
 import com.okta.sdk.client.Client;
 import com.okta.sdk.resource.user.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -32,7 +31,7 @@ public class PublicController {
 
     @PostMapping("/signup")
     public AppUserResponse signup(@Valid @RequestBody UserCreatedRequest request) {
-        log.debug("POST /api/v1/public/signup body={}", request);
+        log.debug("POST /api/v1/public/signup body={}");
 
         AppUser appUser = userMapper.toAppUser(request);
 

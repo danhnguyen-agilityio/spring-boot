@@ -1,8 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -10,7 +9,23 @@ import java.security.Principal;
 public class HelloWorldController {
 
     @GetMapping("/")
-    public String helloWorld() {
+    public String getMethod() {
+        return "Hello world";
+    }
+
+    @PostMapping("/")
+    public String postMethod() {
+        return "Hello world";
+    }
+
+
+    @PutMapping("/")
+    public String putMethod() {
+        return "Hello world";
+    }
+
+    @DeleteMapping("/")
+    public String deleteMethod() {
         return "Hello world";
     }
 

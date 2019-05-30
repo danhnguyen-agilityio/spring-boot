@@ -5,6 +5,7 @@ import com.agility.usermanagement.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +31,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
-    public AppUserResponse findById(String id) {
+    public AppUserResponse findById(@PathVariable String id) {
         return userService.findById(id);
     }
 

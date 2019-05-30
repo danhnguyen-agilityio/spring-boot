@@ -54,6 +54,15 @@ public class UserControllerTest extends BaseControllerTest {
         testGetSelfInfo(ADMIN_TOKEN);
     }
 
+    private void testGetSelfInfo(String token) throws Exception {
+        mockMvc.perform(get("/api/v1/me")
+            .header("Authorization","Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk());
+    }
+
     //=============================== Get All User ================================
 
     @Test
@@ -99,7 +108,16 @@ public class UserControllerTest extends BaseControllerTest {
     }
 
     @Test
-    public void testGetUserSuccess() throws Exception {
+    public void testGetUserWithManagerToken() throws Exception {
+        testGetUserSuccess(MANAGER_TOKEN);
+    }
+
+    @Test
+    public void testGetUserWithAdminToken() throws Exception {
+        testGetUserSuccess(ADMIN_TOKEN);
+    }
+
+    private void testGetUserSuccess(String token) throws Exception {
         MockHttpServletResponse response = mockMvc.perform(post("/api/v1/public/signup")
             .contentType(MediaType.APPLICATION_JSON)
             .content(convertObjectToJsonBytes(userCreatedRequest)))
@@ -108,11 +126,12 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(status().isOk())
             .andReturn().getResponse();
 
+        log.debug("App user response: {}", response.getContentAsString());
         // Get user id that created
-        String userId = JsonPath.parse(response.getContentAsString()).read("$.id");
+        String userId = JsonPath.read(response.getContentAsString(), "$.id");
 
         mockMvc.perform(get("/api/v1/users/" + userId)
-            .header("Authorization","Bearer " + ADMIN_TOKEN)
+            .header("Authorization","Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -120,25 +139,6 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(content().json(response.getContentAsString()));
     }
 
-    @Test
-    public void testGetUserById() throws Exception {
-        mockMvc.perform(post("/api/v1/public/signup")
-            .header("Authorization","Bearer " + USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(userCreatedRequest)));
 
-        mockMvc.perform(post("/api/v1/public/signup")
-            .header("Authorization","Bearer " + USER_TOKEN)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(convertObjectToJsonBytes(userCreatedRequest)));
-    }
 
-    private void testGetSelfInfo(String token) throws Exception {
-        mockMvc.perform(get("/api/v1/me")
-            .header("Authorization","Bearer " + token)
-            .contentType(MediaType.APPLICATION_JSON))
-            .andDo(print())
-            // then
-            .andExpect(status().isOk());
-    }
 }
