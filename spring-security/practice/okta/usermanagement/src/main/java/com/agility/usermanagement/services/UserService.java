@@ -136,5 +136,30 @@ public class UserService {
         return userMapper.toAppUserResponse(appUser);
     }
 
+    /**
+     * Active user
+     *
+     * @param id Id of user need active
+     */
+    public void activeUser(String id, boolean active) {
+        AppUser appUser = userRepository.findById(id).orElse(null);
+
+        if (appUser == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        User user = client.getUser(id);
+
+        if (user == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        // save to own database
+        appUser.setActive(active);
+        userRepository.save(appUser);
+
+        // save to okta server
+        user.deactivate(!active);
+    }
 
 }

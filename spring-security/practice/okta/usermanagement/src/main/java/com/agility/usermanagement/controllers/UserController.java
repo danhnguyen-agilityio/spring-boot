@@ -22,18 +22,27 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * Find all user
+     */
     @GetMapping("/users")
     @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
     public List<AppUserResponse> findAll() {
         return userService.findAll();
     }
 
+    /**
+     * Find user by id
+     */
     @GetMapping("/users/{id}")
     @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
     public AppUserResponse findById(@PathVariable String id) {
         return userService.findById(id);
     }
 
+    /**
+     * Get self info user
+     */
     @GetMapping("/me")
     @PreAuthorize("hasAnyAuthority('User', 'Manager', 'Admin')")
     public AppUserResponse getSelfInfo(Principal principal) {
@@ -44,6 +53,9 @@ public class UserController {
         return userService.findByUsername(username);
     }
 
+    /**
+     * Update self info user
+     */
     @PostMapping("/me")
     @PreAuthorize("hasAnyAuthority('User', 'Manager', 'Admin')")
     public AppUserResponse updateSelfInfo(Principal principal,@Valid @RequestBody UserUpdatedRequest request) {
@@ -52,5 +64,11 @@ public class UserController {
         request.setEmail(principal.getName());
 
         return userService.updateInfoByUsername(request);
+    }
+
+    @PostMapping("/users/{id}/deactivate")
+    @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
+    public void deactivate(@PathVariable String id) {
+        userService.activeUser(id, false);
     }
 }

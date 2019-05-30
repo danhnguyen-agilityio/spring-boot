@@ -177,4 +177,58 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(jsonPath("$.firstName", is(userUpdatedRequest.getFirstName())))
             .andExpect(jsonPath("$.lastName", is(userUpdatedRequest.getLastName())));
     }
+
+    //=============================== Deactivate user ================================
+
+    @Test
+    public void testDeactivateUserWithUserToken() throws Exception {
+        mockMvc.perform(post("/api/v1/users/" + faker.number().randomDigit() + "/deactivate")
+            .header("Authorization","Bearer " + USER_TOKEN)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testDeactivateUserWithManagerToken() throws Exception {
+        testDeactivateUserNotFound(MANAGER_TOKEN);
+        testDeactivateUserSuccess(MANAGER_TOKEN);
+    }
+
+    @Test
+    public void testDeactivateUserWithAdminToken() throws Exception {
+        testDeactivateUserNotFound(ADMIN_TOKEN);
+        testDeactivateUserSuccess(ADMIN_TOKEN);
+    }
+
+    private void testDeactivateUserNotFound(String token) throws Exception {
+        mockMvc.perform(post("/api/v1/users/" + faker.number().randomDigit() + "/deactivate")
+            .header("Authorization","Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isNotFound());
+    }
+
+    private void testDeactivateUserSuccess(String token) throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/public/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userCreatedRequest)))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk())
+            .andReturn().getResponse();
+
+        log.debug("App user response: {}", response.getContentAsString());
+        // Get user id that created
+        String userId = JsonPath.read(response.getContentAsString(), "$.id");
+
+        mockMvc.perform(post("/api/v1/users/" + userId + "/deactivate")
+            .header("Authorization","Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk());
+    }
 }
