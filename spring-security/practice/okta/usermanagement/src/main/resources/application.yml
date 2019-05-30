@@ -20,15 +20,14 @@ okta:
     # Web service configuration
     oauth2:
         issuer: https://dev-343362.okta.com/oauth2/default
-        client-id: 0oan53eo1MfOiC3iE356
-        client-secret: AzukYn7lCGvqMhFj5Di6KSzXJghl4MbkB-MqqYx0
+        client-id: 0oan4mt8yDscBwAOF356
         audience: api://default
         rolesClaim: groups
 
     # Api Token
     client:
         org-url: https://dev-343362.okta.com
-        api-token: 008ENnAtf3KVIDXzTXZcbHh50crWrtjon_gxR8NPBV
+        token: 008ENnAtf3KVIDXzTXZcbHh50crWrtjon_gxR8NPBV
 
 spring:
     # Specify which profiles are active

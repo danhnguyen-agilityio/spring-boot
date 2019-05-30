@@ -1,15 +1,15 @@
 # USER MANAGEMENT PRACTICE USE OKTA
 
-## Client Info
+## CLIENT INFO OKTA
 
-- Machine to machine App
-  - Client ID: 0oan53eo1MfOiC3iE356
-  - Client Secret: AzukYn7lCGvqMhFj5Di6KSzXJghl4MbkB-MqqYx0
- 
 - Web App
   - Client ID: 0oan4mt8yDscBwAOF356
   - Client Secret: chql1xkgkwWGf7WxIik4tH-GNnXcM9zRX-v5ERj6
   - Redirect URL: https://oidcdebugger.com/debug
+
+## RUN APP
+- `docker-compose up`
+- `mvn clean spring-boot:run -Dspring.profiles.active=dev`
 
 ## API
  
@@ -25,7 +25,14 @@
 ## REFERENCE LINKS
 
 ### Security
+- https://pattern-match.com/blog/2019/02/12/springboot2-and-oauth2-authorization-and-revocation/
+- https://www.baeldung.com/spring-security-multiple-entry-points **(not read)**
 - [SSL](https://stackoverflow.com/questions/47700115/tomcatembeddedservletcontainerfactory-is-missing-in-spring-boot-2)
+
+### Junit
+- https://www.baeldung.com/spring-mock-rest-template
+- https://thepracticaldeveloper.com/2018/05/10/write-bdd-unit-tests-with-bddmockito-and-assertj/
+- http://joel-costigliola.github.io/assertj/assertj-core-features-highlight.html
 
 ### Okta
 
@@ -34,3 +41,6 @@
 - [Role base access control](https://developer.okta.com/blog/2017/10/13/okta-groups-spring-security)
 - [Unable to generate access token in Postman](https://devforum.okta.com/t/unable-to-generate-access-token-for-my-application-using-postman/4943)
 - [Okta Spring Sdk](https://github.com/okta/okta-sdk-java)
+
+### Spring with Docker
+- https://hellokoding.com/mapping-jpa-hibernate-entity-and-dto-with-mapstruct/
