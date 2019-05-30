@@ -1,6 +1,7 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.dtos.UserCreatedRequest;
+import com.agility.usermanagement.dtos.UserUpdatedRequest;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -13,10 +14,12 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -26,12 +29,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class UserControllerTest extends BaseControllerTest {
 
     private UserCreatedRequest userCreatedRequest;
+    private UserUpdatedRequest userUpdatedRequest;
 
     @Before
     public void setUp() {
         userCreatedRequest = UserCreatedRequest.builder()
             .email(faker.internet().emailAddress())
             .password("Deptrai_07") // TODO: Write util class to generate password
+            .firstName(faker.name().firstName())
+            .lastName(faker.name().lastName())
+            .build();
+
+        userUpdatedRequest = UserUpdatedRequest.builder()
+            .email(faker.internet().emailAddress())
             .firstName(faker.name().firstName())
             .lastName(faker.name().lastName())
             .build();
@@ -139,6 +149,32 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(content().json(response.getContentAsString()));
     }
 
+    //=============================== Update self user info ================================
 
+    @Test
+    public void testUpdateSelfInfoWithUserToken() throws Exception {
+        testUpdateSelfInfoSuccess(USER_TOKEN);
+    }
 
+    @Test
+    public void testUpdateSelfInfoWithManagerToken() throws Exception {
+        testUpdateSelfInfoSuccess(MANAGER_TOKEN);
+    }
+
+    @Test
+    public void testUpdateSelfInfoWithAdminToken() throws Exception {
+        testUpdateSelfInfoSuccess(ADMIN_TOKEN);
+    }
+
+    private void testUpdateSelfInfoSuccess(String token) throws Exception {
+        mockMvc.perform(post("/api/v1/me")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization","Bearer " + token)
+            .content(convertObjectToJsonBytes(userUpdatedRequest)))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.firstName", is(userUpdatedRequest.getFirstName())))
+            .andExpect(jsonPath("$.lastName", is(userUpdatedRequest.getLastName())));
+    }
 }

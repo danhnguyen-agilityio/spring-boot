@@ -1,6 +1,7 @@
 package com.agility.usermanagement.services;
 
 import com.agility.usermanagement.dtos.AppUserResponse;
+import com.agility.usermanagement.dtos.UserUpdatedRequest;
 import com.agility.usermanagement.exceptions.InternalServerException;
 import com.agility.usermanagement.exceptions.ResourceAlreadyExistsException;
 import com.agility.usermanagement.exceptions.ResourceNotFoundException;
@@ -111,6 +112,27 @@ public class UserService {
      */
     public AppUserResponse findByUsername(String username) {
         AppUser appUser = userRepository.findByEmail(username);
+        return userMapper.toAppUserResponse(appUser);
+    }
+
+    /**
+     * Update info by username
+     *
+     * @param request Info need updated
+     * @return Updated AppUserResponse object
+     */
+    public AppUserResponse updateInfoByUsername(UserUpdatedRequest request) {
+        AppUser appUser = userRepository.findByEmail(request.getEmail());
+
+        if (appUser == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        appUser.setFirstName(request.getFirstName());
+        appUser.setLastName(request.getLastName());
+
+        appUser = userRepository.save(appUser);
+
         return userMapper.toAppUserResponse(appUser);
     }
 
