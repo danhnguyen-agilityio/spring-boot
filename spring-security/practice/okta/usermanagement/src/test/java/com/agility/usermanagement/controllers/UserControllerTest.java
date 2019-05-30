@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -230,5 +231,65 @@ public class UserControllerTest extends BaseControllerTest {
             .andDo(print())
             // then
             .andExpect(status().isOk());
+    }
+
+    //=============================== Delete user ================================
+
+    @Test
+    public void testDeleteUserWithUserToken() throws Exception {
+        mockMvc.perform(delete("/api/v1/users/" + faker.number().randomDigit())
+            .header("Authorization","Bearer " + USER_TOKEN)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void testDeleteUserWithManagerToken() throws Exception {
+        testDeleteUserNotFound(MANAGER_TOKEN);
+        testDeleteUserSuccess(MANAGER_TOKEN);
+    }
+
+    @Test
+    public void testDeleteUserWithAdminToken() throws Exception {
+        testDeleteUserNotFound(ADMIN_TOKEN);
+        testDeleteUserSuccess(ADMIN_TOKEN);
+    }
+
+    private void testDeleteUserNotFound(String token) throws Exception {
+        mockMvc.perform(delete("/api/v1/users/" + faker.number().randomDigit())
+            .header("Authorization","Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isNotFound());
+    }
+
+    private void testDeleteUserSuccess(String token) throws Exception {
+        String userId = JsonPath.read(getCreatedUserJson(), "$.id");
+
+        mockMvc.perform(delete("/api/v1/users/" + userId)
+            .header("Authorization","Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk());
+    }
+
+    /**
+     * Create new user and return json info of response
+     */
+    private String getCreatedUserJson() throws Exception {
+        String createdUserJson = mockMvc.perform(post("/api/v1/public/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(convertObjectToJsonBytes(userCreatedRequest)))
+            .andDo(print())
+            // then
+            .andExpect(status().isOk())
+            .andReturn().getResponse()
+            .getContentAsString();
+
+        return createdUserJson;
     }
 }

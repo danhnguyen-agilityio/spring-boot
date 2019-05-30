@@ -41,6 +41,15 @@ public class UserController {
     }
 
     /**
+     * Delete user
+     */
+    @DeleteMapping("/users/{id}")
+    @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
+    public void delete(@PathVariable String id) {
+        userService.deleteById(id);
+    }
+
+    /**
      * Get self info user
      */
     @GetMapping("/me")
@@ -66,9 +75,16 @@ public class UserController {
         return userService.updateInfoByUsername(request);
     }
 
+    /**
+     * Deactivate user
+     */
     @PostMapping("/users/{id}/deactivate")
     @PreAuthorize("hasAnyAuthority('Manager', 'Admin')")
-    public void deactivate(@PathVariable String id) {
-        userService.activeUser(id, false);
+    public AppUserResponse deactivate(@PathVariable String id) {
+        return userService.activeUser(id, false);
     }
+
+    
+
+
 }

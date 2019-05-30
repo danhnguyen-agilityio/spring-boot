@@ -14,6 +14,7 @@ import com.okta.sdk.resource.group.Group;
 import com.okta.sdk.resource.group.GroupList;
 import com.okta.sdk.resource.user.User;
 import com.okta.sdk.resource.user.UserBuilder;
+import com.okta.sdk.resource.user.UserList;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -139,27 +140,59 @@ public class UserService {
     /**
      * Active user
      *
-     * @param id Id of user need active
+     * @param id Id of user need active or deactive
+     * @param active flag represent status active or deactive
+     * @return AppUserResponse object
      */
-    public void activeUser(String id, boolean active) {
+    public AppUserResponse activeUser(String id, boolean active) {
         AppUser appUser = userRepository.findById(id).orElse(null);
-
         if (appUser == null) {
             throw new ResourceNotFoundException(USER_NOT_FOUND);
         }
 
         User user = client.getUser(id);
-
         if (user == null) {
             throw new ResourceNotFoundException(USER_NOT_FOUND);
         }
 
-        // save to own database
-        appUser.setActive(active);
-        userRepository.save(appUser);
+        try {
+            // save to own database
+            appUser.setActive(active);
+            appUser = userRepository.save(appUser);
 
-        // save to okta server
-        user.deactivate(!active);
+            // save to okta server
+            user.deactivate(!active);
+        } catch (Exception e) {
+            throw new InternalServerException(INTERNAL_SERVER_ERROR);
+        }
+
+        return userMapper.toAppUserResponse(appUser);
     }
 
+    /**
+     * Delete user by given id
+     *
+     * @param id Id of user need delete
+     */
+    public void deleteById(String id) {
+        AppUser appUser = userRepository.findById(id).orElse(null);
+        if (appUser == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        User user = client.getUser(id);
+        if (user == null) {
+            throw new ResourceNotFoundException(USER_NOT_FOUND);
+        }
+
+        try {
+            // delete user from okta server
+            user.delete();
+
+            // delete user from own database
+            userRepository.delete(appUser);
+        } catch (Exception e) {
+            throw new InternalServerException(INTERNAL_SERVER_ERROR);
+        }
+    }
 }
