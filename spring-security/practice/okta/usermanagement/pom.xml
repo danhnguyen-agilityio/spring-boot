@@ -16,6 +16,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<okta-jwt.version>0.4.0</okta-jwt.version>
 	</properties>
 
 	<dependencies>
@@ -40,6 +41,17 @@
 			<groupId>com.okta.spring</groupId>
 			<artifactId>okta-spring-sdk</artifactId>
 			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.okta.jwt</groupId>
+			<artifactId>okta-jwt-verifier</artifactId>
+			<version>${okta-jwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.okta.jwt</groupId>
+			<artifactId>okta-jwt-verifier-impl</artifactId>
+			<version>${okta-jwt.version}</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
