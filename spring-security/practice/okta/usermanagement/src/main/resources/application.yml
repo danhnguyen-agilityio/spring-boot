@@ -1,3 +1,4 @@
+
 server:
     # Define a custom port instead of the default 8080
     port: 8443
@@ -30,6 +31,28 @@ okta:
         token: 008ENnAtf3KVIDXzTXZcbHh50crWrtjon_gxR8NPBV
 
 spring:
+    security:
+        # Not work when use auto-configuration config
+#        oauth2:
+#            client:
+#                registration:
+#                    okta:
+#                        clientId: 0oan4mt8yDscBwAOF356
+#                        clientSecret: thQzNQiQkWYkiM_xJi84l18hrGgAzCKI1-wQMCWP
+#                provider:
+#                    okta:
+#                        authorization-uri: https://dev-343362.okta.com/oauth2/default/v1/authorize
+#                        token-uri: https://dev-343362.okta.com/oauth2/default/v1/token
+#                        user-info-uri: https://dev-343362.okta.com/oauth2/default/v1/userinfo
+#                        jwk-set-uri: https://dev-343362.okta.com/oauth2/default/v1/keys
+#                        issuerUri: https://dev-343362.okta.com/oauth2/default
+#                resourceserver:
+#                    jwt:
+#                        issuer-uri: https://dev-343362.okta.com/oauth2/default
+
+        # Tell Spring security to require request over HTTPS
+        require-ssl: true
+
     # Specify which profiles are active
     profiles:
         active: dev
