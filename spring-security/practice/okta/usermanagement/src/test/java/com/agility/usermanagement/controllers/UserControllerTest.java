@@ -1,19 +1,25 @@
 package com.agility.usermanagement.controllers;
 
+import com.agility.usermanagement.dtos.AuthResponse;
 import com.agility.usermanagement.dtos.UserCreatedRequest;
 import com.agility.usermanagement.dtos.UserUpdatedRequest;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.entity.ContentType;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,11 +35,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 public class UserControllerTest extends BaseControllerTest {
 
+    // native app client, used for support get access token with resource owner password flow
+    public final static String CLIENT_ID = "0oaqipsh5cectiRx0356";
+    public final static String CLIENT_SECRET = "_r4oQjlVmSW7_dOkW5BkBHs1sjhNV9scF4_loz-1";
+
+    private static String userToken;
+    private static String managerToken;
+    private static String adminToken;
+
     private UserCreatedRequest userCreatedRequest;
     private UserUpdatedRequest userUpdatedRequest;
 
+    @BeforeClass
+    public static void onceExecutedBeforeAll() throws Exception {
+        userToken = getAccessToken("user@gmail.com", "Deptrai07");
+        managerToken = getAccessToken("manager@gmail.com", "Deptrai07");
+        adminToken = getAccessToken("admin@gmail.com", "Deptrai07");
+    }
+
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         userCreatedRequest = UserCreatedRequest.builder()
             .email(faker.internet().emailAddress())
             .password("Deptrai_07") // TODO: Write util class to generate password
@@ -52,17 +73,17 @@ public class UserControllerTest extends BaseControllerTest {
 
     @Test
     public void testGetSelfInfoWithUserToken() throws Exception {
-        testGetSelfInfo(USER_TOKEN);
+        testGetSelfInfo(userToken);
     }
 
     @Test
     public void testGetSelfInfoWithManagerToken() throws Exception {
-        testGetSelfInfo(MANAGER_TOKEN);
+        testGetSelfInfo(managerToken);
     }
 
     @Test
     public void testGetSelfInfoWithAdminToken() throws Exception {
-        testGetSelfInfo(ADMIN_TOKEN);
+        testGetSelfInfo(adminToken);
     }
 
     private void testGetSelfInfo(String token) throws Exception {
@@ -79,7 +100,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetAllUserWithUserToken() throws Exception {
         mockMvc.perform(get("/api/v1/users")
-            .header("Authorization","Bearer " + USER_TOKEN)
+            .header("Authorization","Bearer " + userToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -89,7 +110,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetAllUserWithManagerToken() throws Exception {
         mockMvc.perform(get("/api/v1/users")
-            .header("Authorization","Bearer " + MANAGER_TOKEN)
+            .header("Authorization","Bearer " + managerToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -99,7 +120,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetAllUserWithAdminToken() throws Exception {
         mockMvc.perform(get("/api/v1/users")
-            .header("Authorization","Bearer " + ADMIN_TOKEN)
+            .header("Authorization","Bearer " + adminToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -111,7 +132,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testGetUserWithUserToken() throws Exception {
         mockMvc.perform(get("/api/v1/users/" + faker.number().randomDigit())
-            .header("Authorization","Bearer " + USER_TOKEN)
+            .header("Authorization","Bearer " + userToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -120,12 +141,12 @@ public class UserControllerTest extends BaseControllerTest {
 
     @Test
     public void testGetUserWithManagerToken() throws Exception {
-        testGetUserSuccess(MANAGER_TOKEN);
+        testGetUserSuccess(managerToken);
     }
 
     @Test
     public void testGetUserWithAdminToken() throws Exception {
-        testGetUserSuccess(ADMIN_TOKEN);
+        testGetUserSuccess(adminToken);
     }
 
     private void testGetUserSuccess(String token) throws Exception {
@@ -154,17 +175,17 @@ public class UserControllerTest extends BaseControllerTest {
 
     @Test
     public void testUpdateSelfInfoWithUserToken() throws Exception {
-        testUpdateSelfInfoSuccess(USER_TOKEN);
+        testUpdateSelfInfoSuccess(userToken);
     }
 
     @Test
     public void testUpdateSelfInfoWithManagerToken() throws Exception {
-        testUpdateSelfInfoSuccess(MANAGER_TOKEN);
+        testUpdateSelfInfoSuccess(managerToken);
     }
 
     @Test
     public void testUpdateSelfInfoWithAdminToken() throws Exception {
-        testUpdateSelfInfoSuccess(ADMIN_TOKEN);
+        testUpdateSelfInfoSuccess(adminToken);
     }
 
     private void testUpdateSelfInfoSuccess(String token) throws Exception {
@@ -184,7 +205,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeactivateUserWithUserToken() throws Exception {
         mockMvc.perform(post("/api/v1/users/" + faker.number().randomDigit() + "/deactivate")
-            .header("Authorization","Bearer " + USER_TOKEN)
+            .header("Authorization","Bearer " + userToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -193,14 +214,14 @@ public class UserControllerTest extends BaseControllerTest {
 
     @Test
     public void testDeactivateUserWithManagerToken() throws Exception {
-        testDeactivateUserNotFound(MANAGER_TOKEN);
-        testDeactivateUserSuccess(MANAGER_TOKEN);
+        testDeactivateUserNotFound(managerToken);
+        testDeactivateUserSuccess(managerToken);
     }
 
     @Test
     public void testDeactivateUserWithAdminToken() throws Exception {
-        testDeactivateUserNotFound(ADMIN_TOKEN);
-        testDeactivateUserSuccess(ADMIN_TOKEN);
+        testDeactivateUserNotFound(adminToken);
+        testDeactivateUserSuccess(adminToken);
     }
 
     private void testDeactivateUserNotFound(String token) throws Exception {
@@ -238,7 +259,7 @@ public class UserControllerTest extends BaseControllerTest {
     @Test
     public void testDeleteUserWithUserToken() throws Exception {
         mockMvc.perform(delete("/api/v1/users/" + faker.number().randomDigit())
-            .header("Authorization","Bearer " + USER_TOKEN)
+            .header("Authorization","Bearer " + userToken)
             .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             // then
@@ -247,14 +268,14 @@ public class UserControllerTest extends BaseControllerTest {
 
     @Test
     public void testDeleteUserWithManagerToken() throws Exception {
-        testDeleteUserNotFound(MANAGER_TOKEN);
-        testDeleteUserSuccess(MANAGER_TOKEN);
+        testDeleteUserNotFound(managerToken);
+        testDeleteUserSuccess(managerToken);
     }
 
     @Test
     public void testDeleteUserWithAdminToken() throws Exception {
-        testDeleteUserNotFound(ADMIN_TOKEN);
-        testDeleteUserSuccess(ADMIN_TOKEN);
+        testDeleteUserNotFound(adminToken);
+        testDeleteUserSuccess(adminToken);
     }
 
     private void testDeleteUserNotFound(String token) throws Exception {
@@ -277,6 +298,10 @@ public class UserControllerTest extends BaseControllerTest {
             .andExpect(status().isOk());
     }
 
+    public String sstring (){
+        return "a";
+    }
+
     /**
      * Create new user and return json info of response
      */
@@ -291,5 +316,43 @@ public class UserControllerTest extends BaseControllerTest {
             .getContentAsString();
 
         return createdUserJson;
+    }
+
+    /**
+     * Call api /token from authorization server to get access token (resource owner password flow)
+     *
+     * @param username name of user
+     * @param password password of user
+     *
+     * @return Access token
+     */
+    private static String getAccessToken(String username, String password) throws Exception{
+        TestRestTemplate testRestTemplate = new TestRestTemplate();
+
+        String uri = UriComponentsBuilder.fromHttpUrl("https://dev-343362.okta.com/oauth2/default/v1/token")
+            .queryParam("grant_type", "password")
+            .queryParam("username", username)
+            .queryParam("password", password)
+            .queryParam("scope", "openid")
+            .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.set("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.toString());
+        headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
+        HttpEntity entity = new HttpEntity(headers);
+
+        ResponseEntity<AuthResponse> responseEntity = testRestTemplate.exchange(
+            uri,
+            HttpMethod.POST,
+            entity,
+            AuthResponse.class
+            );
+
+        assertThat(responseEntity.getStatusCode())
+            .as("Return status 200 when get access token")
+            .isEqualTo(HttpStatus.OK);
+
+        return responseEntity.getBody().getAccessToken();
     }
 }
