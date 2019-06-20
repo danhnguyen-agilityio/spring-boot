@@ -1,16 +1,11 @@
 package com.agility.usermanagement.controllers;
 
 import com.agility.usermanagement.dtos.UserCreatedRequest;
-import com.agility.usermanagement.models.AppUser;
+import com.agility.usermanagement.dtos.UserUpdatedRequest;
 import com.agility.usermanagement.models.Role;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -19,17 +14,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@Slf4j
 public class PublicControllerTest extends BaseControllerTest {
 
     private UserCreatedRequest userCreatedRequest;
-    private AppUser appUser;
 
     @Before
     public void setUp() {
+        super.setUp();
+
         userCreatedRequest = UserCreatedRequest.builder()
             .email(faker.internet().emailAddress())
             .password("Deptrai_07") // TODO: Write util class to generate password

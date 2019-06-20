@@ -1,25 +1,15 @@
 package com.agility.usermanagement.controllers;
 
-import com.agility.usermanagement.dtos.AuthResponse;
 import com.agility.usermanagement.dtos.UserCreatedRequest;
 import com.agility.usermanagement.dtos.UserUpdatedRequest;
 import com.jayway.jsonpath.JsonPath;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.entity.ContentType;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import static com.agility.usermanagement.utils.ConvertUtil.convertObjectToJsonBytes;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,32 +19,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
 @Slf4j
 public class UserControllerTest extends BaseControllerTest {
-
-    // native app client, used for support get access token with resource owner password flow
-    public final static String CLIENT_ID = "0oaqipsh5cectiRx0356";
-    public final static String CLIENT_SECRET = "_r4oQjlVmSW7_dOkW5BkBHs1sjhNV9scF4_loz-1";
-
-    private static String userToken;
-    private static String managerToken;
-    private static String adminToken;
 
     private UserCreatedRequest userCreatedRequest;
     private UserUpdatedRequest userUpdatedRequest;
 
-    @BeforeClass
-    public static void onceExecutedBeforeAll() throws Exception {
-        userToken = getAccessToken("user@gmail.com", "Deptrai07");
-        managerToken = getAccessToken("manager@gmail.com", "Deptrai07");
-        adminToken = getAccessToken("admin@gmail.com", "Deptrai07");
-    }
-
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
+        super.setUp();
+
         userCreatedRequest = UserCreatedRequest.builder()
             .email(faker.internet().emailAddress())
             .password("Deptrai_07") // TODO: Write util class to generate password
@@ -318,41 +292,5 @@ public class UserControllerTest extends BaseControllerTest {
         return createdUserJson;
     }
 
-    /**
-     * Call api /token from authorization server to get access token (resource owner password flow)
-     *
-     * @param username name of user
-     * @param password password of user
-     *
-     * @return Access token
-     */
-    private static String getAccessToken(String username, String password) throws Exception{
-        TestRestTemplate testRestTemplate = new TestRestTemplate();
 
-        String uri = UriComponentsBuilder.fromHttpUrl("https://dev-343362.okta.com/oauth2/default/v1/token")
-            .queryParam("grant_type", "password")
-            .queryParam("username", username)
-            .queryParam("password", password)
-            .queryParam("scope", "openid")
-            .toUriString();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-        headers.set("Content-Type", ContentType.APPLICATION_FORM_URLENCODED.toString());
-        headers.setBasicAuth(CLIENT_ID, CLIENT_SECRET);
-        HttpEntity entity = new HttpEntity(headers);
-
-        ResponseEntity<AuthResponse> responseEntity = testRestTemplate.exchange(
-            uri,
-            HttpMethod.POST,
-            entity,
-            AuthResponse.class
-            );
-
-        assertThat(responseEntity.getStatusCode())
-            .as("Return status 200 when get access token")
-            .isEqualTo(HttpStatus.OK);
-
-        return responseEntity.getBody().getAccessToken();
-    }
 }
