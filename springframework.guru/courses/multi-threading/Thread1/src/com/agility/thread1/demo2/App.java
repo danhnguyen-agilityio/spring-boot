@@ -1,6 +1,6 @@
-package com.agility.demo1;
+package com.agility.thread1.demo2;
 
-class Runner extends Thread {
+class Runner implements Runnable {
 
     @Override
     public void run() {
@@ -17,12 +17,12 @@ class Runner extends Thread {
 }
 
 public class App {
-
     public static void main(String[] args) {
-        Runner runner1 = new Runner();
-        Runner runner2 = new Runner();
+        Thread thread1 = new Thread(new Runner());
+        Thread thread2 = new Thread(new Runner());
 
-        runner1.start();
-        runner2.start();
+        thread1.start();
+        thread2.start();
     }
 }
+

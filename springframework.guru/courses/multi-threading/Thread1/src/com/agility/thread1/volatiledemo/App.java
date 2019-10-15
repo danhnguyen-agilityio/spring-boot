@@ -1,4 +1,4 @@
-package com.agility.volatiledemo;
+package com.agility.thread1.volatiledemo;
 
 import java.util.Scanner;
 
