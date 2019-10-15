@@ -9,7 +9,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        com.agility.Main main = new com.agility.Main();
+        Main main = new Main();
         main.doWork();
     }
 
