@@ -9,6 +9,7 @@ public class Main {
         ExecutorService executor = Executors.newCachedThreadPool();
 
         Future<Integer> future = executor.submit(new Callable<Integer>() {
+//        Future<?> future = executor.submit(new Callable<Void>() {
             @Override
             public Integer call() throws Exception {
                 Random random = new Random();
