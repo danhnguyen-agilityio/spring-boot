@@ -3,7 +3,9 @@ package guru.springfamework.bootstrap;
 import guru.springfamework.domain.Category;
 import guru.springfamework.repositories.CategoryRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 
+@Component
 public class Bootstrap implements CommandLineRunner {
 
     private CategoryRepository categoryRepository;
@@ -31,7 +33,7 @@ public class Bootstrap implements CommandLineRunner {
 
         categoryRepository.save(fruits);
         categoryRepository.save(dried);
-        categoryRepository.save(fruits);
+        categoryRepository.save(fresh);
         categoryRepository.save(exotic);
         categoryRepository.save(nuts);
 
