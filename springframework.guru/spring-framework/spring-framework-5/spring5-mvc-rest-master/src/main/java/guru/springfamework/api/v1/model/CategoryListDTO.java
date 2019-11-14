@@ -6,8 +6,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 public class CategoryListDTO {
 
     List<CategoryDTO> categories;
+
+    public CategoryListDTO(List<CategoryDTO> categories) {
+        this.categories = categories;
+    }
 }
