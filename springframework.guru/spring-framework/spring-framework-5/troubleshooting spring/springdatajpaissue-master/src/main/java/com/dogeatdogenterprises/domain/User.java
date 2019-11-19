@@ -12,7 +12,7 @@ import java.util.List;
  * Created by donaldsmallidge on 1/8/17.
  */
 @Entity
-public class User  extends AbstractDomainClass {
+public class User extends AbstractDomainClass {
 
     private String username;
 

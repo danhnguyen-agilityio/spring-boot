@@ -37,7 +37,7 @@ public class ProductServiceJpaDaoImplTest {
 
     @Test
     public void testListMethod() throws Exception {
-        List<Product> products = (List<Product>)productService.listAll();
+        List<Product> products = (List<Product>) productService.listAll();
         assert products.size() == 5;
     }
 
@@ -68,7 +68,7 @@ public class ProductServiceJpaDaoImplTest {
 
         productService.delete(id);
 
-        List<Product> products = (List<Product>)productService.listAll();
+        List<Product> products = (List<Product>) productService.listAll();
         assert products.size() == 4;
     }
 }

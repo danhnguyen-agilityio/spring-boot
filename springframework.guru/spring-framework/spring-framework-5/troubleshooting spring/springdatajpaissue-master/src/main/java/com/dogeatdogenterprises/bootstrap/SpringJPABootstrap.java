@@ -118,12 +118,12 @@ public class SpringJPABootstrap implements ApplicationListener<ContextRefreshedE
         List<Product> products = (List<Product>) productService.listAll();
 
         users.forEach(user -> {
-           user.setCart(new Cart());
-           CartDetail cartDetail = new CartDetail();
-           cartDetail.setProduct(products.get(0));
-           cartDetail.setQuantity(2);
-           user.getCart().addCartDetail(cartDetail);
-           userService.saveOrUpdate(user);
+            user.setCart(new Cart());
+            CartDetail cartDetail = new CartDetail();
+            cartDetail.setProduct(products.get(0));
+            cartDetail.setQuantity(2);
+            user.getCart().addCartDetail(cartDetail);
+            userService.saveOrUpdate(user);
         });
 
     }

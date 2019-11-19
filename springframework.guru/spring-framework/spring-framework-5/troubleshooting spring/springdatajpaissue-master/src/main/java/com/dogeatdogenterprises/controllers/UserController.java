@@ -54,7 +54,7 @@ public class UserController {
         return "user/userform";
     }
 
-    @RequestMapping(value = {"/", ""},  method = RequestMethod.POST)
+    @RequestMapping(value = {"/", ""}, method = RequestMethod.POST)
     public String saveOrUpdate(User user) {
         User savedUser = userService.saveOrUpdate(user);
         return "redirect:/user/show/" + savedUser.getId();

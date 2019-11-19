@@ -63,8 +63,8 @@ public class CustomerControllerTest {
         when(customerService.createNewCustomer(customer)).thenReturn(returnDTO);
 
         mockMvc.perform(post("/api/v1/customers/")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(asJsonString(customer)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.firstname", equalTo("Fred")))
                 .andExpect(jsonPath("$.lastname", equalTo("Flin")))

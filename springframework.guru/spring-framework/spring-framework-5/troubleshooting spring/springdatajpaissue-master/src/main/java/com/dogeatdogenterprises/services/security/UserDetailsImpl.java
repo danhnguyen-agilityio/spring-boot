@@ -27,6 +27,7 @@ public class UserDetailsImpl implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
+
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }

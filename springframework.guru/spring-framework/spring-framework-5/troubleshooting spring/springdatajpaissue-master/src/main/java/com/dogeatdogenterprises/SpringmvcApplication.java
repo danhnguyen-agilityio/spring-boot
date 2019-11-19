@@ -7,19 +7,19 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 public class SpringmvcApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-	    boolean showBeans = false;
+        boolean showBeans = false;
 
-		ApplicationContext ctx = SpringApplication.run(SpringmvcApplication.class, args);
+        ApplicationContext ctx = SpringApplication.run(SpringmvcApplication.class, args);
 
-		//System.out.println("Beans *-----------------------------------------------* ["+ctx.getBeanDefinitionCount()+"]");
-		//System.out.println();
+        //System.out.println("Beans *-----------------------------------------------* ["+ctx.getBeanDefinitionCount()+"]");
+        //System.out.println();
 
-		//if (showBeans) {
+        //if (showBeans) {
         //    for (String name : ctx.getBeanDefinitionNames()) {
         //        System.out.println(name);
         //    }
         //    System.out.println("*-----------------------------------------------------* END OF BEAN COUNT");	}
-	}
+    }
 }

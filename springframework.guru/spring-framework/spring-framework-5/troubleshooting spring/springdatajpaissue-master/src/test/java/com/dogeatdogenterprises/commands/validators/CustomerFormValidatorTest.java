@@ -1,11 +1,11 @@
 package com.dogeatdogenterprises.commands.validators;
 
-        import com.dogeatdogenterprises.commands.CustomerForm;
-        import org.junit.Before;
-        import org.junit.Test;
-        import org.springframework.validation.BeanPropertyBindingResult;
-        import org.springframework.validation.Errors;
-        import org.springframework.validation.Validator;
+import com.dogeatdogenterprises.commands.CustomerForm;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 /**
  * Created by jt on 12/24/15.
@@ -17,14 +17,14 @@ public class CustomerFormValidatorTest {
     private Errors errors;
 
     @Before
-    public void setup(){
+    public void setup() {
         validator = new CustomerFormValidator();
         customerForm = new CustomerForm();
         errors = new BeanPropertyBindingResult(customerForm, "customerForm");
     }
 
     @Test
-    public void testNoErrors(){
+    public void testNoErrors() {
         customerForm.setPasswordText("password");
         customerForm.setPasswordTextConf("password");
 
@@ -34,7 +34,7 @@ public class CustomerFormValidatorTest {
     }
 
     @Test
-    public void testHasErrors(){
+    public void testHasErrors() {
         customerForm.setPasswordText("password");
         customerForm.setPasswordTextConf("asdf");
 

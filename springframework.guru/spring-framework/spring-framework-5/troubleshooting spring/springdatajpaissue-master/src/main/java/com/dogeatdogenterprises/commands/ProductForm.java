@@ -18,10 +18,10 @@ public class ProductForm {
     private Integer version;
 
     @NotEmpty
-    @Size(min=5,max=200)
+    @Size(min = 5, max = 200)
     private String description;
 
-//    @NumberFormat(style= NumberFormat.Style.CURRENCY)
+    //    @NumberFormat(style= NumberFormat.Style.CURRENCY)
     @NotNull
     @Min(0)
     @Max(5000)

@@ -14,11 +14,11 @@ public class EncryptionServiceImpl implements EncryptionService {
         this.strongEncryptor = strongEncryptor;
     }
 
-    public String encryptString(String input){
+    public String encryptString(String input) {
         return strongEncryptor.encryptPassword(input);
     }
 
-    public boolean checkPassword(String plainPassword, String encryptedPassword){
+    public boolean checkPassword(String plainPassword, String encryptedPassword) {
         return strongEncryptor.checkPassword(plainPassword, encryptedPassword);
     }
 }

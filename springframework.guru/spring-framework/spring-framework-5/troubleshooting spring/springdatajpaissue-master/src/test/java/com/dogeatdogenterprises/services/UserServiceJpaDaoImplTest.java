@@ -155,5 +155,5 @@ public class UserServiceJpaDaoImplTest {
         userService.saveOrUpdate(savedUser);
 
         assert savedUser.getCart().getCartDetails().size() == 1;
-     }
+    }
 }

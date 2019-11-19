@@ -5,8 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Login implements Serializable
-{
+public class Login implements Serializable {
 
     private String username;
     private String password;

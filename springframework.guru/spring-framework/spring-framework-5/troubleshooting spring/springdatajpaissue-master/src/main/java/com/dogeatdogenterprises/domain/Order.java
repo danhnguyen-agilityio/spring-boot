@@ -11,7 +11,7 @@ import java.util.List;
  * Created by donaldsmallidge on 2/17/17.
  */
 @Entity
-@Table(name="ORDER_HEADER")
+@Table(name = "ORDER_HEADER")
 public class Order extends AbstractDomainClass {
 
     @OneToOne
@@ -20,7 +20,7 @@ public class Order extends AbstractDomainClass {
     @Embedded
     private Address shipToAddress;
 
-    @OneToMany(cascade=CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "order", orphanRemoval = true)
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     private OrderStatus orderStatus;
@@ -43,7 +43,9 @@ public class Order extends AbstractDomainClass {
         this.shipToAddress = shipToAddress;
     }
 
-    public List<OrderDetail> getOrderDetails() { return orderDetails; }
+    public List<OrderDetail> getOrderDetails() {
+        return orderDetails;
+    }
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
         this.orderDetails = orderDetails;

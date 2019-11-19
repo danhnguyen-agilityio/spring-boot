@@ -26,7 +26,7 @@ public class SpringSecConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor){
+    public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor) {
         PasswordEncoder passwordEncoder = new PasswordEncoder();
         passwordEncoder.setPasswordEncryptor(passwordEncryptor);
         return passwordEncoder;
@@ -34,7 +34,7 @@ public class SpringSecConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder,
-                                                               UserDetailsService userDetailsService){
+                                                               UserDetailsService userDetailsService) {
 
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -43,13 +43,14 @@ public class SpringSecConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder){
+    public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder) {
         authenticationManagerBuilder.authenticationProvider(authenticationProvider);
     }
+
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-           httpSecurity
-                .authorizeRequests().antMatchers("/","/products","/product/show/*","/console/*","/h2-console/**").permitAll()
+        httpSecurity
+                .authorizeRequests().antMatchers("/", "/products", "/product/show/*", "/console/*", "/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").permitAll()

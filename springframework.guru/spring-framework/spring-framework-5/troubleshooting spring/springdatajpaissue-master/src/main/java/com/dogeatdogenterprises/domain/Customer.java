@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 /**
  * Created by donaldsmallidge on 9/20/16.
- *
+ * <p>
  * 1. first name,
  * last name,
  * email,
@@ -15,7 +15,7 @@ import javax.persistence.*;
  * state,
  * zip code.
  * All properties are strings. All should be private and have getters and setters.
- *
+ * <p>
  * 2. Add an id value to your customer object.
  * The Id should be an Integer and have a getter and setter.
  */
@@ -26,7 +26,7 @@ public class Customer extends AbstractDomainClass {
     private String lastName;
     private String email;
     private String phoneNumber;
-//    private String addressLine1;
+    //    private String addressLine1;
 //    private String addressLine2;
 //    private String city;
 //    private String state;
@@ -38,24 +38,24 @@ public class Customer extends AbstractDomainClass {
  */
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "addressLine1",
-                    column = @Column( name = "billing_address_line1" )
+            @AttributeOverride(name = "addressLine1",
+                    column = @Column(name = "billing_address_line1")
             ),
             @AttributeOverride(
                     name = "addressLine2",
-                    column = @Column( name = "billing_address_line2" )
+                    column = @Column(name = "billing_address_line2")
             ),
             @AttributeOverride(
                     name = "city",
-                    column = @Column( name = "billing_city" )
+                    column = @Column(name = "billing_city")
             ),
             @AttributeOverride(
                     name = "state",
-                    column = @Column( name = "billing_state" )
+                    column = @Column(name = "billing_state")
             ),
             @AttributeOverride(
                     name = "zipCode",
-                    column = @Column( name = "billing_zip_code" )
+                    column = @Column(name = "billing_zip_code")
             )
     })
     private Address billingAddress;
@@ -64,23 +64,23 @@ public class Customer extends AbstractDomainClass {
     @AttributeOverrides({
             @AttributeOverride(
                     name = "addressLine1",
-                    column = @Column( name = "shipping_address_line1" )
+                    column = @Column(name = "shipping_address_line1")
             ),
             @AttributeOverride(
                     name = "addressLine2",
-                    column = @Column( name = "shipping_address_line2" )
+                    column = @Column(name = "shipping_address_line2")
             ),
             @AttributeOverride(
                     name = "city",
-                    column = @Column( name = "shipping_city" )
+                    column = @Column(name = "shipping_city")
             ),
             @AttributeOverride(
                     name = "state",
-                    column = @Column( name = "shipping_state" )
+                    column = @Column(name = "shipping_state")
             ),
             @AttributeOverride(
                     name = "zipCode",
-                    column = @Column( name = "shipping_zip_code" )
+                    column = @Column(name = "shipping_zip_code")
             )
     })
     private Address shippingAddress;

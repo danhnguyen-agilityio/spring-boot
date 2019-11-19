@@ -17,8 +17,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 //@SpringBootTest
 public class SpringmvcApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
+    @Test
+    public void contextLoads() {
+    }
 
 }

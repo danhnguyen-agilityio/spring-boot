@@ -44,7 +44,7 @@ public class UserServiceJpaDaoImpl extends AbstractJpaDaoService implements User
 
         em.getTransaction().begin();
 
-        if(domainObject.getPassword() != null){
+        if (domainObject.getPassword() != null) {
             domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
         }
 

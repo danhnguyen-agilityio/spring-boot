@@ -8,7 +8,7 @@ import javax.persistence.OneToOne;
  * Created by donaldsmallidge on 2/19/17.
  */
 @Entity
-public class OrderDetail  extends AbstractDomainClass {
+public class OrderDetail extends AbstractDomainClass {
 
     @ManyToOne
     private Order order;

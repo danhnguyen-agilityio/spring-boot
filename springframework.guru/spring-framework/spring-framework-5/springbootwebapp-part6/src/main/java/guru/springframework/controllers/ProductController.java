@@ -20,44 +20,44 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products", method = RequestMethod.GET)
-    public String list(Model model){
+    public String list(Model model) {
         model.addAttribute("products", productService.listAllProducts());
         return "products";
     }
 
     @RequestMapping("product/show/{id}")
-    public String showProduct(@PathVariable Integer id, Model model){
+    public String showProduct(@PathVariable Integer id, Model model) {
         model.addAttribute("product", productService.getProductById(id));
         return "productshow";
     }
 
     @RequestMapping("product/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model){
+    public String edit(@PathVariable Integer id, Model model) {
         model.addAttribute("product", productService.getProductById(id));
         return "productform";
     }
 
     @RequestMapping("product/new")
-    public String newProduct(Model model){
+    public String newProduct(Model model) {
         model.addAttribute("product", new Product());
         return "productform";
     }
 
     @RequestMapping(value = "product", method = RequestMethod.POST)
-    public String saveProduct(Product product){
+    public String saveProduct(Product product) {
         productService.saveProduct(product);
         return "redirect:/product/show/" + product.getId();
     }
 
     @RequestMapping("product/delete/{id}")
-    public String delete(@PathVariable Integer id){
+    public String delete(@PathVariable Integer id) {
         productService.deleteProduct(id);
         return "redirect:/products";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(){
-         return "login";
+    public String login() {
+        return "login";
     }
 
 }

@@ -5,8 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Job implements Serializable
-{
+public class Job implements Serializable {
 
     private String title;
     private String company;

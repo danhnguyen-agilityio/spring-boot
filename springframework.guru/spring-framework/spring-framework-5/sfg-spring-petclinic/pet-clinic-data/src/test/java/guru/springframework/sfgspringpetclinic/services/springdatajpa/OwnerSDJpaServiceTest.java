@@ -36,7 +36,7 @@ class OwnerSDJpaServiceTest {
     PetTypeRepository petTypeRepository;
 
     @InjectMocks // object is created by Inject mock into constructor
-    OwnerSDJpaService service;
+            OwnerSDJpaService service;
 
     Owner returnOwner;
 

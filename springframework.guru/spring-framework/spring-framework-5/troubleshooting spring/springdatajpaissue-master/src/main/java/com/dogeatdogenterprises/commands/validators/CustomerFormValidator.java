@@ -19,7 +19,7 @@ public class CustomerFormValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
 
-        CustomerForm customerForm = (CustomerForm)target;
+        CustomerForm customerForm = (CustomerForm) target;
 
         if (!customerForm.getPasswordText().equals(customerForm.getPasswordTextConf())) {
             errors.rejectValue("passwordText", "PasswordsDontMatch.customerForm.passwordText", "Passwords Don't Match");

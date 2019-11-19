@@ -66,7 +66,7 @@ public class CustomerControllerTest {
         customers.add(new Customer());
 
         // specific Mockito interaction, tell stub to return list of products
-        when(customerService.listAll()).thenReturn((List)customers);
+        when(customerService.listAll()).thenReturn((List) customers);
         // Note: need to strip generics to keep Mockito happy.
 
         // URL mapping #1 - Spring should find listCustomers() in the controller
@@ -142,8 +142,8 @@ public class CustomerControllerTest {
         String zipCode = "04901";
         String email = "donaldsmallidge@mac.com";
         String phoneNumber = "207.861.1272";
-        String username="fakename";
-        String password="fakepassword";
+        String username = "fakename";
+        String password = "fakepassword";
 
         Customer returnCustomer = new Customer();
         //CustomerForm returnCustomer = new CustomerForm();
@@ -177,16 +177,16 @@ public class CustomerControllerTest {
         // Question: How handle testing embedded values for billingAddress? <-- shipping!
         // Answer: use dot notation for param (e.g., addressLine1 becomes shippingAddress.addressLine1)
         // Answer: use nested notation for hasProperty (e.g., addressLine1 becomes a property of shippingAddress property)
-        when(customerService.saveOrUpdateCustomerForm( org.mockito.Matchers.<CustomerForm>any())).thenReturn(returnCustomer);
+        when(customerService.saveOrUpdateCustomerForm(org.mockito.Matchers.<CustomerForm>any())).thenReturn(returnCustomer);
         when(customerService.getById(org.mockito.Matchers.<Integer>any())).thenReturn(returnCustomer);
 
         mockMvc.perform(post("/customer")
                 .param("customerId", "1")
                 .param("firstName", firstName)
                 .param("lastName", lastName)
-                    .param("userName", username)
-                    .param("passwordText", password)
-                    .param("passwordTextConf", password)
+                .param("userName", username)
+                .param("passwordText", password)
+                .param("passwordTextConf", password)
                 .param("shippingAddress.addressLine1", addressLine1)
                 .param("shippingAddress.addressLine2", addressLine2)
                 .param("shippingAddress.city", city)
@@ -194,8 +194,8 @@ public class CustomerControllerTest {
                 .param("shippingAddress.zipCode", zipCode)
                 .param("email", email)
                 .param("phoneNumber", phoneNumber))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(view().name("redirect:customer/show/1")); // <-- revised 4/12/2017
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:customer/show/1")); // <-- revised 4/12/2017
 //                    .andExpect(model().attribute("customer", instanceOf(Customer.class)))
 //                    .andExpect(model().attribute("customer", hasProperty("firstName", is(firstName))))
 //                    .andExpect(model().attribute("customer", hasProperty("lastName", is(lastName))))

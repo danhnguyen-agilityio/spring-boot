@@ -5,8 +5,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ExpirationDate implements Serializable
-{
+public class ExpirationDate implements Serializable {
 
     private String date;
     private Integer timezoneType;

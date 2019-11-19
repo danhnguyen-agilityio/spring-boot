@@ -13,7 +13,7 @@ import springframework.guru.didemo.services.GreetingService;
 public class SetterInjectedController {
     private GreetingService greetingService;
 
-    public String sayHello(){
+    public String sayHello() {
         return greetingService.sayGreeting();
     }
 

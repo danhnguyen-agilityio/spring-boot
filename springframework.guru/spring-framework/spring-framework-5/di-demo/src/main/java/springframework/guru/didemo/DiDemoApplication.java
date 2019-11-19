@@ -13,23 +13,23 @@ import springframework.guru.didemo.examplebeans.FakeJmsBroker;
 @SpringBootApplication
 public class DiDemoApplication {
 
-	public static void main(String[] args) {
-		ApplicationContext context = SpringApplication.run(DiDemoApplication.class, args);
+    public static void main(String[] args) {
+        ApplicationContext context = SpringApplication.run(DiDemoApplication.class, args);
 
-		MyController myController = (MyController) context.getBean("myController");
+        MyController myController = (MyController) context.getBean("myController");
 
-		myController.hello();
+        myController.hello();
 
-		System.out.println(myController.hello());
-		System.out.println(((PropertyInjectedController) context.getBean("propertyInjectedController")).sayHello());
-		System.out.println(((SetterInjectedController) context.getBean("setterInjectedController")).sayHello());
-		System.out.println(((ConstructorInjectedController) context.getBean("constructorInjectedController")).sayHello());
+        System.out.println(myController.hello());
+        System.out.println(((PropertyInjectedController) context.getBean("propertyInjectedController")).sayHello());
+        System.out.println(((SetterInjectedController) context.getBean("setterInjectedController")).sayHello());
+        System.out.println(((ConstructorInjectedController) context.getBean("constructorInjectedController")).sayHello());
 
-		FakeDataSource fakeDataSource = context.getBean(FakeDataSource.class);
-		System.out.println("Username: " + fakeDataSource.getUsername());
+        FakeDataSource fakeDataSource = context.getBean(FakeDataSource.class);
+        System.out.println("Username: " + fakeDataSource.getUsername());
 
-		FakeJmsBroker fakeJmsBroker = context.getBean(FakeJmsBroker.class);
-		System.out.printf("Username: " + fakeJmsBroker.getUsername());
-	}
+        FakeJmsBroker fakeJmsBroker = context.getBean(FakeJmsBroker.class);
+        System.out.printf("Username: " + fakeJmsBroker.getUsername());
+    }
 
 }

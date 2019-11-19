@@ -41,7 +41,7 @@ public class CustomerServiceJpaDaoImplTest {
 
     @Test
     public void testListMethod() throws Exception {
-        List<Customer> customers = (List<Customer>)customerService.listAll();
+        List<Customer> customers = (List<Customer>) customerService.listAll();
         assert customers.size() == 5;
     }
 
@@ -86,24 +86,24 @@ public class CustomerServiceJpaDaoImplTest {
         Integer id = 1;
         Integer size = 0;
 
-        List<Customer> customers = (List<Customer>)customerService.listAll();
+        List<Customer> customers = (List<Customer>) customerService.listAll();
         size = customers.size();
-        System.out.println("Number of customers before delete: "+size);
+        System.out.println("Number of customers before delete: " + size);
         System.out.println("Attempting to delete customer 1");
 
-        for (Customer c: customers) {
-            System.out.println("Customer number: "+c.getId());
+        for (Customer c : customers) {
+            System.out.println("Customer number: " + c.getId());
         }
         customerService.delete(id); // ISSUE: not being committed before listAll()?
 
-        customers = (List<Customer>)customerService.listAll();
+        customers = (List<Customer>) customerService.listAll();
 
-        for (Customer c: customers) {
+        for (Customer c : customers) {
             if (c.getId() == 1) {
-                System.out.println("Customer number: "+c.getId()+" was NOT deleted!");
+                System.out.println("Customer number: " + c.getId() + " was NOT deleted!");
             }
         }
-        System.out.println("Total Customers: "+customers.size() + "; Original Customers: "+size);
+        System.out.println("Total Customers: " + customers.size() + "; Original Customers: " + size);
         assert customers.size() == (size - 1);
     }
 }

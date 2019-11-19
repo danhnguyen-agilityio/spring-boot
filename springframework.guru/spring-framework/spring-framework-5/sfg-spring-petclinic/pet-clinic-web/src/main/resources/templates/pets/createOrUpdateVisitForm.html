@@ -1,10 +1,10 @@
 <html xmlns:th="http://www.thymeleaf.org"
-th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+      th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
 
 <body>
 
 <h2>
-    <th:block th:if="${visit['new']}">New </th:block>
+    <th:block th:if="${visit['new']}">New</th:block>
     Visit
 </h2>
 
@@ -19,32 +19,36 @@ th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
     </tr>
     </thead>
     <tr>
-        <td th:text="${pet.name}" /></td>
+        <td th:text="${pet.name}"/>
+        </td>
         <td
-                th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}" /></td>
-        <td th:text="${pet.petType}" /></td>
+                th:text="${#temporals.format(pet.birthDate, 'yyyy-MM-dd')}"/>
+        </td>
+        <td th:text="${pet.petType}"/>
+        </td>
         <td
-                th:text="${pet.owner?.firstName + ' ' + pet.owner?.lastName}" /></td>
+                th:text="${pet.owner?.firstName + ' ' + pet.owner?.lastName}"/>
+        </td>
     </tr>
 </table>
 
 <form th:object="${visit}" class="form-horizontal" method="post">
     <div class="form-group has-feedback">
         <input
-                th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}"  />
+                th:replace="~{fragments/inputField :: input ('Date', 'date', 'date')}"/>
         <input
-                th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}" />
+                th:replace="~{fragments/inputField :: input ('Description', 'description', 'text')}"/>
     </div>
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <input type="hidden" name="petId" th:value="${pet.id}" />
+            <input type="hidden" name="petId" th:value="${pet.id}"/>
             <button class="btn btn-default" type="submit">Add Visit</button>
         </div>
     </div>
 </form>
 
-<br />
+<br/>
 <b>Previous Visits</b>
 <table class="table table-striped">
     <tr>
@@ -52,8 +56,10 @@ th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
         <th>Description</th>
     </tr>
     <tr th:if="${!visit['new']}" th:each="visit : ${pet.visits}">
-        <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}" /></td>
-        <td th:text=" ${visit.description}" /></td>
+        <td th:text="${#temporals.format(visit.date, 'yyyy-MM-dd')}"/>
+        </td>
+        <td th:text=" ${visit.description}"/>
+        </td>
     </tr>
 </table>
 

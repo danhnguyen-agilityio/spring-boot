@@ -43,6 +43,6 @@ public class RoleServiceMapImpl extends AbstractMapService implements RoleServic
 
 //    @Override
 //    protected void loadDomainObjects() {
-        // placeholder?
+    // placeholder?
 //    }
 }

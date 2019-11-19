@@ -17,7 +17,7 @@ public class AbstractDomainClass implements DomainObject {
     private Integer version;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, updatable=false)
+    @Column(nullable = false, updatable = false)
     private Date dateCreated;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,9 +41,13 @@ public class AbstractDomainClass implements DomainObject {
         this.version = version;
     }
 
-    public Date getDateCreated() { return dateCreated; }
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
-    public Date getLastUpdated() { return lastUpdated; }
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 
     @PreUpdate
     @PrePersist

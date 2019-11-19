@@ -46,14 +46,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveOrUpdate(User domainObject) {
-        if(domainObject.getPassword() != null){
+        if (domainObject.getPassword() != null) {
             domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
         }
         return userRepository.save(domainObject);
     }
+
     @Override
-      @Transactional
-       public void delete(Integer id) {
+    @Transactional
+    public void delete(Integer id) {
         userRepository.delete(id);
     }
 

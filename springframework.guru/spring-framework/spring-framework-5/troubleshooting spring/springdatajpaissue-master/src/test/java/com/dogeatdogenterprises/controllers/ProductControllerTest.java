@@ -64,7 +64,7 @@ public class ProductControllerTest {
         products.add(new Product());
 
         // specific Mockito interaction, tell stub to return list of products
-        when(productService.listAll()).thenReturn((List)products);
+        when(productService.listAll()).thenReturn((List) products);
         // Note: need to strip generics to keep Mockito happy.
 
         mockMvc.perform(get("/product/list"))
@@ -89,7 +89,7 @@ public class ProductControllerTest {
 
     // copied from sfg
     @Test
-    public void testEdit() throws Exception{
+    public void testEdit() throws Exception {
         Integer id = 1;
 
         // Tell Mockito stub to return new product for ID 1
@@ -135,7 +135,7 @@ public class ProductControllerTest {
         //when(productService.saveOrUpdate( org.mockito.Matchers.<Product>any())).thenReturn(returnProduct);
         // PROBLEM 4/12/2017: expecting ProductForm, not Product; should be Product????? but refactoring breaks everything!
         when(productService.saveOrUpdateProductForm(org.mockito.Matchers.<ProductForm>any())).thenReturn(productToProductForm.convert(returnProduct));
- //       when(productService.getById(org.mockito.Matchers.<Integer>any())).thenReturn(returnProduct);
+        //       when(productService.getById(org.mockito.Matchers.<Integer>any())).thenReturn(returnProduct);
 
         mockMvc.perform(post("/product")
                 .param("id", "1")

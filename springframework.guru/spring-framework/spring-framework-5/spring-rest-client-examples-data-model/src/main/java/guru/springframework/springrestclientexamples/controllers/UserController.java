@@ -41,8 +41,8 @@ public class UserController {
 
         model.addAttribute("users",
                 apiService.getUsers(serverWebExchange
-                    .getFormData()
-                    .map(data -> new Integer(data.getFirst("limit")))));
+                        .getFormData()
+                        .map(data -> new Integer(data.getFirst("limit")))));
 
         return "userlist";
     }

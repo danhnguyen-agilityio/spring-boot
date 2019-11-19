@@ -16,7 +16,7 @@ public class ProductFormToProduct implements Converter<ProductForm, Product> {
     @Override
     public Product convert(ProductForm productForm) {
         Product product = new Product();
-        if (productForm.getId() != null  && !StringUtils.isEmpty(productForm.getId())) {
+        if (productForm.getId() != null && !StringUtils.isEmpty(productForm.getId())) {
             product.setId(new ObjectId(productForm.getId()));
         }
         product.setDescription(productForm.getDescription());

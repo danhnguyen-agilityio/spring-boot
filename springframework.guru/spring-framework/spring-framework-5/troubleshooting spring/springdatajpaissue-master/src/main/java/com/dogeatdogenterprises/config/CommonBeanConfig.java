@@ -19,12 +19,14 @@ public class CommonBeanConfig {
         StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
         return encryptor;
     }
+
     // HIS VERSION DOES NOT HAVE THESE BEANS DEFINED
     @Bean
     public CustomerFormToCustomer customerFormToCustomer() {
         CustomerFormToCustomer customerFormToCustomer = new CustomerFormToCustomer();
         return customerFormToCustomer;
     }
+
     @Bean
     public ProductFormToProduct productFormToProduct() {
         ProductFormToProduct productFormToProduct = new ProductFormToProduct();
