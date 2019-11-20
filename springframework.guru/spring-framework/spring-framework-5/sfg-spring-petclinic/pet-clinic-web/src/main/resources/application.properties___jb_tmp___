@@ -1,0 +1,3 @@
+spring.banner.image.location=logo.png
+
+spring.profiles.active=springdatajpa

@@ -1,0 +1,22 @@
+guru:
+  jms:
+    username: jms user
+    password: jms password
+    url: jmsurl
+
+---
+# Three dash create separate yaml file
+spring:
+  profiles: es
+
+guru:
+  jms:
+    username: es jms user
+
+---
+spring:
+  profiles: ge
+
+guru:
+  jms:
+    username: ge jms user
