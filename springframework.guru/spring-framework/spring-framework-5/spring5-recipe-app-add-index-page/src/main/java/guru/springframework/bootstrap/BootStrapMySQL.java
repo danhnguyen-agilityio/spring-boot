@@ -27,18 +27,18 @@ public class BootStrapMySQL implements ApplicationListener<ContextRefreshedEvent
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
-        if (categoryRepository.count() == 0L){
+        if (categoryRepository.count() == 0L) {
             log.debug("Loading Categories");
             loadCategories();
         }
 
-        if (unitOfMeasureRepository.count() == 0L){
+        if (unitOfMeasureRepository.count() == 0L) {
             log.debug("Loading UOMs");
             loadUom();
         }
     }
 
-    private void loadCategories(){
+    private void loadCategories() {
         Category cat1 = new Category();
         cat1.setDescription("American");
         categoryRepository.save(cat1);
@@ -56,7 +56,7 @@ public class BootStrapMySQL implements ApplicationListener<ContextRefreshedEvent
         categoryRepository.save(cat4);
     }
 
-    private void loadUom(){
+    private void loadUom() {
         UnitOfMeasure uom1 = new UnitOfMeasure();
         uom1.setDescription("Teaspoon");
         unitOfMeasureRepository.save(uom1);

@@ -5,20 +5,20 @@
     <title>Spring Framework Guru</title>
 </head>
 <body>
-    <h1>Product List</h1>
+<h1>Product List</h1>
 
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Title</th>
-            <th>Author</th>
-        </tr>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.id}"></td>
-            <td th:text="${book.title}"></td>
-            <td th:text="${book.publisher.name}"></td>
-        </tr>
-    </table>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Title</th>
+        <th>Author</th>
+    </tr>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.id}"></td>
+        <td th:text="${book.title}"></td>
+        <td th:text="${book.publisher.name}"></td>
+    </tr>
+</table>
 
 </body>
 </html>

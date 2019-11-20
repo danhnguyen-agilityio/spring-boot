@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource("classpath:chuck-config.xml")
 public class JokeappApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(JokeappApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(JokeappApplication.class, args);
+    }
 
 }

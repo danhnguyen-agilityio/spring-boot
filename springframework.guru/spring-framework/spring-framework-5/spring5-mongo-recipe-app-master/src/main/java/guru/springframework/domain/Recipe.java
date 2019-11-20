@@ -38,7 +38,7 @@ public class Recipe {
         }
     }
 
-    public Recipe addIngredient(Ingredient ingredient){
+    public Recipe addIngredient(Ingredient ingredient) {
         this.ingredients.add(ingredient);
         return this;
     }

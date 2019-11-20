@@ -20,7 +20,7 @@ public class PersonCommand {
     private String firstName;
     private String lastName;
 
-    public String sayMyName(){
+    public String sayMyName() {
         return "My Name is " + firstName + " " + lastName + ".";
     }
 }

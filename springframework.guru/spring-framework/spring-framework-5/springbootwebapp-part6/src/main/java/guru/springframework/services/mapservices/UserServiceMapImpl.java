@@ -39,7 +39,7 @@ public class UserServiceMapImpl extends AbstractMapService implements UserServic
     @Override
     public User saveOrUpdate(User domainObject) {
 
-        if(domainObject.getPassword() != null){
+        if (domainObject.getPassword() != null) {
             domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
         }
 
@@ -54,7 +54,7 @@ public class UserServiceMapImpl extends AbstractMapService implements UserServic
     @Override
     public User findByUsername(String userName) {
 
-        Optional returnUser =  domainMap.values().stream().filter(new Predicate<DomainObject>() {
+        Optional returnUser = domainMap.values().stream().filter(new Predicate<DomainObject>() {
             @Override
             public boolean test(DomainObject domainObject) {
                 User user = (User) domainObject;
