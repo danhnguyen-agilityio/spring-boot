@@ -1,5 +1,3 @@
-package guru.springframework.helloworld;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class HelloWorld {
