@@ -48,6 +48,8 @@
                 <configuration>
                     <archive>
                         <manifest>
+                            // fat jar: include dependency in target => executable jar
+                            // thin jar: not include dependency in target
                             <addClasspath>true</addClasspath>
                             <mainClass>HelloWorld</mainClass>
                         </manifest>
