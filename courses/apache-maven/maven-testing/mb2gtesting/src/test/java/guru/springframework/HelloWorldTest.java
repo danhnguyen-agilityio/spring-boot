@@ -8,5 +8,8 @@ class HelloWorldTest {
 
     @Test
     void hello() {
+        HelloWorld helloWorld = new HelloWorld();
+
+        assertEquals("Hello world", helloWorld.hello());
     }
 }
