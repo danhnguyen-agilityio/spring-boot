@@ -12,4 +12,12 @@ class HelloWorldTest {
 
         assertEquals("Hello world", helloWorld.hello());
     }
+
+    @Test
+    void print() {
+        HelloWorld helloWorld = new HelloWorld();
+
+        assertEquals(">", helloWorld.print(12));
+        assertEquals("<", helloWorld.print(2));
+    }
 }
