@@ -2,6 +2,8 @@ package guru.springframework;
 
 public class HelloWorld {
 
+    String x;
+
     public String hello() {
         return "Hello world";
     }
