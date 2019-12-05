@@ -16,6 +16,10 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
         <junit.version>5.3.2</junit.version>
+        <!-- Uncomment Skip unit test or use command mvn clean verify -DskipTests-->
+<!--        <skipTests>true</skipTests>-->
+        <!-- Uncomment Skip IT test or use command mvn clean verify -DskipITs -->
+<!--        <skipITs>true</skipITs>-->
     </properties>
 
     <dependencies>
@@ -56,16 +60,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
-                <configuration>
-                    <!-- Sets the VM argument line used when unit tests are run -->
-                    <argLine>${surefireArgLine}</argLine>
-                    <!-- Skips unit tests if the value of skip.unit.tests property is true -->
-                    <skipTests>${skip.unit.tests}</skipTests>
-                    <!-- Excludes integration tests when unit test ar run. -->
-                    <excludes>
-                        <exclude>**/ID/*.java</exclude>
-                    </excludes>
-                </configuration>
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; Sets the VM argument line used when unit tests are run &ndash;&gt;-->
+<!--                    <argLine>${surefireArgLine}</argLine>-->
+<!--                    &lt;!&ndash; Skips unit tests if the value of skip.unit.tests property is true &ndash;&gt;-->
+<!--                    <skipTests>${skip.unit.tests}</skipTests>-->
+<!--                    &lt;!&ndash; Excludes integration tests when unit test ar run. &ndash;&gt;-->
+<!--                    <excludes>-->
+<!--                        <exclude>**/ID/*.java</exclude>-->
+<!--                    </excludes>-->
+<!--                </configuration>-->
             </plugin>
 
             <!-- The execution of the surefire plugin includes all classes whose name starts with Test, or ends with Test, Tests or TestCase.
@@ -81,12 +85,12 @@
                             <goal>integration-test</goal>
                             <goal>verify</goal>
                         </goals>
-                        <configuration>
-                            <!-- Sets the VM argument line used when integration tests are run. -->
-                            <argLine>${failsafeArgLine}</argLine>
-                            <!-- Skips integration tests if the value of skip.integration.tests property is true -->
-                            <skipTests>${skip.integration.tests}</skipTests>
-                        </configuration>
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; Sets the VM argument line used when integration tests are run. &ndash;&gt;-->
+<!--                            <argLine>${failsafeArgLine}</argLine>-->
+<!--                            &lt;!&ndash; Skips integration tests if the value of skip.integration.tests property is true &ndash;&gt;-->
+<!--                            <skipTests>${skip.integration.tests}</skipTests>-->
+<!--                        </configuration>-->
                     </execution>
                 </executions>
             </plugin>
