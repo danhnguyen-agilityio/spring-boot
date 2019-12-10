@@ -6,32 +6,15 @@
   <artifactId>web-api</artifactId>
   <version>1.0-SNAPSHOT</version>
   <properties>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <lombok.version>1.18.4</lombok.version>
     <java.version>1.8</java.version>
-    <revision>1.0-SNAPSHOT</revision>
     <jaxb.version>2.3.0</jaxb.version>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <mapstruct.version>1.2.0.Final</mapstruct.version>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <hibernate.version>5.4.8.Final</hibernate.version>
+    <revision>1.0-SNAPSHOT</revision>
+    <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-      <version>2.3.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-      <version>2.3.0</version>
-      <scope>compile</scope>
-    </dependency>
-  </dependencies>
 </project>
