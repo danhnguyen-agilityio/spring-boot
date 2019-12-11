@@ -16,6 +16,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+		<some.custom.prop>custom prop</some.custom.prop>
 	</properties>
 
 	<dependencies>
@@ -58,6 +59,20 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<executions>
+					<execution>
+						<id>build-info-goal-demo</id>
+						<!-- Get info env when build project, so handy						-->
+						<!-- http://localhost:8080/actuator/info						-->
+						<goals>
+							<goal>build-info</goal>
+						</goals>
+						<configuration>
+							<additionalProperties>
+								<java.version>${java.version}</java.version>
+								<some.custom.prop>${some.custom.prop}</some.custom.prop>
+							</additionalProperties>
+						</configuration>
+					</execution>
 					<execution>
 						<id>pre-it</id>
 						<goals>
