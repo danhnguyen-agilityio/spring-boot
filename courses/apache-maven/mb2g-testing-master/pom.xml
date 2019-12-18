@@ -15,6 +15,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <junit.version>5.3.2</junit.version>
+        <TEST_HOST>localhost</TEST_HOST>
     </properties>
 
     <dependencies>
@@ -71,6 +72,19 @@
                 <version>0.0.6</version>
             </extension>
         </extensions>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <environmentVariables>
+                        <TEST_HOST>${TEST_HOST}</TEST_HOST>
+                    </environmentVariables>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <!-- mvn help:active-profiles    -->
@@ -114,6 +128,20 @@
                     <url>http://localhost:8081/repository/nexus-snapshot/</url>
                 </snapshotRepository>
             </distributionManagement>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+                <TEST_HOST>test.example.com</TEST_HOST>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>uat</id>
+            <properties>
+                <TEST_HOST>uat.example.com</TEST_HOST>
+            </properties>
         </profile>
     </profiles>
 
