@@ -14,43 +14,54 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <junit.version>5.3.2</junit.version>
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.microsoft.services/sharepoint-services-java -->
         <dependency>
-            <groupId>com.microsoft.services</groupId>
-            <artifactId>sharepoint-services-java</artifactId>
-            <version>1.0.0</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.200</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mule.modules/sharepoint-online -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>spring-release</id>
-            <name>Spring Release</name>
-            <url>https://repo.spring.io/plugins-release/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>spring-release</id>-->
+<!--            <name>Spring Release</name>-->
+<!--            <url>https://repo.spring.io/plugins-release/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>false</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
 
-        <repository>
-            <id>nexus-snapshot</id>
-            <url>http://localhost:8081/repository/nexus-snapshot/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>nexus-release</id>
-            <url>http://localhost:8081/repository/nexus-release/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+<!--        <repository>-->
+<!--            <id>nexus-snapshot</id>-->
+<!--            <url>http://localhost:8081/repository/nexus-snapshot/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>nexus-release</id>-->
+<!--            <url>http://localhost:8081/repository/nexus-release/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
     <build>
         <extensions>
@@ -62,26 +73,48 @@
         </extensions>
     </build>
 
-    <distributionManagement>
-<!--        <repository>-->
-<!--            <id>packagecloud.release</id>-->
-<!--            <url>packagecloud+https://packagecloud.io/danhnguyentk/release</url>-->
-<!--        </repository>-->
+    <!-- mvn help:active-profiles    -->
+    <!-- mvn help:active-profiles -P packagecloud   -->
+    <!--    mvn help:active-profiles -P \!packagecloud-->
+    <!-- mvn help:active-profiles -P \!packagecloud,nexus   -->
+    <profiles>
+        <!-- Packagecloud build profile        -->
+        <profile>
+            <id>packagecloud</id>
+            <distributionManagement>
+                <!-- packagecloud Repository-->
+                <repository>
+                    <id>packagecloud.release</id>
+                    <url>packagecloud+https://packagecloud.io/danhnguyentk/release</url>
+                </repository>
 
-        <!-- packagecloud Repository-->
-<!--        <snapshotRepository>-->
-<!--            <id>packagecloud.snapshot</id>-->
-<!--            <url>packagecloud+https://packagecloud.io/danhnguyentk/snapshot</url>-->
-<!--        </snapshotRepository>-->
+                <snapshotRepository>
+                    <id>packagecloud.snapshot</id>
+                    <url>packagecloud+https://packagecloud.io/danhnguyentk/snapshot</url>
+                </snapshotRepository>
+            </distributionManagement>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
 
-        <!-- Nexus Repository-->
-        <repository>
-            <id>nexus-release</id>
-            <url>http://localhost:8081/repository/nexus-release/</url>
-        </repository>
-        <snapshotRepository>
-            <id>nexus-snapshot</id>
-            <url>http://localhost:8081/repository/nexus-snapshot/</url>
-        </snapshotRepository>
-    </distributionManagement>
+        <!-- Nexus build profile -->
+        <!-- http://localhost:8081/#browse/browse       -->
+        <!-- admin/admin123       -->
+        <profile>
+            <id>nexus</id>
+            <distributionManagement>
+                <!-- Nexus Repository-->
+                <repository>
+                    <id>nexus-release</id>
+                    <url>http://localhost:8081/repository/nexus-release/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>nexus-snapshot</id>
+                    <url>http://localhost:8081/repository/nexus-snapshot/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
+
 </project>
