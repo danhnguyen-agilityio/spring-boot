@@ -6,7 +6,7 @@
 
     <groupId>guru.springframework</groupId>
     <artifactId>mb2g-testing</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,6 +43,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>nexus-release</id>
+            <url>http://localhost:8081/repository/nexus-release/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <build>
@@ -56,10 +63,10 @@
     </build>
 
     <distributionManagement>
-        <repository>
-            <id>packagecloud.release</id>
-            <url>packagecloud+https://packagecloud.io/danhnguyentk/release</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>packagecloud.release</id>-->
+<!--            <url>packagecloud+https://packagecloud.io/danhnguyentk/release</url>-->
+<!--        </repository>-->
 
         <!-- packagecloud Repository-->
 <!--        <snapshotRepository>-->
@@ -68,6 +75,10 @@
 <!--        </snapshotRepository>-->
 
         <!-- Nexus Repository-->
+        <repository>
+            <id>nexus-release</id>
+            <url>http://localhost:8081/repository/nexus-release/</url>
+        </repository>
         <snapshotRepository>
             <id>nexus-snapshot</id>
             <url>http://localhost:8081/repository/nexus-snapshot/</url>
