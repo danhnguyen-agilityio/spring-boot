@@ -34,7 +34,7 @@
     <scm>
         <developerConnection>scm:git:git@gitlab.asoft-python.com:g-danhnguyen/java-training.git</developerConnection>
         <url>https://gitlab.asoft-python.com/g-danhnguyen/java-training</url>
-        <tag>mb2g-release-plugin-1.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <build>
@@ -62,11 +62,11 @@
     <distributionManagement>
         <repository>
             <id>packagecloud.release</id>
-            <url>packagecloud+https://packagecloud.io/springframeworkguru/release</url>
+            <url>packagecloud+https://packagecloud.io/danhnguyentk/release</url>
         </repository>
         <snapshotRepository>
             <id>packagecloud.snapshot</id>
-            <url>packagecloud+https://packagecloud.io/springframeworkguru/snapshot</url>
+            <url>packagecloud+https://packagecloud.io/danhnguyentk/snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
