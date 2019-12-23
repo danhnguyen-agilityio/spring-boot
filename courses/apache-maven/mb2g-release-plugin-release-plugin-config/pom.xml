@@ -55,6 +55,8 @@
             <!-- Maven clean release:prepare           -->
             <!-- Maven clean release:perform           -->
             <!-- Maven clean release:rollback           -->
+            <!-- Mvn release:prepare -DdryRun=true : does not modify anythings,
+            the dry run doesn't modify anything byt it does give you output of what it would have modified             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
