@@ -51,6 +51,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
             </plugin>
+
+            <!-- Maven clean release:prepare           -->
+            <!-- Maven clean release:perform           -->
+            <!-- Maven clean release:rollback           -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
